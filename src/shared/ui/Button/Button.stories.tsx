@@ -39,10 +39,6 @@ const meta: Meta<typeof Button> = {
       control: "text",
       description: "버튼 너비",
     },
-    gap: {
-      control: "text",
-      description: "아이콘과 텍스트 사이 간격",
-    },
     disabled: {
       control: "boolean",
       description: "비활성화 상태",
@@ -99,16 +95,6 @@ export const WithIcon: Story = {
   },
 };
 
-export const CustomGap: Story = {
-  args: {
-    variant: "primary",
-    children: "Search",
-    icon: <SearchIcon />,
-    gap: "16px",
-    width: "200px",
-  },
-};
-
 export const FullWidth: Story = {
   args: {
     variant: "primary",
@@ -149,24 +135,6 @@ export const AllWithIcons: Story = {
       </Button>
       <Button icon={<SearchIcon />} variant="outline">
         Search
-      </Button>
-    </div>
-  ),
-};
-
-export const DifferentGaps: Story = {
-  render: () => (
-    <div
-      style={{ display: "flex", flexDirection: "column", gap: 16, width: 300 }}
-    >
-      <Button icon={<SearchIcon />} gap="4px">
-        Gap 4px
-      </Button>
-      <Button icon={<SearchIcon />} gap="8px">
-        Gap 8px (default)
-      </Button>
-      <Button icon={<SearchIcon />} gap="16px">
-        Gap 16px
       </Button>
     </div>
   ),

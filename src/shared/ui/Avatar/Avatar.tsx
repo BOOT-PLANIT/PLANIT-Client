@@ -7,6 +7,11 @@ const sizeMap: Record<AvatarSize, string> = {
   lg: "80px",
 };
 
+const fontSizeMap: Record<AvatarSize, string> = {
+  md: "14px",
+  lg: "28px",
+};
+
 interface AvatarProps {
   userName: string;
   size?: AvatarSize;
@@ -16,6 +21,7 @@ interface AvatarProps {
 const Avatar = ({ userName, size = "md", onClick }: AvatarProps) => {
   const initial = userName.charAt(0).toUpperCase();
   const sizeValue = sizeMap[size];
+  const fontSizeValue = fontSizeMap[size];
 
   return (
     <div
@@ -23,6 +29,7 @@ const Avatar = ({ userName, size = "md", onClick }: AvatarProps) => {
       style={{
         width: sizeValue,
         height: sizeValue,
+        fontSize: fontSizeValue,
       }}
       onClick={onClick}
     >

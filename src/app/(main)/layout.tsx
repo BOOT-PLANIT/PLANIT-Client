@@ -1,4 +1,4 @@
-import { Header, NavItem } from "@/widgets/Header";
+import { Header, NavItem } from "@/widgets/ui/Header";
 
 const MainLayout = ({
   children,

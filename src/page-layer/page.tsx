@@ -54,8 +54,6 @@ const Home = () => {
 
       <h2 style={{ marginTop: 16 }}>Custom Gap</h2>
       <Button icon={<SearchIcon />}>Search</Button>
-      <Button icon={<SearchIcon />}>Gap 8px (default)</Button>
-      <Button icon={<SearchIcon />}>Gap 16px</Button>
     </div>
   );
 };
