@@ -46,3 +46,18 @@
     background-color: var(--primary);
   }
 }
+
+.outline {
+  background-color: transparent;
+  color: #374151;
+  border: 1px solid #d1d5db;
+
+  &:hover:not(:disabled) {
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
+  }
+
+  &:active:not(:disabled) {
+    background-color: #e5e7eb;
+  }
+}

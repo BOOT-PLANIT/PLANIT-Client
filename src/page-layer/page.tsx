@@ -45,6 +45,7 @@ const Home = () => {
       <h2>Button Variants</h2>
       <Button variant="primary">Primary</Button>
       <Button variant="secondary">Secondary</Button>
+      <Button variant="outline">Outline</Button>
       <Button disabled>Disabled</Button>
 
       <h2 style={{ marginTop: 16 }}>With Icons</h2>
@@ -52,13 +53,13 @@ const Home = () => {
       <Button icon={<ArrowRightIcon />}>Next</Button>
 
       <h2 style={{ marginTop: 16 }}>Custom Gap</h2>
-      <Button icon={<SearchIcon />} gap={4}>
+      <Button icon={<SearchIcon />} gap="4px">
         Gap 4px
       </Button>
-      <Button icon={<SearchIcon />} gap={8}>
+      <Button icon={<SearchIcon />} gap="8px">
         Gap 8px (default)
       </Button>
-      <Button icon={<SearchIcon />} gap={16}>
+      <Button icon={<SearchIcon />} gap="16px">
         Gap 16px
       </Button>
     </div>

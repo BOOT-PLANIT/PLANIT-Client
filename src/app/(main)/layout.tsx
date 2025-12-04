@@ -7,7 +7,7 @@ const MainLayout = ({
 }>) => {
   return (
     <div>
-      <Header title="PLANIT" userName="J">
+      <Header title="PLANIT" userName="PLANIT">
         <NavItem href="/dashboard">대시보드</NavItem>
         <NavItem href="/attendance">출결관리</NavItem>
       </Header>

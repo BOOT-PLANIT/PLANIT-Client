@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+import { Avatar } from "@/shared/ui";
+
 import styles from "./Header.module.scss";
 
 interface HeaderProps {
@@ -26,9 +28,7 @@ const Header = ({ title, userName, children }: HeaderProps) => {
         <nav className={styles.nav}>
           <ul className={styles.navList}>{children}</ul>
 
-          <div className={styles.avatar}>
-            <span>{userName}</span>
-          </div>
+          <Avatar>{userName}</Avatar>
         </nav>
       </div>
     </header>
