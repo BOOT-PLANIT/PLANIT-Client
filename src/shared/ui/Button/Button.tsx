@@ -8,7 +8,6 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   width?: string;
   icon?: React.ReactNode;
-  gap?: string;
   children: React.ReactNode;
 }
 
@@ -16,7 +15,6 @@ const Button = ({
   variant = "primary",
   width = "100%",
   icon,
-  gap = "8px",
   children,
   className,
   style,
@@ -27,7 +25,6 @@ const Button = ({
       className={`${styles.button} ${styles[variant]} ${className || ""}`}
       style={{
         width,
-        gap,
         ...style,
       }}
       {...props}
