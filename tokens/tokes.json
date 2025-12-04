@@ -1,6 +1,5 @@
 {
-  "global": {},
-  "Primitive Color/Mode 1": {
+  "": {
     "BLACK & WHITE": {
       "White": {
         "value": "#ffffff",
@@ -821,6 +820,284 @@
       "0": {
         "value": "0px",
         "type": "dimension"
+      }
+    }
+  },
+  "Primitives Color/Mode 1": {
+    "BLACK & WHITE": {
+      "White": {
+        "value": "#ffffff",
+        "type": "color"
+      },
+      "Black": {
+        "value": "#000000",
+        "type": "color"
+      }
+    },
+    "BLUE": {
+      "Normal : Intense": {
+        "value": "#155aff",
+        "type": "color"
+      },
+      "Light : Strong": {
+        "value": "#6e97ff",
+        "type": "color"
+      },
+      "Normal : Strong": {
+        "value": "#2e6bff",
+        "type": "color"
+      },
+      "Normal": {
+        "value": "#4a7eff",
+        "type": "color"
+      },
+      "Light : Intense": {
+        "value": "#8bb0ff",
+        "type": "color"
+      },
+      "Light": {
+        "value": "#7fa2ff",
+        "type": "color"
+      }
+    },
+    "SYSTEM": {
+      "Like": {
+        "value": "#f2110f",
+        "type": "color"
+      },
+      "Success": {
+        "value": "#048724",
+        "type": "color"
+      },
+      "Error": {
+        "value": "#d21c1c",
+        "type": "color"
+      },
+      "Notice": {
+        "value": "#ff5858",
+        "type": "color"
+      }
+    },
+    "ABYSS": {
+      "Abyss Normal : Strong": {
+        "value": "#141517",
+        "type": "color"
+      },
+      "Abyss Normal": {
+        "value": "#18191b",
+        "type": "color"
+      }
+    },
+    "Black Alpha": {
+      "Black 10": {
+        "value": "#0000001a",
+        "type": "color"
+      },
+      "Black 90": {
+        "value": "#000000e6",
+        "type": "color"
+      },
+      "Abyss 0": {
+        "value": "#14151700",
+        "type": "color"
+      },
+      "Black 84": {
+        "value": "#000000d6",
+        "type": "color"
+      },
+      "Black 6": {
+        "value": "#0000000f",
+        "type": "color"
+      },
+      "Black 32": {
+        "value": "#00000052",
+        "type": "color"
+      },
+      "Black 24": {
+        "value": "#0000003d",
+        "type": "color"
+      },
+      "Black 20": {
+        "value": "#00000033",
+        "type": "color"
+      },
+      "Black 16": {
+        "value": "#00000029",
+        "type": "color"
+      },
+      "Black 12": {
+        "value": "#0000001f",
+        "type": "color"
+      },
+      "Black 8": {
+        "value": "#00000014",
+        "type": "color"
+      },
+      "Black 2": {
+        "value": "#00000005",
+        "type": "color"
+      },
+      "Black 5": {
+        "value": "#0000000d",
+        "type": "color"
+      },
+      "Black 28": {
+        "value": "#00000047",
+        "type": "color"
+      },
+      "Black 50": {
+        "value": "#00000080",
+        "type": "color"
+      },
+      "Black 0": {
+        "value": "#00000000",
+        "type": "color"
+      },
+      "Black 4": {
+        "value": "#0000000a",
+        "type": "color"
+      },
+      "Abyss 84": {
+        "value": "#141517d6",
+        "type": "color"
+      }
+    },
+    "Charcoal": {
+      "Charcoal Normal : Strong": {
+        "value": "#282a2e",
+        "type": "color"
+      },
+      "Charcoal Light : Strong": {
+        "value": "#3e3f46",
+        "type": "color"
+      },
+      "Charcoal Light": {
+        "value": "#47484d",
+        "type": "color"
+      },
+      "Charcoal Normal": {
+        "value": "#333539",
+        "type": "color"
+      },
+      "Charcoal Normal : Intense": {
+        "value": "#25262a",
+        "type": "color"
+      }
+    },
+    "GREY": {
+      "Grey Normal : Strong": {
+        "value": "#a1a5af",
+        "type": "color"
+      },
+      "Grey Normal : Intense": {
+        "value": "#8d929f",
+        "type": "color"
+      },
+      "Grey Normal": {
+        "value": "#b0b3ba",
+        "type": "color"
+      },
+      "Grey Light : Strong": {
+        "value": "#d7d8db",
+        "type": "color"
+      },
+      "Grey Light": {
+        "value": "#e6e7e8",
+        "type": "color"
+      },
+      "Grey Light : Intense": {
+        "value": "#c2c3c8",
+        "type": "color"
+      }
+    },
+    "CLOUD": {
+      "Cloud Normal : Strong": {
+        "value": "#eff0f3",
+        "type": "color"
+      },
+      "Cloud Normal": {
+        "value": "#f5f6f9",
+        "type": "color"
+      }
+    },
+    "White Alpha": {
+      "White 85": {
+        "value": "#ffffff80",
+        "type": "color"
+      },
+      "White 0": {
+        "value": "#ffffff00",
+        "type": "color"
+      },
+      "White 84": {
+        "value": "#ffffffd6",
+        "type": "color"
+      },
+      "White 10": {
+        "value": "#ffffff1a",
+        "type": "color"
+      }
+    },
+    "PURPLE": {
+      "Lighter": {
+        "value": "#8a7ff0",
+        "type": "color"
+      },
+      "Light": {
+        "value": "#6b5fe8",
+        "type": "color"
+      },
+      "Normal": {
+        "value": "#4c41d3",
+        "type": "color"
+      },
+      "Lightest": {
+        "value": "#e8e6fb",
+        "type": "color"
+      }
+    },
+    "YELLOW": {
+      "Lightest": {
+        "value": "#fff5e6",
+        "type": "color"
+      },
+      "Lighter": {
+        "value": "#ffe0b3",
+        "type": "color"
+      },
+      "Light": {
+        "value": "#ffd08b",
+        "type": "color"
+      },
+      "Normal": {
+        "value": "#ffc05b",
+        "type": "color"
+      }
+    },
+    "Attendance": {
+      "present": {
+        "value": "#048724",
+        "type": "color"
+      },
+      "late": {
+        "value": "#f59e0b",
+        "type": "color"
+      },
+      "leftearly": {
+        "value": "#3ecf8e",
+        "type": "color"
+      },
+      "leave": {
+        "value": "#8b5cf6",
+        "type": "color"
+      },
+      "annual": {
+        "value": "#00aff0",
+        "type": "color"
+      },
+      "absent": {
+        "value": "#d21c1c",
+        "type": "color"
       }
     }
   },
@@ -1730,572 +2007,14 @@
       }
     }
   },
-  "Primitives Color/Mode 1": {
-    "BLACK & WHITE": {
-      "White": {
-        "value": "#ffffff",
-        "type": "color"
-      },
-      "Black": {
-        "value": "#000000",
-        "type": "color"
-      }
-    },
-    "BLUE": {
-      "Normal : Intense": {
-        "value": "#155aff",
-        "type": "color"
-      },
-      "Light : Strong": {
-        "value": "#6e97ff",
-        "type": "color"
-      },
-      "Normal : Strong": {
-        "value": "#2e6bff",
-        "type": "color"
-      },
-      "Normal": {
-        "value": "#4a7eff",
-        "type": "color"
-      },
-      "Light : Intense": {
-        "value": "#8bb0ff",
-        "type": "color"
-      },
-      "Light": {
-        "value": "#7fa2ff",
-        "type": "color"
-      }
-    },
-    "SYSTEM": {
-      "Like": {
-        "value": "#f2110f",
-        "type": "color"
-      },
-      "Success": {
-        "value": "#048724",
-        "type": "color"
-      },
-      "Error": {
-        "value": "#d21c1c",
-        "type": "color"
-      },
-      "Notice": {
-        "value": "#ff5858",
-        "type": "color"
-      }
-    },
-    "ABYSS": {
-      "Abyss Normal : Strong": {
-        "value": "#141517",
-        "type": "color"
-      },
-      "Abyss Normal": {
-        "value": "#18191b",
-        "type": "color"
-      }
-    },
-    "Black Alpha": {
-      "Black 10": {
-        "value": "#0000001a",
-        "type": "color"
-      },
-      "Black 90": {
-        "value": "#000000e6",
-        "type": "color"
-      },
-      "Abyss 0": {
-        "value": "#14151700",
-        "type": "color"
-      },
-      "Black 84": {
-        "value": "#000000d6",
-        "type": "color"
-      },
-      "Black 6": {
-        "value": "#0000000f",
-        "type": "color"
-      },
-      "Black 32": {
-        "value": "#00000052",
-        "type": "color"
-      },
-      "Black 24": {
-        "value": "#0000003d",
-        "type": "color"
-      },
-      "Black 20": {
-        "value": "#00000033",
-        "type": "color"
-      },
-      "Black 16": {
-        "value": "#00000029",
-        "type": "color"
-      },
-      "Black 12": {
-        "value": "#0000001f",
-        "type": "color"
-      },
-      "Black 8": {
-        "value": "#00000014",
-        "type": "color"
-      },
-      "Black 2": {
-        "value": "#00000005",
-        "type": "color"
-      },
-      "Black 5": {
-        "value": "#0000000d",
-        "type": "color"
-      },
-      "Black 28": {
-        "value": "#00000047",
-        "type": "color"
-      },
-      "Black 50": {
-        "value": "#00000080",
-        "type": "color"
-      },
-      "Black 0": {
-        "value": "#00000000",
-        "type": "color"
-      },
-      "Black 4": {
-        "value": "#0000000a",
-        "type": "color"
-      },
-      "Abyss 84": {
-        "value": "#141517d6",
-        "type": "color"
-      }
-    },
-    "Charcoal": {
-      "Charcoal Normal : Strong": {
-        "value": "#282a2e",
-        "type": "color"
-      },
-      "Charcoal Light : Strong": {
-        "value": "#3e3f46",
-        "type": "color"
-      },
-      "Charcoal Light": {
-        "value": "#47484d",
-        "type": "color"
-      },
-      "Charcoal Normal": {
-        "value": "#333539",
-        "type": "color"
-      },
-      "Charcoal Normal : Intense": {
-        "value": "#25262a",
-        "type": "color"
-      }
-    },
-    "GREY": {
-      "Grey Normal : Strong": {
-        "value": "#a1a5af",
-        "type": "color"
-      },
-      "Grey Normal : Intense": {
-        "value": "#8d929f",
-        "type": "color"
-      },
-      "Grey Normal": {
-        "value": "#b0b3ba",
-        "type": "color"
-      },
-      "Grey Light : Strong": {
-        "value": "#d7d8db",
-        "type": "color"
-      },
-      "Grey Light": {
-        "value": "#e6e7e8",
-        "type": "color"
-      },
-      "Grey Light : Intense": {
-        "value": "#c2c3c8",
-        "type": "color"
-      }
-    },
-    "CLOUD": {
-      "Cloud Normal : Strong": {
-        "value": "#eff0f3",
-        "type": "color"
-      },
-      "Cloud Normal": {
-        "value": "#f5f6f9",
-        "type": "color"
-      }
-    },
-    "White Alpha": {
-      "White 85": {
-        "value": "#ffffff80",
-        "type": "color"
-      },
-      "White 0": {
-        "value": "#ffffff00",
-        "type": "color"
-      },
-      "White 84": {
-        "value": "#ffffffd6",
-        "type": "color"
-      },
-      "White 10": {
-        "value": "#ffffff1a",
-        "type": "color"
-      }
-    },
-    "PURPLE": {
-      "Lighter": {
-        "value": "#8a7ff0",
-        "type": "color"
-      },
-      "Light": {
-        "value": "#6b5fe8",
-        "type": "color"
-      },
-      "Normal": {
-        "value": "#4c41d3",
-        "type": "color"
-      },
-      "Lightest": {
-        "value": "#e8e6fb",
-        "type": "color"
-      }
-    },
-    "YELLOW": {
-      "Lightest": {
-        "value": "#fff5e6",
-        "type": "color"
-      },
-      "Lighter": {
-        "value": "#ffe0b3",
-        "type": "color"
-      },
-      "Light": {
-        "value": "#ffd08b",
-        "type": "color"
-      },
-      "Normal": {
-        "value": "#ffc05b",
-        "type": "color"
-      }
-    },
-    "Attendance": {
-      "present": {
-        "value": "#048724",
-        "type": "color"
-      },
-      "late": {
-        "value": "#f59e0b",
-        "type": "color"
-      },
-      "leftearly": {
-        "value": "#3ecf8e",
-        "type": "color"
-      },
-      "leave": {
-        "value": "#8b5cf6",
-        "type": "color"
-      },
-      "annual": {
-        "value": "#00aff0",
-        "type": "color"
-      },
-      "absent": {
-        "value": "#d21c1c",
-        "type": "color"
-      }
-    }
-  },
-  "Primitives Color/Mode 1/Primitives Color/Mode 1": {
-    "BLACK & WHITE": {
-      "White": {
-        "value": "#ffffff",
-        "type": "color"
-      },
-      "Black": {
-        "value": "#000000",
-        "type": "color"
-      }
-    },
-    "BLUE": {
-      "Normal : Intense": {
-        "value": "#155aff",
-        "type": "color"
-      },
-      "Light : Strong": {
-        "value": "#6e97ff",
-        "type": "color"
-      },
-      "Normal : Strong": {
-        "value": "#2e6bff",
-        "type": "color"
-      },
-      "Normal": {
-        "value": "#4a7eff",
-        "type": "color"
-      },
-      "Light : Intense": {
-        "value": "#8bb0ff",
-        "type": "color"
-      },
-      "Light": {
-        "value": "#7fa2ff",
-        "type": "color"
-      }
-    },
-    "SYSTEM": {
-      "Like": {
-        "value": "#f2110f",
-        "type": "color"
-      },
-      "Success": {
-        "value": "#048724",
-        "type": "color"
-      },
-      "Error": {
-        "value": "#d21c1c",
-        "type": "color"
-      },
-      "Notice": {
-        "value": "#ff5858",
-        "type": "color"
-      }
-    },
-    "ABYSS": {
-      "Abyss Normal : Strong": {
-        "value": "#141517",
-        "type": "color"
-      },
-      "Abyss Normal": {
-        "value": "#18191b",
-        "type": "color"
-      }
-    },
-    "Black Alpha": {
-      "Black 10": {
-        "value": "#0000001a",
-        "type": "color"
-      },
-      "Black 90": {
-        "value": "#000000e6",
-        "type": "color"
-      },
-      "Abyss 0": {
-        "value": "#14151700",
-        "type": "color"
-      },
-      "Black 84": {
-        "value": "#000000d6",
-        "type": "color"
-      },
-      "Black 6": {
-        "value": "#0000000f",
-        "type": "color"
-      },
-      "Black 32": {
-        "value": "#00000052",
-        "type": "color"
-      },
-      "Black 24": {
-        "value": "#0000003d",
-        "type": "color"
-      },
-      "Black 20": {
-        "value": "#00000033",
-        "type": "color"
-      },
-      "Black 16": {
-        "value": "#00000029",
-        "type": "color"
-      },
-      "Black 12": {
-        "value": "#0000001f",
-        "type": "color"
-      },
-      "Black 8": {
-        "value": "#00000014",
-        "type": "color"
-      },
-      "Black 2": {
-        "value": "#00000005",
-        "type": "color"
-      },
-      "Black 5": {
-        "value": "#0000000d",
-        "type": "color"
-      },
-      "Black 28": {
-        "value": "#00000047",
-        "type": "color"
-      },
-      "Black 50": {
-        "value": "#00000080",
-        "type": "color"
-      },
-      "Black 0": {
-        "value": "#00000000",
-        "type": "color"
-      },
-      "Black 4": {
-        "value": "#0000000a",
-        "type": "color"
-      },
-      "Abyss 84": {
-        "value": "#141517d6",
-        "type": "color"
-      }
-    },
-    "Charcoal": {
-      "Charcoal Normal : Strong": {
-        "value": "#282a2e",
-        "type": "color"
-      },
-      "Charcoal Light : Strong": {
-        "value": "#3e3f46",
-        "type": "color"
-      },
-      "Charcoal Light": {
-        "value": "#47484d",
-        "type": "color"
-      },
-      "Charcoal Normal": {
-        "value": "#333539",
-        "type": "color"
-      },
-      "Charcoal Normal : Intense": {
-        "value": "#25262a",
-        "type": "color"
-      }
-    },
-    "GREY": {
-      "Grey Normal : Strong": {
-        "value": "#a1a5af",
-        "type": "color"
-      },
-      "Grey Normal : Intense": {
-        "value": "#8d929f",
-        "type": "color"
-      },
-      "Grey Normal": {
-        "value": "#b0b3ba",
-        "type": "color"
-      },
-      "Grey Light : Strong": {
-        "value": "#d7d8db",
-        "type": "color"
-      },
-      "Grey Light": {
-        "value": "#e6e7e8",
-        "type": "color"
-      },
-      "Grey Light : Intense": {
-        "value": "#c2c3c8",
-        "type": "color"
-      }
-    },
-    "CLOUD": {
-      "Cloud Normal : Strong": {
-        "value": "#eff0f3",
-        "type": "color"
-      },
-      "Cloud Normal": {
-        "value": "#f5f6f9",
-        "type": "color"
-      }
-    },
-    "White Alpha": {
-      "White 85": {
-        "value": "#ffffff80",
-        "type": "color"
-      },
-      "White 0": {
-        "value": "#ffffff00",
-        "type": "color"
-      },
-      "White 84": {
-        "value": "#ffffffd6",
-        "type": "color"
-      },
-      "White 10": {
-        "value": "#ffffff1a",
-        "type": "color"
-      }
-    },
-    "PURPLE": {
-      "Lighter": {
-        "value": "#8a7ff0",
-        "type": "color"
-      },
-      "Light": {
-        "value": "#6b5fe8",
-        "type": "color"
-      },
-      "Normal": {
-        "value": "#4c41d3",
-        "type": "color"
-      },
-      "Lightest": {
-        "value": "#e8e6fb",
-        "type": "color"
-      }
-    },
-    "YELLOW": {
-      "Lightest": {
-        "value": "#fff5e6",
-        "type": "color"
-      },
-      "Lighter": {
-        "value": "#ffe0b3",
-        "type": "color"
-      },
-      "Light": {
-        "value": "#ffd08b",
-        "type": "color"
-      },
-      "Normal": {
-        "value": "#ffc05b",
-        "type": "color"
-      }
-    },
-    "Attendance": {
-      "present": {
-        "value": "#048724",
-        "type": "color"
-      },
-      "late": {
-        "value": "#f59e0b",
-        "type": "color"
-      },
-      "leftearly": {
-        "value": "#3ecf8e",
-        "type": "color"
-      },
-      "leave": {
-        "value": "#8b5cf6",
-        "type": "color"
-      },
-      "annual": {
-        "value": "#00aff0",
-        "type": "color"
-      },
-      "absent": {
-        "value": "#d21c1c",
-        "type": "color"
-      }
-    }
-  },
   "$themes": [],
   "$metadata": {
     "tokenSetOrder": [
-      "global",
-      "Primitive Color/Mode 1",
+      "",
+      "Primitives Color/Mode 1",
       "Semantic Color/Light",
       "Typography/Mode 1",
-      "Scheme/Mode 1",
-      "Primitives Color/Mode 1",
-      "Primitives Color/Mode 1/Primitives Color/Mode 1"
+      "Scheme/Mode 1"
     ]
   }
 }
