@@ -18,10 +18,12 @@ const Button = ({
   children,
   className,
   style,
+  type = "button",
   ...props
 }: ButtonProps) => {
   return (
     <button
+      type={type}
       className={`${styles.button} ${styles[variant]} ${className || ""}`}
       style={{
         width,
