@@ -7,14 +7,16 @@ type ButtonVariant = "primary" | "secondary" | "outline";
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   width?: number | string;
-  height?: number | string;
+  icon?: React.ReactNode;
+  gap?: number | string;
   children: React.ReactNode;
 }
 
 const Button = ({
   variant = "primary",
   width = "100%",
-  height,
+  icon,
+  gap = 8,
   children,
   className,
   style,
@@ -25,12 +27,13 @@ const Button = ({
       className={`${styles.button} ${styles[variant]} ${className || ""}`}
       style={{
         width: typeof width === "number" ? `${width}px` : width,
-        height: typeof height === "number" ? `${height}px` : height,
+        gap: typeof gap === "number" ? `${gap}px` : gap,
         ...style,
       }}
       {...props}
     >
-      {children}
+      {icon && <span className={styles.icon}>{icon}</span>}
+      <span>{children}</span>
     </button>
   );
 };

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import Providers from "@/shared/providers";
-import { Header, NavItem } from "@/widgets/Header";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,10 +28,6 @@ const RootLayout = ({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
-          <Header title="PLANIT" avatar="P">
-            <NavItem href="/dashboard">Dashboard</NavItem>
-            <NavItem href="/attendance">Attendance</NavItem>
-          </Header>
           <main>{children}</main>
         </Providers>
       </body>
