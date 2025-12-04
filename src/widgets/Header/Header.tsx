@@ -28,7 +28,7 @@ const Header = ({ title, userName, children }: HeaderProps) => {
         <nav className={styles.nav}>
           <ul className={styles.navList}>{children}</ul>
 
-          <Avatar>{userName}</Avatar>
+          <Avatar userName={userName} />
         </nav>
       </div>
     </header>
