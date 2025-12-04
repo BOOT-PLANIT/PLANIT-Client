@@ -1,12 +1,13 @@
 .button {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 500;
   border: none;
-  border-radius: 2px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
+  padding: 12px 24px;
 
   &:disabled {
     opacity: 0.5;
@@ -14,7 +15,6 @@
   }
 }
 
-// Variants
 .primary {
   background-color: var(--primary);
   color: #ffffff;
@@ -39,34 +39,4 @@
   &:active:not(:disabled) {
     background-color: var(--primary);
   }
-}
-
-.outline {
-  background-color: transparent;
-  color: var(--primary);
-  border: 1px solid var(--primary);
-
-  &:hover:not(:disabled) {
-    background-color: rgba(74, 126, 255, 0.1);
-  }
-
-  &:active:not(:disabled) {
-    background-color: rgba(74, 126, 255, 0.2);
-  }
-}
-
-// Sizes
-.sm {
-  padding: 8px 16px;
-  font-size: 13px;
-}
-
-.md {
-  padding: 12px 24px;
-  font-size: 14px;
-}
-
-.lg {
-  padding: 16px 32px;
-  font-size: 16px;
 }
