@@ -1,16 +1,13 @@
 .header {
   width: 100%;
   height: 64px;
+  flex-shrink: 0;
   background-color: var(--background);
   box-shadow: var(--shadow-embossed);
-  margin-bottom: var(--spacing-5);
-  position: sticky;
-  top: 0;
   z-index: 100;
 }
 
 .container {
-  max-width: 1440px;
   height: 100%;
   margin: 0 auto;
   padding: 0 var(--spacing-24);
@@ -38,12 +35,16 @@
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   color: var(--foreground);
+
+  @media (max-width: 400px) {
+    display: none;
+  }
 }
 
 .nav {
   display: flex;
   align-items: center;
-  gap: var(--spacing-32);
+  gap: var(--spacing-16);
 }
 
 .navList {
@@ -54,7 +55,7 @@
 }
 
 .navLink {
-  padding: var(--spacing-8) var(--spacing-16);
+  padding: var(--spacing-8) var(--spacing-8);
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
