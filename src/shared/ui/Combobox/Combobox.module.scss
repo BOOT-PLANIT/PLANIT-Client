@@ -69,7 +69,8 @@
   cursor: pointer;
   transition: all 0.15s ease;
 
-  &:hover {
+  &:hover,
+  &.focused {
     color: var(--color-blue-normal);
     background-color: color-mix(
       in srgb,
@@ -81,5 +82,9 @@
   &.selected {
     color: var(--color-blue-normal);
     font-weight: var(--font-weight-semibold);
+  }
+
+  &:focus {
+    outline: none;
   }
 }

@@ -6,6 +6,7 @@ import {
   useEffect,
   forwardRef,
   useImperativeHandle,
+  useCallback,
 } from "react";
 import { createPortal } from "react-dom";
 
@@ -42,6 +43,7 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
     const isControlled = value !== undefined;
     const [internalValue, setInternalValue] = useState(value ?? "");
     const [isOpen, setIsOpen] = useState(false);
+    const [focusedIndex, setFocusedIndex] = useState(-1);
     const [dropdownPosition, setDropdownPosition] = useState({
       top: 0,
       left: 0,
@@ -50,9 +52,13 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
     const comboboxRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
     const dropdownRef = useRef<HTMLUListElement>(null);
+    const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
     const currentValue = isControlled ? value : internalValue;
     const selectedOption = options.find((opt) => opt.value === currentValue);
+    const selectedIndex = options.findIndex(
+      (opt) => opt.value === currentValue,
+    );
 
     useImperativeHandle(ref, () => ({
       getValue: () => currentValue,
@@ -67,6 +73,108 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
       close: () => setIsOpen(false),
     }));
 
+    const openDropdown = useCallback(() => {
+      setIsOpen(true);
+      setFocusedIndex(selectedIndex >= 0 ? selectedIndex : 0);
+    }, [selectedIndex]);
+
+    const closeDropdown = useCallback(() => {
+      setIsOpen(false);
+      setFocusedIndex(-1);
+    }, []);
+
+    const handleSelect = useCallback(
+      (optionValue: string) => {
+        if (!isControlled) {
+          setInternalValue(optionValue);
+        }
+        onChange?.(optionValue);
+        closeDropdown();
+        triggerRef.current?.focus();
+      },
+      [isControlled, onChange, closeDropdown],
+    );
+
+    const handleKeyDown = useCallback(
+      (event: React.KeyboardEvent) => {
+        switch (event.key) {
+          case "Enter":
+          case " ":
+            event.preventDefault();
+            if (isOpen && focusedIndex >= 0) {
+              handleSelect(options[focusedIndex].value);
+            } else {
+              openDropdown();
+            }
+            break;
+
+          case "ArrowDown":
+            event.preventDefault();
+            if (!isOpen) {
+              openDropdown();
+            } else {
+              setFocusedIndex((prev) =>
+                prev < options.length - 1 ? prev + 1 : 0,
+              );
+            }
+            break;
+
+          case "ArrowUp":
+            event.preventDefault();
+            if (!isOpen) {
+              openDropdown();
+            } else {
+              setFocusedIndex((prev) =>
+                prev > 0 ? prev - 1 : options.length - 1,
+              );
+            }
+            break;
+
+          case "Escape":
+            event.preventDefault();
+            closeDropdown();
+            triggerRef.current?.focus();
+            break;
+
+          case "Home":
+            if (isOpen) {
+              event.preventDefault();
+              setFocusedIndex(0);
+            }
+            break;
+
+          case "End":
+            if (isOpen) {
+              event.preventDefault();
+              setFocusedIndex(options.length - 1);
+            }
+            break;
+
+          case "Tab":
+            if (isOpen) {
+              closeDropdown();
+            }
+            break;
+        }
+      },
+      [
+        isOpen,
+        focusedIndex,
+        options,
+        handleSelect,
+        openDropdown,
+        closeDropdown,
+      ],
+    );
+
+    useEffect(() => {
+      if (isOpen && focusedIndex >= 0 && optionRefs.current[focusedIndex]) {
+        optionRefs.current[focusedIndex]?.scrollIntoView({
+          block: "nearest",
+        });
+      }
+    }, [focusedIndex, isOpen]);
+
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
         const target = event.target as Node;
@@ -76,14 +184,14 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
           dropdownRef.current && !dropdownRef.current.contains(target);
 
         if (isOutsideCombobox && isOutsideDropdown) {
-          setIsOpen(false);
+          closeDropdown();
         }
       };
 
       document.addEventListener("mousedown", handleClickOutside);
       return () =>
         document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, [closeDropdown]);
 
     function setTriggerDropdownPosition() {
       if (triggerRef.current) {
@@ -118,22 +226,28 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
       };
     }, [isOpen]);
 
-    const handleSelect = (optionValue: string) => {
-      if (!isControlled) {
-        setInternalValue(optionValue);
+    const handleTriggerClick = () => {
+      if (isOpen) {
+        closeDropdown();
+      } else {
+        openDropdown();
       }
-      onChange?.(optionValue);
-      setIsOpen(false);
     };
 
     return (
-      <div className={styles.combobox} ref={comboboxRef} style={{ width }}>
+      <div
+        className={styles.combobox}
+        ref={comboboxRef}
+        style={{ width }}
+        onKeyDown={handleKeyDown}
+      >
         <button
           ref={triggerRef}
           type="button"
           className={styles.trigger}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleTriggerClick}
           aria-expanded={isOpen}
+          aria-haspopup="listbox"
         >
           <span className={styles.label}>
             {selectedOption?.label || placeholder}
@@ -148,6 +262,7 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
             <ul
               ref={dropdownRef}
               className={styles.dropdown}
+              role="listbox"
               style={{
                 position: "fixed",
                 top: dropdownPosition.top,
@@ -155,14 +270,22 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
                 width: dropdownPosition.width,
               }}
             >
-              {options.map((option) => (
-                <li key={option.value}>
+              {options.map((option, index) => (
+                <li
+                  key={option.value}
+                  role="option"
+                  aria-selected={option.value === currentValue}
+                >
                   <button
+                    ref={(el) => {
+                      optionRefs.current[index] = el;
+                    }}
                     type="button"
                     className={`${styles.option} ${
                       option.value === currentValue ? styles.selected : ""
-                    }`}
+                    } ${index === focusedIndex ? styles.focused : ""}`}
                     onClick={() => handleSelect(option.value)}
+                    onMouseEnter={() => setFocusedIndex(index)}
                   >
                     {option.label}
                   </button>
