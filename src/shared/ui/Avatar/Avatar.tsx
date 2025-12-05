@@ -3,7 +3,7 @@ import styles from "./Avatar.module.scss";
 type AvatarSize = "md" | "lg";
 
 const sizeMap: Record<AvatarSize, string> = {
-  md: "var(--spacing-40)",
+  md: "36px",
   lg: "80px",
 };
 
