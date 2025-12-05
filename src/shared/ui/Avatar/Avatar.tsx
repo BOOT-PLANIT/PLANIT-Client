@@ -3,13 +3,13 @@ import styles from "./Avatar.module.scss";
 type AvatarSize = "md" | "lg";
 
 const sizeMap: Record<AvatarSize, string> = {
-  md: "36px",
+  md: "var(--spacing-40)",
   lg: "80px",
 };
 
 const fontSizeMap: Record<AvatarSize, string> = {
-  md: "14px",
-  lg: "28px",
+  md: "var(--font-size-base)",
+  lg: "var(--font-size-3xl)",
 };
 
 interface AvatarProps {

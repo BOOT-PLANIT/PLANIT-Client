@@ -1,9 +1,9 @@
 .header {
   width: 100%;
   height: 64px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-  margin-bottom: 5px;
+  background-color: var(--background);
+  box-shadow: var(--shadow-embossed);
+  margin-bottom: var(--spacing-5);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -13,7 +13,7 @@
   max-width: 1440px;
   height: 100%;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--spacing-24);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,7 +22,7 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-12);
   text-decoration: none;
   color: inherit;
 }
@@ -34,38 +34,40 @@
 }
 
 .logoText {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1f2937;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--foreground);
 }
 
 .nav {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: var(--spacing-32);
 }
 
 .navList {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-8);
   list-style: none;
 }
 
 .navLink {
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #6b7280;
+  padding: var(--spacing-8) var(--spacing-16);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--foreground-lighter);
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: var(--radius-6);
   transition: all 0.2s ease;
 
   &:hover {
-    color: var(--primary-strong);
+    color: var(--foreground-primary);
   }
 
   &.active {
-    color: var(--primary-strong);
+    color: var(--foreground-primary);
   }
 }
