@@ -1,0 +1,255 @@
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useState, useRef } from "react";
+
+import Combobox, { ComboboxRef } from "./Combobox";
+
+const bootcampOptions = [
+  { value: "fullstack", label: "Full-Stack Web Development Bootcamp" },
+  { value: "datascience", label: "Data Science & AI Bootcamp" },
+  { value: "uxui", label: "UX/UI Design Bootcamp" },
+];
+
+const meta: Meta<typeof Combobox> = {
+  title: "shared/ui/Combobox",
+  component: Combobox,
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+  argTypes: {
+    options: {
+      description: "선택 옵션 목록",
+    },
+    value: {
+      control: "number",
+      description: "선택된 옵션의 인덱스 (-1: 선택 안됨)",
+    },
+    placeholder: {
+      control: "text",
+      description: "플레이스홀더 텍스트",
+    },
+    width: {
+      control: "text",
+      description: "콤보박스 너비",
+    },
+    onChange: {
+      action: "changed",
+      description: "선택된 인덱스가 변경될 때 호출되는 콜백",
+    },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof Combobox>;
+
+export const Default: Story = {
+  args: {
+    options: bootcampOptions,
+    placeholder: "부트캠프를 선택하세요",
+    width: "400px",
+  },
+};
+
+export const WithDefaultValue: Story = {
+  args: {
+    options: bootcampOptions,
+    value: 0,
+    width: "400px",
+  },
+};
+
+export const WithOnChange: Story = {
+  render: () => {
+    const OnChangeExample = () => {
+      const [selectedIndex, setSelectedIndex] = useState(-1);
+      const [history, setHistory] = useState<number[]>([]);
+
+      const handleChange = (index: number) => {
+        setSelectedIndex(index);
+        setHistory((prev) => [...prev, index]);
+      };
+
+      return (
+        <div style={{ width: 400 }}>
+          <Combobox
+            options={bootcampOptions}
+            value={selectedIndex}
+            onChange={handleChange}
+            placeholder="부트캠프를 선택하세요"
+          />
+          <div
+            style={{
+              marginTop: 16,
+              padding: 16,
+              backgroundColor: "#f5f6f9",
+              borderRadius: 8,
+            }}
+          >
+            <p style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>
+              onChange 호출 기록 (index):
+            </p>
+            {history.length === 0 ? (
+              <p style={{ fontSize: 14, color: "#8d929f" }}>
+                아직 선택된 값이 없습니다.
+              </p>
+            ) : (
+              <ul style={{ fontSize: 14, color: "#333", paddingLeft: 20 }}>
+                {history.map((index, i) => (
+                  <li key={i}>
+                    {i + 1}. index: {index} ({bootcampOptions[index]?.label})
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      );
+    };
+    return <OnChangeExample />;
+  },
+};
+
+export const WithRef: Story = {
+  render: () => {
+    const RefExample = () => {
+      const comboboxRef = useRef<ComboboxRef>(null);
+      const [displayValue, setDisplayValue] = useState<string>("");
+
+      const handleGetIndex = () => {
+        const index = comboboxRef.current?.getIndex();
+        const option = comboboxRef.current?.getSelectedOption();
+        setDisplayValue(
+          `index: ${index}, label: ${option?.label || "선택된 값 없음"}`,
+        );
+      };
+
+      const handleSetIndex = (index: number) => {
+        comboboxRef.current?.setIndex(index);
+      };
+
+      return (
+        <div style={{ width: 400 }}>
+          <Combobox
+            ref={comboboxRef}
+            options={bootcampOptions}
+            placeholder="부트캠프를 선택하세요"
+          />
+          <div
+            style={{
+              marginTop: 16,
+              display: "flex",
+              gap: 8,
+              flexWrap: "wrap",
+            }}
+          >
+            <button
+              onClick={handleGetIndex}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#4A7EFF",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              getIndex()
+            </button>
+            <button
+              onClick={() => handleSetIndex(0)}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#048724",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              setIndex(0)
+            </button>
+            <button
+              onClick={() => handleSetIndex(1)}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#048724",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              setIndex(1)
+            </button>
+            <button
+              onClick={() => handleSetIndex(2)}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#048724",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              setIndex(2)
+            </button>
+          </div>
+          {displayValue && (
+            <p style={{ marginTop: 16, fontSize: 14, color: "#333" }}>
+              getIndex 결과: <strong>{displayValue}</strong>
+            </p>
+          )}
+        </div>
+      );
+    };
+    return <RefExample />;
+  },
+};
+
+export const Controlled: Story = {
+  render: () => {
+    const ControlledCombobox = () => {
+      const [selectedIndex, setSelectedIndex] = useState(0);
+      return (
+        <div style={{ width: 400 }}>
+          <Combobox
+            options={bootcampOptions}
+            value={selectedIndex}
+            onChange={setSelectedIndex}
+          />
+          <p style={{ marginTop: 16, fontSize: 14, color: "#8d929f" }}>
+            선택된 인덱스: {selectedIndex} (
+            {bootcampOptions[selectedIndex]?.label})
+          </p>
+        </div>
+      );
+    };
+    return <ControlledCombobox />;
+  },
+};
+
+export const CustomWidth: Story = {
+  args: {
+    options: bootcampOptions,
+    value: 1,
+    width: "500px",
+  },
+};
+
+export const ManyOptions: Story = {
+  args: {
+    options: [
+      { value: "1", label: "Option 1" },
+      { value: "2", label: "Option 2" },
+      { value: "3", label: "Option 3" },
+      { value: "4", label: "Option 4" },
+      { value: "5", label: "Option 5" },
+      { value: "6", label: "Option 6" },
+      { value: "7", label: "Option 7" },
+      { value: "8", label: "Option 8" },
+    ],
+    placeholder: "옵션을 선택하세요",
+    width: "300px",
+  },
+};

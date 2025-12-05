@@ -1,0 +1,90 @@
+.combobox {
+  position: relative;
+  font-family: var(--font-family);
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 48px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.label {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
+  color: var(--foreground);
+  text-align: left;
+}
+
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-lighter);
+  transition: transform 0.2s ease;
+
+  &.open {
+    transform: rotate(180deg);
+  }
+}
+
+.dropdown {
+  background-color: var(--background);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-8);
+  box-shadow: var(--shadow-floated);
+  list-style: none;
+  padding: var(--spacing-8) 0;
+  z-index: 9999;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--spacing-16);
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  line-height: 20px;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover,
+  &.focused {
+    color: var(--color-blue-normal);
+    background-color: color-mix(
+      in srgb,
+      var(--color-blue-normal) 10%,
+      transparent
+    );
+  }
+
+  &.selected {
+    color: var(--color-blue-normal);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
