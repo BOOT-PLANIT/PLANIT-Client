@@ -18,10 +18,7 @@ const Card = ({
   width = "100%",
 }: CardProps) => {
   return (
-    <div
-      className={`${styles.card} ${styles[variant]}`}
-      style={{ width, padding: "var(--spacing-20)" }}
-    >
+    <div className={`${styles.card} ${styles[variant]}`} style={{ width }}>
       {title && (
         <div className={styles.header}>
           {titleIcon && <span className={styles.titleIcon}>{titleIcon}</span>}
