@@ -8,8 +8,8 @@ const sizeMap: Record<AvatarSize, string> = {
 };
 
 const fontSizeMap: Record<AvatarSize, string> = {
-  md: "14px",
-  lg: "28px",
+  md: "var(--font-size-base)",
+  lg: "var(--font-size-3xl)",
 };
 
 interface AvatarProps {

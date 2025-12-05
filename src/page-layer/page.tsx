@@ -44,7 +44,7 @@ const Home = () => {
     >
       <h2>Button Variants</h2>
       <Button variant="primary">Primary</Button>
-      <Button variant="secondary">Secondary</Button>
+      <Button variant="danger">Danger</Button>
       <Button variant="outline">Outline</Button>
       <Button disabled>Disabled</Button>
 
