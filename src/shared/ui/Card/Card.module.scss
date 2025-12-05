@@ -1,0 +1,55 @@
+.card {
+  border-radius: var(--radius-12);
+  box-shadow: var(--shadow-embossed);
+  border: 1px solid var(--border-secondary);
+}
+
+.solid {
+  background-color: var(--background);
+}
+
+.gradient {
+  background:
+    linear-gradient(
+      to bottom right,
+      color-mix(in srgb, var(--color-blue-normal) 5%, transparent) 0%,
+      color-mix(in srgb, var(--color-black) 0%, transparent) 100%
+    ),
+    var(--background);
+}
+
+.gradientLight {
+  background:
+    linear-gradient(
+      to bottom right,
+      color-mix(in srgb, var(--color-attendance-present) 5%, transparent) 0%,
+      color-mix(in srgb, var(--color-black) 0%, transparent) 100%
+    ),
+    var(--background);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  margin-bottom: var(--spacing-16);
+}
+
+.titleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-lighter);
+}
+
+.title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--foreground);
+  margin: 0;
+}
+
+.content {
+  width: 100%;
+}
