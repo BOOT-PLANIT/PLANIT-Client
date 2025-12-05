@@ -21,8 +21,8 @@ const meta: Meta<typeof Combobox> = {
       description: "선택 옵션 목록",
     },
     value: {
-      control: "text",
-      description: "선택된 값",
+      control: "number",
+      description: "선택된 옵션의 인덱스 (-1: 선택 안됨)",
     },
     placeholder: {
       control: "text",
@@ -34,7 +34,7 @@ const meta: Meta<typeof Combobox> = {
     },
     onChange: {
       action: "changed",
-      description: "값이 변경될 때 호출되는 콜백",
+      description: "선택된 인덱스가 변경될 때 호출되는 콜백",
     },
   },
 };
@@ -53,7 +53,7 @@ export const Default: Story = {
 export const WithDefaultValue: Story = {
   args: {
     options: bootcampOptions,
-    value: "fullstack",
+    value: 0,
     width: "400px",
   },
 };
@@ -61,19 +61,19 @@ export const WithDefaultValue: Story = {
 export const WithOnChange: Story = {
   render: () => {
     const OnChangeExample = () => {
-      const [value, setValue] = useState("");
-      const [history, setHistory] = useState<string[]>([]);
+      const [selectedIndex, setSelectedIndex] = useState(-1);
+      const [history, setHistory] = useState<number[]>([]);
 
-      const handleChange = (newValue: string) => {
-        setValue(newValue);
-        setHistory((prev) => [...prev, newValue]);
+      const handleChange = (index: number) => {
+        setSelectedIndex(index);
+        setHistory((prev) => [...prev, index]);
       };
 
       return (
         <div style={{ width: 400 }}>
           <Combobox
             options={bootcampOptions}
-            value={value}
+            value={selectedIndex}
             onChange={handleChange}
             placeholder="부트캠프를 선택하세요"
           />
@@ -86,7 +86,7 @@ export const WithOnChange: Story = {
             }}
           >
             <p style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>
-              onChange 호출 기록:
+              onChange 호출 기록 (index):
             </p>
             {history.length === 0 ? (
               <p style={{ fontSize: 14, color: "#8d929f" }}>
@@ -94,9 +94,9 @@ export const WithOnChange: Story = {
               </p>
             ) : (
               <ul style={{ fontSize: 14, color: "#333", paddingLeft: 20 }}>
-                {history.map((item, index) => (
-                  <li key={index}>
-                    {index + 1}. {item}
+                {history.map((index, i) => (
+                  <li key={i}>
+                    {i + 1}. index: {index} ({bootcampOptions[index]?.label})
                   </li>
                 ))}
               </ul>
@@ -115,14 +115,16 @@ export const WithRef: Story = {
       const comboboxRef = useRef<ComboboxRef>(null);
       const [displayValue, setDisplayValue] = useState<string>("");
 
-      const handleGetValue = () => {
-        const value = comboboxRef.current?.getValue();
+      const handleGetIndex = () => {
+        const index = comboboxRef.current?.getIndex();
         const option = comboboxRef.current?.getSelectedOption();
-        setDisplayValue(option?.label || value || "선택된 값 없음");
+        setDisplayValue(
+          `index: ${index}, label: ${option?.label || "선택된 값 없음"}`,
+        );
       };
 
-      const handleSetValue = (value: string) => {
-        comboboxRef.current?.setValue(value);
+      const handleSetIndex = (index: number) => {
+        comboboxRef.current?.setIndex(index);
       };
 
       return (
@@ -141,7 +143,7 @@ export const WithRef: Story = {
             }}
           >
             <button
-              onClick={handleGetValue}
+              onClick={handleGetIndex}
               style={{
                 padding: "8px 16px",
                 backgroundColor: "#4A7EFF",
@@ -151,10 +153,10 @@ export const WithRef: Story = {
                 cursor: "pointer",
               }}
             >
-              getValue()
+              getIndex()
             </button>
             <button
-              onClick={() => handleSetValue("fullstack")}
+              onClick={() => handleSetIndex(0)}
               style={{
                 padding: "8px 16px",
                 backgroundColor: "#048724",
@@ -164,10 +166,10 @@ export const WithRef: Story = {
                 cursor: "pointer",
               }}
             >
-              setValue(&quot;fullstack&quot;)
+              setIndex(0)
             </button>
             <button
-              onClick={() => handleSetValue("datascience")}
+              onClick={() => handleSetIndex(1)}
               style={{
                 padding: "8px 16px",
                 backgroundColor: "#048724",
@@ -177,12 +179,25 @@ export const WithRef: Story = {
                 cursor: "pointer",
               }}
             >
-              setValue(&quot;datascience&quot;)
+              setIndex(1)
+            </button>
+            <button
+              onClick={() => handleSetIndex(2)}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#048724",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              setIndex(2)
             </button>
           </div>
           {displayValue && (
             <p style={{ marginTop: 16, fontSize: 14, color: "#333" }}>
-              getValue 결과: <strong>{displayValue}</strong>
+              getIndex 결과: <strong>{displayValue}</strong>
             </p>
           )}
         </div>
@@ -195,16 +210,17 @@ export const WithRef: Story = {
 export const Controlled: Story = {
   render: () => {
     const ControlledCombobox = () => {
-      const [value, setValue] = useState("fullstack");
+      const [selectedIndex, setSelectedIndex] = useState(0);
       return (
         <div style={{ width: 400 }}>
           <Combobox
             options={bootcampOptions}
-            value={value}
-            onChange={setValue}
+            value={selectedIndex}
+            onChange={setSelectedIndex}
           />
           <p style={{ marginTop: 16, fontSize: 14, color: "#8d929f" }}>
-            선택된 값: {value}
+            선택된 인덱스: {selectedIndex} (
+            {bootcampOptions[selectedIndex]?.label})
           </p>
         </div>
       );
@@ -216,7 +232,7 @@ export const Controlled: Story = {
 export const CustomWidth: Story = {
   args: {
     options: bootcampOptions,
-    value: "datascience",
+    value: 1,
     width: "500px",
   },
 };

@@ -21,15 +21,15 @@ interface ComboboxOption {
 
 interface ComboboxProps {
   options: ComboboxOption[];
-  value?: string;
-  onChange?: (value: string) => void;
+  value?: number;
+  onChange?: (index: number) => void;
   placeholder?: string;
   width?: string;
 }
 
 export interface ComboboxRef {
-  getValue: () => string;
-  setValue: (value: string) => void;
+  getIndex: () => number;
+  setIndex: (index: number) => void;
   getSelectedOption: () => ComboboxOption | undefined;
   open: () => void;
   close: () => void;
@@ -41,7 +41,7 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
     ref,
   ) => {
     const isControlled = value !== undefined;
-    const [internalValue, setInternalValue] = useState(value ?? "");
+    const [internalIndex, setInternalIndex] = useState(value ?? -1);
     const [isOpen, setIsOpen] = useState(false);
     const [focusedIndex, setFocusedIndex] = useState(-1);
     const [dropdownPosition, setDropdownPosition] = useState({
@@ -54,19 +54,19 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
     const dropdownRef = useRef<HTMLUListElement>(null);
     const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-    const currentValue = isControlled ? value : internalValue;
-    const selectedOption = options.find((opt) => opt.value === currentValue);
-    const selectedIndex = options.findIndex(
-      (opt) => opt.value === currentValue,
-    );
+    const selectedIndex = isControlled ? value : internalIndex;
+    const selectedOption =
+      selectedIndex >= 0 && selectedIndex < options.length
+        ? options[selectedIndex]
+        : undefined;
 
     useImperativeHandle(ref, () => ({
-      getValue: () => currentValue,
-      setValue: (newValue: string) => {
+      getIndex: () => selectedIndex,
+      setIndex: (newIndex: number) => {
         if (!isControlled) {
-          setInternalValue(newValue);
+          setInternalIndex(newIndex);
         }
-        onChange?.(newValue);
+        onChange?.(newIndex);
       },
       getSelectedOption: () => selectedOption,
       open: () => setIsOpen(true),
@@ -74,9 +74,10 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
     }));
 
     const openDropdown = useCallback(() => {
+      if (options.length === 0) return;
       setIsOpen(true);
       setFocusedIndex(selectedIndex >= 0 ? selectedIndex : 0);
-    }, [selectedIndex]);
+    }, [options.length, selectedIndex]);
 
     const closeDropdown = useCallback(() => {
       setIsOpen(false);
@@ -84,11 +85,11 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
     }, []);
 
     const handleSelect = useCallback(
-      (optionValue: string) => {
+      (index: number) => {
         if (!isControlled) {
-          setInternalValue(optionValue);
+          setInternalIndex(index);
         }
-        onChange?.(optionValue);
+        onChange?.(index);
         closeDropdown();
         triggerRef.current?.focus();
       },
@@ -97,12 +98,14 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
 
     const handleKeyDown = useCallback(
       (event: React.KeyboardEvent) => {
+        if (options.length === 0) return;
+
         switch (event.key) {
           case "Enter":
           case " ":
             event.preventDefault();
-            if (isOpen && focusedIndex >= 0) {
-              handleSelect(options[focusedIndex].value);
+            if (isOpen && focusedIndex >= 0 && options[focusedIndex]) {
+              handleSelect(focusedIndex);
             } else {
               openDropdown();
             }
@@ -137,14 +140,14 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
             break;
 
           case "Home":
-            if (isOpen) {
+            if (isOpen && options.length > 0) {
               event.preventDefault();
               setFocusedIndex(0);
             }
             break;
 
           case "End":
-            if (isOpen) {
+            if (isOpen && options.length > 0) {
               event.preventDefault();
               setFocusedIndex(options.length - 1);
             }
@@ -274,7 +277,7 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
                 <li
                   key={option.value}
                   role="option"
-                  aria-selected={option.value === currentValue}
+                  aria-selected={index === selectedIndex}
                 >
                   <button
                     ref={(el) => {
@@ -282,9 +285,9 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
                     }}
                     type="button"
                     className={`${styles.option} ${
-                      option.value === currentValue ? styles.selected : ""
+                      index === selectedIndex ? styles.selected : ""
                     } ${index === focusedIndex ? styles.focused : ""}`}
-                    onClick={() => handleSelect(option.value)}
+                    onClick={() => handleSelect(index)}
                     onMouseEnter={() => setFocusedIndex(index)}
                   >
                     {option.label}
