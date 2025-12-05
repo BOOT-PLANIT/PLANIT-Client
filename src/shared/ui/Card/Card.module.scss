@@ -18,16 +18,6 @@
     var(--background);
 }
 
-.gradientLight {
-  background:
-    linear-gradient(
-      to bottom right,
-      color-mix(in srgb, var(--color-attendance-present) 5%, transparent) 0%,
-      color-mix(in srgb, var(--color-black) 0%, transparent) 100%
-    ),
-    var(--background);
-}
-
 .header {
   display: flex;
   align-items: center;

@@ -23,7 +23,7 @@ const meta: Meta<typeof Card> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["solid", "gradient", "gradientLight"],
+      options: ["solid", "gradient"],
       description: "카드 배경 스타일",
     },
     title: {
@@ -62,18 +62,9 @@ export const Gradient: Story = {
   },
 };
 
-export const GradientLight: Story = {
-  args: {
-    variant: "gradientLight",
-    title: "Gradient Light Card",
-    children: <div>녹색 5% 그라데이션 (좌상단 → 우하단)</div>,
-    width: "300px",
-  },
-};
-
 export const WithIcon: Story = {
   args: {
-    variant: "gradientLight",
+    variant: "solid",
     title: "Period Allowance",
     titleIcon: <DollarIcon />,
     children: (
@@ -106,9 +97,6 @@ export const AllVariants: Story = {
       </Card>
       <Card variant="gradient" title="Gradient" width="200px">
         <div>블루 5%</div>
-      </Card>
-      <Card variant="gradientLight" title="Gradient Light" width="200px">
-        <div>녹색 5%</div>
       </Card>
     </div>
   ),
@@ -163,7 +151,7 @@ export const UnitPeriodStats: Story = {
 export const PeriodAllowance: Story = {
   render: () => (
     <Card
-      variant="gradientLight"
+      variant="solid"
       title="Period Allowance"
       titleIcon={<DollarIcon />}
       width="250px"

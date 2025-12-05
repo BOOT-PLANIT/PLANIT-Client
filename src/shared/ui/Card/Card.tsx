@@ -1,6 +1,6 @@
 import styles from "./Card.module.scss";
 
-type CardVariant = "solid" | "gradient" | "gradientLight";
+type CardVariant = "solid" | "gradient";
 
 interface CardProps {
   variant?: CardVariant;
