@@ -34,10 +34,6 @@ const meta: Meta<typeof Card> = {
       control: "text",
       description: "카드 너비",
     },
-    padding: {
-      control: "text",
-      description: "카드 내부 여백",
-    },
   },
 };
 

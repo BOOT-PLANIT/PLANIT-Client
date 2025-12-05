@@ -8,7 +8,6 @@ interface CardProps {
   titleIcon?: React.ReactNode;
   children: React.ReactNode;
   width?: string;
-  padding?: string;
 }
 
 const Card = ({
@@ -17,12 +16,11 @@ const Card = ({
   titleIcon,
   children,
   width = "100%",
-  padding = "var(--spacing-20)",
 }: CardProps) => {
   return (
     <div
       className={`${styles.card} ${styles[variant]}`}
-      style={{ width, padding }}
+      style={{ width, padding: "var(--spacing-20)" }}
     >
       {title && (
         <div className={styles.header}>
