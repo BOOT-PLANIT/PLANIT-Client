@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface ToastPayolad {
+export interface ToastPayload {
   message?: string;
   type: "success" | "error" | "info";
 }
 
-interface ToastState extends ToastPayolad {
+interface ToastState extends ToastPayload {
   visible: boolean;
 }
 
@@ -19,7 +19,7 @@ const toastSlice = createSlice({
   name: "toast",
   initialState,
   reducers: {
-    showToast: (state, action: PayloadAction<ToastPayolad>) => {
+    showToast: (state, action: PayloadAction<ToastPayload>) => {
       const { message, type } = action.payload;
 
       state.message = message;
