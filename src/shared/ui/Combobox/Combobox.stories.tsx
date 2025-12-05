@@ -1,307 +1,255 @@
-"use client";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useState, useRef } from "react";
 
-import {
-  useState,
-  useRef,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-  useCallback,
-} from "react";
-import { createPortal } from "react-dom";
+import Combobox, { ComboboxRef } from "./Combobox";
 
-import { ChevronDown } from "@/shared/assets";
+const bootcampOptions = [
+  { value: "fullstack", label: "Full-Stack Web Development Bootcamp" },
+  { value: "datascience", label: "Data Science & AI Bootcamp" },
+  { value: "uxui", label: "UX/UI Design Bootcamp" },
+];
 
-import styles from "./Combobox.module.scss";
+const meta: Meta<typeof Combobox> = {
+  title: "shared/ui/Combobox",
+  component: Combobox,
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+  argTypes: {
+    options: {
+      description: "선택 옵션 목록",
+    },
+    value: {
+      control: "number",
+      description: "선택된 옵션의 인덱스 (-1: 선택 안됨)",
+    },
+    placeholder: {
+      control: "text",
+      description: "플레이스홀더 텍스트",
+    },
+    width: {
+      control: "text",
+      description: "콤보박스 너비",
+    },
+    onChange: {
+      action: "changed",
+      description: "선택된 인덱스가 변경될 때 호출되는 콜백",
+    },
+  },
+};
 
-interface ComboboxOption {
-  value: string;
-  label: string;
-}
+export default meta;
+type Story = StoryObj<typeof Combobox>;
 
-interface ComboboxProps {
-  options: ComboboxOption[];
-  value?: number;
-  onChange?: (index: number) => void;
-  placeholder?: string;
-  width?: string;
-}
+export const Default: Story = {
+  args: {
+    options: bootcampOptions,
+    placeholder: "부트캠프를 선택하세요",
+    width: "400px",
+  },
+};
 
-export interface ComboboxRef {
-  getIndex: () => number;
-  setIndex: (index: number) => void;
-  getSelectedOption: () => ComboboxOption | undefined;
-  open: () => void;
-  close: () => void;
-}
+export const WithDefaultValue: Story = {
+  args: {
+    options: bootcampOptions,
+    value: 0,
+    width: "400px",
+  },
+};
 
-const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
-  (
-    { options, value, onChange, placeholder = "선택하세요", width = "100%" },
-    ref,
-  ) => {
-    const isControlled = value !== undefined;
-    const [internalIndex, setInternalIndex] = useState(value ?? -1);
-    const [isOpen, setIsOpen] = useState(false);
-    const [focusedIndex, setFocusedIndex] = useState(-1);
-    const [dropdownPosition, setDropdownPosition] = useState({
-      top: 0,
-      left: 0,
-      width: 0,
-    });
-    const comboboxRef = useRef<HTMLDivElement>(null);
-    const triggerRef = useRef<HTMLButtonElement>(null);
-    const dropdownRef = useRef<HTMLUListElement>(null);
-    const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
+export const WithOnChange: Story = {
+  render: () => {
+    const OnChangeExample = () => {
+      const [selectedIndex, setSelectedIndex] = useState(-1);
+      const [history, setHistory] = useState<number[]>([]);
 
-    const selectedIndex = isControlled ? value : internalIndex;
-    const selectedOption =
-      selectedIndex >= 0 && selectedIndex < options.length
-        ? options[selectedIndex]
-        : undefined;
-
-    useImperativeHandle(ref, () => ({
-      getIndex: () => selectedIndex,
-      setIndex: (newIndex: number) => {
-        if (!isControlled) {
-          setInternalIndex(newIndex);
-        }
-        onChange?.(newIndex);
-      },
-      getSelectedOption: () => selectedOption,
-      open: () => setIsOpen(true),
-      close: () => setIsOpen(false),
-    }));
-
-    const openDropdown = useCallback(() => {
-      if (options.length === 0) return;
-      setIsOpen(true);
-      setFocusedIndex(selectedIndex >= 0 ? selectedIndex : 0);
-    }, [options.length, selectedIndex]);
-
-    const closeDropdown = useCallback(() => {
-      setIsOpen(false);
-      setFocusedIndex(-1);
-    }, []);
-
-    const handleSelect = useCallback(
-      (index: number) => {
-        if (!isControlled) {
-          setInternalIndex(index);
-        }
-        onChange?.(index);
-        closeDropdown();
-        triggerRef.current?.focus();
-      },
-      [isControlled, onChange, closeDropdown],
-    );
-
-    const handleKeyDown = useCallback(
-      (event: React.KeyboardEvent) => {
-        if (options.length === 0) return;
-
-        switch (event.key) {
-          case "Enter":
-          case " ":
-            event.preventDefault();
-            if (isOpen && focusedIndex >= 0 && options[focusedIndex]) {
-              handleSelect(focusedIndex);
-            } else {
-              openDropdown();
-            }
-            break;
-
-          case "ArrowDown":
-            event.preventDefault();
-            if (!isOpen) {
-              openDropdown();
-            } else {
-              setFocusedIndex((prev) =>
-                prev < options.length - 1 ? prev + 1 : 0,
-              );
-            }
-            break;
-
-          case "ArrowUp":
-            event.preventDefault();
-            if (!isOpen) {
-              openDropdown();
-            } else {
-              setFocusedIndex((prev) =>
-                prev > 0 ? prev - 1 : options.length - 1,
-              );
-            }
-            break;
-
-          case "Escape":
-            event.preventDefault();
-            closeDropdown();
-            triggerRef.current?.focus();
-            break;
-
-          case "Home":
-            if (isOpen && options.length > 0) {
-              event.preventDefault();
-              setFocusedIndex(0);
-            }
-            break;
-
-          case "End":
-            if (isOpen && options.length > 0) {
-              event.preventDefault();
-              setFocusedIndex(options.length - 1);
-            }
-            break;
-
-          case "Tab":
-            if (isOpen) {
-              closeDropdown();
-            }
-            break;
-        }
-      },
-      [
-        isOpen,
-        focusedIndex,
-        options,
-        handleSelect,
-        openDropdown,
-        closeDropdown,
-      ],
-    );
-
-    useEffect(() => {
-      if (isOpen && focusedIndex >= 0 && optionRefs.current[focusedIndex]) {
-        optionRefs.current[focusedIndex]?.scrollIntoView({
-          block: "nearest",
-        });
-      }
-    }, [focusedIndex, isOpen]);
-
-    useEffect(() => {
-      const handleClickOutside = (event: MouseEvent) => {
-        const target = event.target as Node;
-        const isOutsideCombobox =
-          comboboxRef.current && !comboboxRef.current.contains(target);
-        const isOutsideDropdown =
-          dropdownRef.current && !dropdownRef.current.contains(target);
-
-        if (isOutsideCombobox && isOutsideDropdown) {
-          closeDropdown();
-        }
+      const handleChange = (index: number) => {
+        setSelectedIndex(index);
+        setHistory((prev) => [...prev, index]);
       };
 
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
-    }, [closeDropdown]);
-
-    function setTriggerDropdownPosition() {
-      if (triggerRef.current) {
-        const rect = triggerRef.current.getBoundingClientRect();
-        setDropdownPosition({
-          top: rect.bottom + 4,
-          left: rect.left,
-          width: rect.width,
-        });
-      }
-    }
-
-    useEffect(() => {
-      if (isOpen) {
-        setTriggerDropdownPosition();
-      }
-    }, [isOpen]);
-
-    useEffect(() => {
-      if (!isOpen) return;
-
-      const handleScroll = () => {
-        setTriggerDropdownPosition();
-      };
-
-      window.addEventListener("scroll", handleScroll, true);
-      window.addEventListener("resize", handleScroll);
-
-      return () => {
-        window.removeEventListener("scroll", handleScroll, true);
-        window.removeEventListener("resize", handleScroll);
-      };
-    }, [isOpen]);
-
-    const handleTriggerClick = () => {
-      if (isOpen) {
-        closeDropdown();
-      } else {
-        openDropdown();
-      }
+      return (
+        <div style={{ width: 400 }}>
+          <Combobox
+            options={bootcampOptions}
+            value={selectedIndex}
+            onChange={handleChange}
+            placeholder="부트캠프를 선택하세요"
+          />
+          <div
+            style={{
+              marginTop: 16,
+              padding: 16,
+              backgroundColor: "#f5f6f9",
+              borderRadius: 8,
+            }}
+          >
+            <p style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>
+              onChange 호출 기록 (index):
+            </p>
+            {history.length === 0 ? (
+              <p style={{ fontSize: 14, color: "#8d929f" }}>
+                아직 선택된 값이 없습니다.
+              </p>
+            ) : (
+              <ul style={{ fontSize: 14, color: "#333", paddingLeft: 20 }}>
+                {history.map((index, i) => (
+                  <li key={i}>
+                    {i + 1}. index: {index} ({bootcampOptions[index]?.label})
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      );
     };
+    return <OnChangeExample />;
+  },
+};
 
-    return (
-      <div
-        className={styles.combobox}
-        ref={comboboxRef}
-        style={{ width }}
-        onKeyDown={handleKeyDown}
-      >
-        <button
-          ref={triggerRef}
-          type="button"
-          className={styles.trigger}
-          onClick={handleTriggerClick}
-          aria-expanded={isOpen}
-          aria-haspopup="listbox"
-        >
-          <span className={styles.label}>
-            {selectedOption?.label || placeholder}
-          </span>
-          <span className={`${styles.arrow} ${isOpen ? styles.open : ""}`}>
-            <ChevronDown />
-          </span>
-        </button>
+export const WithRef: Story = {
+  render: () => {
+    const RefExample = () => {
+      const comboboxRef = useRef<ComboboxRef>(null);
+      const [displayValue, setDisplayValue] = useState<string>("");
 
-        {isOpen &&
-          createPortal(
-            <ul
-              ref={dropdownRef}
-              className={styles.dropdown}
-              role="listbox"
+      const handleGetIndex = () => {
+        const index = comboboxRef.current?.getIndex();
+        const option = comboboxRef.current?.getSelectedOption();
+        setDisplayValue(
+          `index: ${index}, label: ${option?.label || "선택된 값 없음"}`,
+        );
+      };
+
+      const handleSetIndex = (index: number) => {
+        comboboxRef.current?.setIndex(index);
+      };
+
+      return (
+        <div style={{ width: 400 }}>
+          <Combobox
+            ref={comboboxRef}
+            options={bootcampOptions}
+            placeholder="부트캠프를 선택하세요"
+          />
+          <div
+            style={{
+              marginTop: 16,
+              display: "flex",
+              gap: 8,
+              flexWrap: "wrap",
+            }}
+          >
+            <button
+              onClick={handleGetIndex}
               style={{
-                position: "fixed",
-                top: dropdownPosition.top,
-                left: dropdownPosition.left,
-                width: dropdownPosition.width,
+                padding: "8px 16px",
+                backgroundColor: "#4A7EFF",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
               }}
             >
-              {options.map((option, index) => (
-                <li
-                  key={option.value}
-                  role="option"
-                  aria-selected={index === selectedIndex}
-                >
-                  <button
-                    ref={(el) => {
-                      optionRefs.current[index] = el;
-                    }}
-                    type="button"
-                    className={`${styles.option} ${
-                      index === selectedIndex ? styles.selected : ""
-                    } ${index === focusedIndex ? styles.focused : ""}`}
-                    onClick={() => handleSelect(index)}
-                    onMouseEnter={() => setFocusedIndex(index)}
-                  >
-                    {option.label}
-                  </button>
-                </li>
-              ))}
-            </ul>,
-            document.body,
+              getIndex()
+            </button>
+            <button
+              onClick={() => handleSetIndex(0)}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#048724",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              setIndex(0)
+            </button>
+            <button
+              onClick={() => handleSetIndex(1)}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#048724",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              setIndex(1)
+            </button>
+            <button
+              onClick={() => handleSetIndex(2)}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#048724",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              setIndex(2)
+            </button>
+          </div>
+          {displayValue && (
+            <p style={{ marginTop: 16, fontSize: 14, color: "#333" }}>
+              getIndex 결과: <strong>{displayValue}</strong>
+            </p>
           )}
-      </div>
-    );
+        </div>
+      );
+    };
+    return <RefExample />;
   },
-);
+};
 
-Combobox.displayName = "Combobox";
+export const Controlled: Story = {
+  render: () => {
+    const ControlledCombobox = () => {
+      const [selectedIndex, setSelectedIndex] = useState(0);
+      return (
+        <div style={{ width: 400 }}>
+          <Combobox
+            options={bootcampOptions}
+            value={selectedIndex}
+            onChange={setSelectedIndex}
+          />
+          <p style={{ marginTop: 16, fontSize: 14, color: "#8d929f" }}>
+            선택된 인덱스: {selectedIndex} (
+            {bootcampOptions[selectedIndex]?.label})
+          </p>
+        </div>
+      );
+    };
+    return <ControlledCombobox />;
+  },
+};
 
-export default Combobox;
+export const CustomWidth: Story = {
+  args: {
+    options: bootcampOptions,
+    value: 1,
+    width: "500px",
+  },
+};
+
+export const ManyOptions: Story = {
+  args: {
+    options: [
+      { value: "1", label: "Option 1" },
+      { value: "2", label: "Option 2" },
+      { value: "3", label: "Option 3" },
+      { value: "4", label: "Option 4" },
+      { value: "5", label: "Option 5" },
+      { value: "6", label: "Option 6" },
+      { value: "7", label: "Option 7" },
+      { value: "8", label: "Option 8" },
+    ],
+    placeholder: "옵션을 선택하세요",
+    width: "300px",
+  },
+};
