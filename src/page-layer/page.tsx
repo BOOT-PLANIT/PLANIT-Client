@@ -1,5 +1,5 @@
 "use client";
-import useToast from "@/shared/lib/toast";
+import { useToast } from "@/shared/lib";
 import { Button } from "@/shared/ui";
 
 const PlusIcon = () => (
