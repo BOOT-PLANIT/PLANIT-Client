@@ -38,16 +38,16 @@
   }
 }
 
-.secondary {
-  background-color: var(--color-blue-light);
+.danger {
+  background-color: var(--color-system-notice);
   color: var(--foreground-accent);
 
   &:hover:not(:disabled) {
-    background-color: var(--color-blue-light-strong);
+    background-color: var(--color-system-error);
   }
 
   &:active:not(:disabled) {
-    background-color: var(--background-primary);
+    background-color: var(--color-system-notice);
   }
 }
 
