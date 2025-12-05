@@ -9,6 +9,8 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 
+import { ChevronDown } from "@/shared/assets";
+
 import styles from "./Combobox.module.scss";
 
 interface ComboboxOption {
@@ -138,7 +140,7 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
             {selectedOption?.label || placeholder}
           </span>
           <span className={`${styles.arrow} ${isOpen ? styles.open : ""}`}>
-            <ChevronIcon />
+            <ChevronDown />
           </span>
         </button>
 
@@ -176,23 +178,5 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
 );
 
 Combobox.displayName = "Combobox";
-
-const ChevronIcon = () => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M4 6L8 10L12 6"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
 
 export default Combobox;

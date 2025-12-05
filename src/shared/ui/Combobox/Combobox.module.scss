@@ -8,7 +8,8 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: var(--spacing-12) 0;
+  height: 48px;
+  padding: 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -22,6 +23,7 @@
 .label {
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
+  line-height: 24px;
   color: var(--foreground);
   text-align: left;
 }
@@ -51,15 +53,18 @@
 }
 
 .option {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
-  padding: var(--spacing-12) var(--spacing-16);
+  height: 44px;
+  padding: 0 var(--spacing-16);
   background: none;
   border: none;
   text-align: left;
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
+  line-height: 20px;
   color: var(--foreground);
   cursor: pointer;
   transition: all 0.15s ease;
