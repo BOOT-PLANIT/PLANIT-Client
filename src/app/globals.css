@@ -1,21 +1,219 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ==================== Colors ==================== */
 
-  --primary-light: #7fa2ff;
-  --primary-light-strong: #6e97ff;
-  --primary-light-intense: #8bb0ff;
-  --primary: #4a7eff;
-  --primary-strong: #2e6bff;
-  --primary-intense: #155aff;
+  /* Black & White */
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Blue (Primary) */
+  --color-blue-light: #7fa2ff;
+  --color-blue-light-strong: #6e97ff;
+  --color-blue-light-intense: #8bb0ff;
+  --color-blue-normal: #4a7eff;
+  --color-blue-normal-strong: #2e6bff;
+  --color-blue-normal-intense: #155aff;
+
+  /* System */
+  --color-system-success: #048724;
+  --color-system-error: #d21c1c;
+  --color-system-notice: #ff5858;
+  --color-system-like: #f2110f;
+
+  /* Abyss */
+  --color-abyss-normal: #18191b;
+  --color-abyss-normal-strong: #141517;
+
+  /* Charcoal */
+  --color-charcoal-light: #47484d;
+  --color-charcoal-light-strong: #3e3f46;
+  --color-charcoal-normal: #333539;
+  --color-charcoal-normal-strong: #282a2e;
+  --color-charcoal-normal-intense: #25262a;
+
+  /* Grey */
+  --color-grey-light: #e6e7e8;
+  --color-grey-light-strong: #d7d8db;
+  --color-grey-light-intense: #c2c3c8;
+  --color-grey-normal: #b0b3ba;
+  --color-grey-normal-strong: #a1a5af;
+  --color-grey-normal-intense: #8d929f;
+
+  /* Cloud */
+  --color-cloud-normal: #f5f6f9;
+  --color-cloud-normal-strong: #eff0f3;
+
+  /* Purple */
+  --color-purple-lightest: #e8e6fb;
+  --color-purple-lighter: #8a7ff0;
+  --color-purple-light: #6b5fe8;
+  --color-purple-normal: #4c41d3;
+
+  /* Yellow */
+  --color-yellow-lightest: #fff5e6;
+  --color-yellow-lighter: #ffe0b3;
+  --color-yellow-light: #ffd08b;
+  --color-yellow-normal: #ffc05b;
+
+  /* Black Alpha */
+  --color-black-alpha-0: #00000000;
+  --color-black-alpha-2: #00000005;
+  --color-black-alpha-4: #0000000a;
+  --color-black-alpha-5: #0000000d;
+  --color-black-alpha-6: #0000000f;
+  --color-black-alpha-8: #00000014;
+  --color-black-alpha-10: #0000001a;
+  --color-black-alpha-12: #0000001f;
+  --color-black-alpha-16: #00000029;
+  --color-black-alpha-20: #00000033;
+  --color-black-alpha-24: #0000003d;
+  --color-black-alpha-28: #00000047;
+  --color-black-alpha-32: #00000052;
+  --color-black-alpha-50: #00000080;
+  --color-black-alpha-84: #000000d6;
+  --color-black-alpha-90: #000000e6;
+
+  /* White Alpha */
+  --color-white-alpha-0: #ffffff00;
+  --color-white-alpha-10: #ffffff1a;
+  --color-white-alpha-50: #ffffff80;
+  --color-white-alpha-84: #ffffffd6;
+
+  /* Attendance */
+  --color-attendance-present: #048724;
+  --color-attendance-late: #f59e0b;
+  --color-attendance-leftearly: #3ecf8e;
+  --color-attendance-leave: #8b5cf6;
+  --color-attendance-annual: #00aff0;
+  --color-attendance-absent: #d21c1c;
+
+  /* ==================== Semantic Colors ==================== */
+
+  /* Background */
+  --background: var(--color-white);
+  --background-primary: var(--color-blue-normal);
+  --background-primary-dark: var(--color-blue-normal-strong);
+  --background-primary-darker: var(--color-blue-normal-intense);
+  --background-secondary: var(--color-grey-light);
+  --background-tertiary: var(--color-white);
+  --background-tertiary-darker: var(--color-cloud-normal-strong);
+  --background-reverse: var(--color-charcoal-normal-intense);
+  --background-error: var(--color-system-error);
+
+  /* Foreground */
+  --foreground: var(--color-abyss-normal-strong);
+  --foreground-primary: var(--color-blue-normal-strong);
+  --foreground-primary-darker: var(--color-blue-normal-intense);
+  --foreground-secondary: var(--color-grey-light-intense);
+  --foreground-secondary-darker: var(--color-grey-normal-strong);
+  --foreground-tertiary: var(--color-charcoal-light);
+  --foreground-lighter: var(--color-grey-normal-intense);
+  --foreground-accent: var(--color-white);
+  --foreground-reverse: var(--color-grey-light-strong);
+  --foreground-success: var(--color-system-success);
+  --foreground-error: var(--color-system-error);
+  --foreground-notice: var(--color-system-notice);
+  --foreground-like: var(--color-system-like);
+
+  /* Border */
+  --border-normal: var(--color-grey-light-intense);
+  --border-secondary: var(--color-cloud-normal-strong);
+  --border-tertiary: var(--color-grey-light-strong);
+  --border-primary: var(--color-blue-normal-strong);
+  --border-primary-light: var(--color-blue-normal);
+  --border-primary-lighter: var(--color-blue-light-intense);
+
+  /* ==================== Typography ==================== */
+
+  /* Font Family */
+  --font-family:
+    "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", sans-serif;
+
+  /* Font Size */
+  --font-size-xs: 10px;
+  --font-size-sm: 12px;
+  --font-size-md: 13px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 48px;
+
+  /* Font Weight */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line Height */
+  --line-height-xs: 12px;
+  --line-height-sm: 14px;
+  --line-height-md: 16px;
+  --line-height-base: 17px;
+  --line-height-lg: 19px;
+  --line-height-xl: 20px;
+  --line-height-2xl: 21px;
+  --line-height-3xl: 23px;
+  --line-height-4xl: 24px;
+  --line-height-5xl: 30px;
+  --line-height-6xl: 57px;
+
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.5px;
+  --letter-spacing-normal: -0.25px;
+  --letter-spacing-wide: -0.12px;
+  --letter-spacing-none: 0;
+
+  /* ==================== Spacing ==================== */
+
+  --spacing-0: 0px;
+  --spacing-1: 1px;
+  --spacing-2: 2px;
+  --spacing-3: 3px;
+  --spacing-4: 4px;
+  --spacing-5: 5px;
+  --spacing-6: 6px;
+  --spacing-8: 8px;
+  --spacing-10: 10px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-18: 18px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-28: 28px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+
+  /* ==================== Border Radius ==================== */
+
+  --radius-0: 0px;
+  --radius-2: 2px;
+  --radius-4: 4px;
+  --radius-6: 6px;
+  --radius-8: 8px;
+  --radius-10: 10px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-24: 24px;
+  --radius-full: 9999px;
+
+  /* ==================== Shadows ==================== */
+
+  --shadow-embossed:
+    0 0 2px var(--color-black-alpha-2), 0 2px 5px var(--color-black-alpha-4);
+  --shadow-embossed-reverse:
+    0 0 2px var(--color-black-alpha-2), 0 -2px 4px var(--color-black-alpha-4);
+  --shadow-raised:
+    0 0 2px var(--color-black-alpha-6), 0 3px 6px var(--color-black-alpha-12);
+  --shadow-floated:
+    0 0 2px var(--color-black-alpha-4), 0 3px 4px var(--color-black-alpha-8),
+    0 4px 8px var(--color-black-alpha-12);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ==================== Base Styles ==================== */
 
 html,
 body {
@@ -26,7 +224,9 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -40,10 +240,4 @@ body {
 a {
   color: inherit;
   text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
 }
