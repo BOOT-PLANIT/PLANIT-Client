@@ -1,90 +1,307 @@
-.combobox {
-  position: relative;
-  font-family: var(--font-family);
+"use client";
+
+import {
+  useState,
+  useRef,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useCallback,
+} from "react";
+import { createPortal } from "react-dom";
+
+import { ChevronDown } from "@/shared/assets";
+
+import styles from "./Combobox.module.scss";
+
+interface ComboboxOption {
+  value: string;
+  label: string;
 }
 
-.trigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 48px;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:focus {
-    outline: none;
-  }
+interface ComboboxProps {
+  options: ComboboxOption[];
+  value?: number;
+  onChange?: (index: number) => void;
+  placeholder?: string;
+  width?: string;
 }
 
-.label {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  line-height: 24px;
-  color: var(--foreground);
-  text-align: left;
+export interface ComboboxRef {
+  getIndex: () => number;
+  setIndex: (index: number) => void;
+  getSelectedOption: () => ComboboxOption | undefined;
+  open: () => void;
+  close: () => void;
 }
 
-.arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--foreground-lighter);
-  transition: transform 0.2s ease;
+const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
+  (
+    { options, value, onChange, placeholder = "선택하세요", width = "100%" },
+    ref,
+  ) => {
+    const isControlled = value !== undefined;
+    const [internalIndex, setInternalIndex] = useState(value ?? -1);
+    const [isOpen, setIsOpen] = useState(false);
+    const [focusedIndex, setFocusedIndex] = useState(-1);
+    const [dropdownPosition, setDropdownPosition] = useState({
+      top: 0,
+      left: 0,
+      width: 0,
+    });
+    const comboboxRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const dropdownRef = useRef<HTMLUListElement>(null);
+    const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  &.open {
-    transform: rotate(180deg);
-  }
-}
+    const selectedIndex = isControlled ? value : internalIndex;
+    const selectedOption =
+      selectedIndex >= 0 && selectedIndex < options.length
+        ? options[selectedIndex]
+        : undefined;
 
-.dropdown {
-  background-color: var(--background);
-  border: 1px solid var(--border-secondary);
-  border-radius: var(--radius-8);
-  box-shadow: var(--shadow-floated);
-  list-style: none;
-  padding: var(--spacing-8) 0;
-  z-index: 9999;
-  max-height: 300px;
-  overflow-y: auto;
-}
+    useImperativeHandle(ref, () => ({
+      getIndex: () => selectedIndex,
+      setIndex: (newIndex: number) => {
+        if (!isControlled) {
+          setInternalIndex(newIndex);
+        }
+        onChange?.(newIndex);
+      },
+      getSelectedOption: () => selectedOption,
+      open: () => setIsOpen(true),
+      close: () => setIsOpen(false),
+    }));
 
-.option {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 44px;
-  padding: 0 var(--spacing-16);
-  background: none;
-  border: none;
-  text-align: left;
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
-  line-height: 20px;
-  color: var(--foreground);
-  cursor: pointer;
-  transition: all 0.15s ease;
+    const openDropdown = useCallback(() => {
+      if (options.length === 0) return;
+      setIsOpen(true);
+      setFocusedIndex(selectedIndex >= 0 ? selectedIndex : 0);
+    }, [options.length, selectedIndex]);
 
-  &:hover,
-  &.focused {
-    color: var(--color-blue-normal);
-    background-color: color-mix(
-      in srgb,
-      var(--color-blue-normal) 10%,
-      transparent
+    const closeDropdown = useCallback(() => {
+      setIsOpen(false);
+      setFocusedIndex(-1);
+    }, []);
+
+    const handleSelect = useCallback(
+      (index: number) => {
+        if (!isControlled) {
+          setInternalIndex(index);
+        }
+        onChange?.(index);
+        closeDropdown();
+        triggerRef.current?.focus();
+      },
+      [isControlled, onChange, closeDropdown],
     );
-  }
 
-  &.selected {
-    color: var(--color-blue-normal);
-    font-weight: var(--font-weight-semibold);
-  }
+    const handleKeyDown = useCallback(
+      (event: React.KeyboardEvent) => {
+        if (options.length === 0) return;
 
-  &:focus {
-    outline: none;
-  }
-}
+        switch (event.key) {
+          case "Enter":
+          case " ":
+            event.preventDefault();
+            if (isOpen && focusedIndex >= 0 && options[focusedIndex]) {
+              handleSelect(focusedIndex);
+            } else {
+              openDropdown();
+            }
+            break;
+
+          case "ArrowDown":
+            event.preventDefault();
+            if (!isOpen) {
+              openDropdown();
+            } else {
+              setFocusedIndex((prev) =>
+                prev < options.length - 1 ? prev + 1 : 0,
+              );
+            }
+            break;
+
+          case "ArrowUp":
+            event.preventDefault();
+            if (!isOpen) {
+              openDropdown();
+            } else {
+              setFocusedIndex((prev) =>
+                prev > 0 ? prev - 1 : options.length - 1,
+              );
+            }
+            break;
+
+          case "Escape":
+            event.preventDefault();
+            closeDropdown();
+            triggerRef.current?.focus();
+            break;
+
+          case "Home":
+            if (isOpen && options.length > 0) {
+              event.preventDefault();
+              setFocusedIndex(0);
+            }
+            break;
+
+          case "End":
+            if (isOpen && options.length > 0) {
+              event.preventDefault();
+              setFocusedIndex(options.length - 1);
+            }
+            break;
+
+          case "Tab":
+            if (isOpen) {
+              closeDropdown();
+            }
+            break;
+        }
+      },
+      [
+        isOpen,
+        focusedIndex,
+        options,
+        handleSelect,
+        openDropdown,
+        closeDropdown,
+      ],
+    );
+
+    useEffect(() => {
+      if (isOpen && focusedIndex >= 0 && optionRefs.current[focusedIndex]) {
+        optionRefs.current[focusedIndex]?.scrollIntoView({
+          block: "nearest",
+        });
+      }
+    }, [focusedIndex, isOpen]);
+
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        const target = event.target as Node;
+        const isOutsideCombobox =
+          comboboxRef.current && !comboboxRef.current.contains(target);
+        const isOutsideDropdown =
+          dropdownRef.current && !dropdownRef.current.contains(target);
+
+        if (isOutsideCombobox && isOutsideDropdown) {
+          closeDropdown();
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }, [closeDropdown]);
+
+    function setTriggerDropdownPosition() {
+      if (triggerRef.current) {
+        const rect = triggerRef.current.getBoundingClientRect();
+        setDropdownPosition({
+          top: rect.bottom + 4,
+          left: rect.left,
+          width: rect.width,
+        });
+      }
+    }
+
+    useEffect(() => {
+      if (isOpen) {
+        setTriggerDropdownPosition();
+      }
+    }, [isOpen]);
+
+    useEffect(() => {
+      if (!isOpen) return;
+
+      const handleScroll = () => {
+        setTriggerDropdownPosition();
+      };
+
+      window.addEventListener("scroll", handleScroll, true);
+      window.addEventListener("resize", handleScroll);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll, true);
+        window.removeEventListener("resize", handleScroll);
+      };
+    }, [isOpen]);
+
+    const handleTriggerClick = () => {
+      if (isOpen) {
+        closeDropdown();
+      } else {
+        openDropdown();
+      }
+    };
+
+    return (
+      <div
+        className={styles.combobox}
+        ref={comboboxRef}
+        style={{ width }}
+        onKeyDown={handleKeyDown}
+      >
+        <button
+          ref={triggerRef}
+          type="button"
+          className={styles.trigger}
+          onClick={handleTriggerClick}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+        >
+          <span className={styles.label}>
+            {selectedOption?.label || placeholder}
+          </span>
+          <span className={`${styles.arrow} ${isOpen ? styles.open : ""}`}>
+            <ChevronDown />
+          </span>
+        </button>
+
+        {isOpen &&
+          createPortal(
+            <ul
+              ref={dropdownRef}
+              className={styles.dropdown}
+              role="listbox"
+              style={{
+                position: "fixed",
+                top: dropdownPosition.top,
+                left: dropdownPosition.left,
+                width: dropdownPosition.width,
+              }}
+            >
+              {options.map((option, index) => (
+                <li
+                  key={option.value}
+                  role="option"
+                  aria-selected={index === selectedIndex}
+                >
+                  <button
+                    ref={(el) => {
+                      optionRefs.current[index] = el;
+                    }}
+                    type="button"
+                    className={`${styles.option} ${
+                      index === selectedIndex ? styles.selected : ""
+                    } ${index === focusedIndex ? styles.focused : ""}`}
+                    onClick={() => handleSelect(index)}
+                    onMouseEnter={() => setFocusedIndex(index)}
+                  >
+                    {option.label}
+                  </button>
+                </li>
+              ))}
+            </ul>,
+            document.body,
+          )}
+      </div>
+    );
+  },
+);
+
+Combobox.displayName = "Combobox";
+
+export default Combobox;
