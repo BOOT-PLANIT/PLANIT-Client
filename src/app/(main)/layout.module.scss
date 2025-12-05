@@ -1,0 +1,13 @@
+.layout {
+  min-width: 360px;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-24);
+}
