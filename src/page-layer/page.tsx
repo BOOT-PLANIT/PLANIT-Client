@@ -53,7 +53,7 @@ const Home = () => {
         Primary
       </Button>
       <Button
-        variant="secondary"
+        variant="danger"
         onClick={() => toast.error("에러메시지입니다. 에러메시지입니다.")}
       >
         Secondary

@@ -32,7 +32,7 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["primary", "secondary", "outline"],
+      options: ["primary", "danger", "outline"],
       description: "버튼 스타일 변형",
     },
     width: {
@@ -61,10 +61,10 @@ export const Primary: Story = {
   },
 };
 
-export const Secondary: Story = {
+export const Danger: Story = {
   args: {
-    variant: "secondary",
-    children: "Secondary Button",
+    variant: "danger",
+    children: "Danger Button",
     width: "200px",
   },
 };
@@ -115,7 +115,7 @@ export const AllVariants: Story = {
       style={{ display: "flex", flexDirection: "column", gap: 16, width: 300 }}
     >
       <Button variant="primary">Primary</Button>
-      <Button variant="secondary">Secondary</Button>
+      <Button variant="danger">Danger</Button>
       <Button variant="outline">Outline</Button>
       <Button variant="primary" disabled>
         Disabled
@@ -130,8 +130,8 @@ export const AllWithIcons: Story = {
       style={{ display: "flex", flexDirection: "column", gap: 16, width: 300 }}
     >
       <Button icon={<PlusIcon />}>Add Item</Button>
-      <Button icon={<SearchIcon />} variant="secondary">
-        Search
+      <Button icon={<SearchIcon />} variant="danger">
+        Delete
       </Button>
       <Button icon={<SearchIcon />} variant="outline">
         Search
