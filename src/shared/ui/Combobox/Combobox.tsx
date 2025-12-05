@@ -85,8 +85,8 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
         document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    useEffect(() => {
-      if (isOpen && triggerRef.current) {
+    function setTriggerDropdownPosition() {
+      if (triggerRef.current) {
         const rect = triggerRef.current.getBoundingClientRect();
         setDropdownPosition({
           top: rect.bottom + 4,
@@ -94,20 +94,19 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
           width: rect.width,
         });
       }
+    }
+
+    useEffect(() => {
+      if (isOpen) {
+        setTriggerDropdownPosition();
+      }
     }, [isOpen]);
 
     useEffect(() => {
       if (!isOpen) return;
 
       const handleScroll = () => {
-        if (triggerRef.current) {
-          const rect = triggerRef.current.getBoundingClientRect();
-          setDropdownPosition({
-            top: rect.bottom + 4,
-            left: rect.left,
-            width: rect.width,
-          });
-        }
+        setTriggerDropdownPosition();
       };
 
       window.addEventListener("scroll", handleScroll, true);
