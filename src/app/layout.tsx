@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Pretendard } from "@/shared/font";
 import Providers from "@/shared/providers";
 import "./globals.css";
+import { GlobalComponents } from "@/shared/ui";
 
 export const metadata: Metadata = {
   title: "PLANIT",
@@ -17,6 +18,7 @@ const RootLayout = ({
     <html lang="ko">
       <body className={Pretendard.className}>
         <Providers>
+          <GlobalComponents />
           <main>{children}</main>
         </Providers>
       </body>
