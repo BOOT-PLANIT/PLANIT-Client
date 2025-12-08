@@ -117,7 +117,7 @@
   }
 
   &.currentUnit {
-    background: #e0f2fe;
+    background: var(--color-blue-light);
   }
 
   &.weekend {

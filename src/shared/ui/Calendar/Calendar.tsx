@@ -32,6 +32,10 @@ interface CalendarProps {
   initialMonth?: Date;
 }
 
+const getDateKey = (date: Date): string => {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+};
+
 const Calendar = ({
   dates = [],
   onDateSelect,
@@ -50,6 +54,18 @@ const Calendar = ({
     });
   }, [currentMonth]);
 
+  const datesMap = useMemo(() => {
+    const map = new Map<string, DateData>();
+    dates.forEach((dateData) => {
+      map.set(getDateKey(dateData.date), dateData);
+    });
+    return map;
+  }, [dates]);
+
+  const selectedDatesSet = useMemo(() => {
+    return new Set(selectedDates.map(getDateKey));
+  }, [selectedDates]);
+
   const calendarDays = useMemo(() => {
     const year = currentMonth.getFullYear();
     const month = currentMonth.getMonth();
@@ -59,7 +75,7 @@ const Calendar = ({
     const daysInMonth = lastDay.getDate();
     const startingDayOfWeek = firstDay.getDay();
 
-    const days: (Date | null)[] = [];
+    const days: Date[] = [];
 
     for (let i = startingDayOfWeek - 1; i >= 0; i--) {
       days.push(new Date(year, month, -i));
@@ -78,21 +94,11 @@ const Calendar = ({
   }, [currentMonth]);
 
   const getDateData = (date: Date): DateData | undefined => {
-    return dates.find(
-      (d) =>
-        d.date.getDate() === date.getDate() &&
-        d.date.getMonth() === date.getMonth() &&
-        d.date.getFullYear() === date.getFullYear(),
-    );
+    return datesMap.get(getDateKey(date));
   };
 
   const isSelected = (date: Date): boolean => {
-    return selectedDates.some(
-      (selected) =>
-        selected.getDate() === date.getDate() &&
-        selected.getMonth() === date.getMonth() &&
-        selected.getFullYear() === date.getFullYear(),
-    );
+    return selectedDatesSet.has(getDateKey(date));
   };
 
   const isCurrentMonth = (date: Date): boolean => {
@@ -119,15 +125,9 @@ const Calendar = ({
   const handleDateClick = (date: Date) => {
     if (!isCurrentMonth(date)) return;
 
+    const dateKey = getDateKey(date);
     const newSelectedDates = isSelected(date)
-      ? selectedDates.filter(
-          (d) =>
-            !(
-              d.getDate() === date.getDate() &&
-              d.getMonth() === date.getMonth() &&
-              d.getFullYear() === date.getFullYear()
-            ),
-        )
+      ? selectedDates.filter((d) => getDateKey(d) !== dateKey)
       : [...selectedDates, date];
 
     setSelectedDates(newSelectedDates);
@@ -194,8 +194,6 @@ const Calendar = ({
 
         <div className={styles.grid}>
           {calendarDays.map((date, index) => {
-            if (!date) return null;
-
             const dateData = getDateData(date);
             const selected = isSelected(date);
             const currentMonthDay = isCurrentMonth(date);
