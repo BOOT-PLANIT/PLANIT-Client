@@ -1,3 +1,5 @@
+"use client";
+import { useToast } from "@/shared/lib";
 import { Button } from "@/shared/ui";
 
 const PlusIcon = () => (
@@ -32,6 +34,7 @@ const SearchIcon = () => (
 );
 
 const Home = () => {
+  const toast = useToast();
   return (
     <div
       style={{
@@ -43,9 +46,24 @@ const Home = () => {
       }}
     >
       <h2>Button Variants</h2>
-      <Button variant="primary">Primary</Button>
-      <Button variant="danger">Danger</Button>
-      <Button variant="outline">Outline</Button>
+      <Button
+        variant="primary"
+        onClick={() => toast.success("성공메시지입니다. 성공메시지입니다.")}
+      >
+        Primary
+      </Button>
+      <Button
+        variant="danger"
+        onClick={() => toast.error("에러메시지입니다. 에러메시지입니다.")}
+      >
+        Secondary
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => toast.info("인포메시지입니다. 인포메시지입니다. ")}
+      >
+        Outline
+      </Button>
       <Button disabled>Disabled</Button>
 
       <h2 style={{ marginTop: 16 }}>With Icons</h2>
