@@ -1,8 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
+const dummyReducer = (state = {}) => state;
+
 export const makeStore = () => {
   return configureStore({
-    reducer: {},
+    reducer: {
+      app: dummyReducer,
+    },
   });
 };
 
