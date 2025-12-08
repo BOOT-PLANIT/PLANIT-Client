@@ -6,35 +6,33 @@ import styles from "./Input.module.scss";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
-  error?: string;
+  errorMessage?: string;
   width?: string;
-  wrapperClassName?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       label,
-      error,
+      errorMessage,
       width = "100%",
-      wrapperClassName = "",
       className = "",
       ...props
     }: InputProps,
     ref,
   ) => {
     return (
-      <div className={`${styles.wrapper} ${wrapperClassName}`}>
+      <div className={`${styles.wrapper}`}>
         {label && <label className={styles.label}>{label}</label>}
 
         <input
           ref={ref}
-          className={`${styles.input} ${className} ${error ? styles.error : ""}`}
+          className={`${styles.input} ${className} ${errorMessage ? styles.error : ""}`}
           style={{ width }}
           {...props}
         />
 
-        {error && <p className={styles.errorMessage}>{error}</p>}
+        {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
       </div>
     );
   },

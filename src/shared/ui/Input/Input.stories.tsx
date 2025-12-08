@@ -9,7 +9,7 @@ const meta = {
   argTypes: {
     label: { control: "text" },
     placeholder: { control: "text" },
-    error: { control: "text" },
+    errorMessage: { control: "text" },
     disabled: { control: "boolean" },
   },
 } satisfies Meta<typeof Input>;
@@ -28,7 +28,7 @@ export const WithError: Story = {
   args: {
     label: "비밀번호",
     placeholder: "비밀번호를 입력하세요",
-    error: "비밀번호가 너무 짧습니다.",
+    errorMessage: "비밀번호가 너무 짧습니다.",
   },
 };
 
