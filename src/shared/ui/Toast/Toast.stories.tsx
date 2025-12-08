@@ -3,7 +3,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Provider } from "react-redux";
 
-import { makeStore } from "@/shared/store";
+import { makeStore } from "@/shared/store/store";
 import { showToast } from "@/shared/store/toastSlice";
 
 import Toast from "./Toast";

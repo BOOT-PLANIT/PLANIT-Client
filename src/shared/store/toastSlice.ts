@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { RootState } from "./store";
+
 export interface ToastPayload {
   message?: string;
   type: "success" | "error" | "info";
@@ -33,5 +35,6 @@ const toastSlice = createSlice({
   },
 });
 
+export const toastSelector = (state: RootState) => state.toast;
 export const { showToast, hideToast } = toastSlice.actions;
 export default toastSlice.reducer;

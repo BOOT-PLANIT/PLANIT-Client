@@ -4,13 +4,13 @@ import { createPortal } from "react-dom";
 
 import { InfoIcon, ErrorIcon, SuccessIcon } from "@/shared/assets";
 import { useAppDispatch, useAppSelector } from "@/shared/store/hooks";
-import { hideToast } from "@/shared/store/toastSlice";
+import { hideToast, toastSelector } from "@/shared/store/toastSlice";
 
 import styles from "./Toast.module.scss";
 
 const Toast = () => {
   const dispatch = useAppDispatch();
-  const toast = useAppSelector((state) => state.toast);
+  const toast = useAppSelector(toastSelector);
 
   const { visible, message, type } = toast;
 
