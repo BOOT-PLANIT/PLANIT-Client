@@ -19,6 +19,12 @@
   background: var(--color-white);
   border-radius: 8px;
   box-shadow: var(--shadow-raised);
+
+  @media (width <= 400px) {
+    width: calc(100vw - var(--spacing-32));
+    max-width: calc(100vw - var(--spacing-32));
+    padding: var(--spacing-16);
+  }
 }
 
 .closeButton {

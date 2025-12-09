@@ -43,7 +43,7 @@ const attendanceOptions: {
   },
   {
     value: "leave",
-    label: "휴가",
+    label: "공가",
     icon: <LeaveIcon width={20} height={20} />,
   },
   {

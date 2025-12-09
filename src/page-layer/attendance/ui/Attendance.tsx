@@ -86,7 +86,7 @@ const Attendance = () => {
     { icon: <PresentIcon width={20} height={20} />, label: "출석" },
     { icon: <LateIcon width={20} height={20} />, label: "지각" },
     { icon: <LeftEarlyIcon width={20} height={20} />, label: "조퇴" },
-    { icon: <LeaveIcon width={20} height={20} />, label: "휴가" },
+    { icon: <LeaveIcon width={20} height={20} />, label: "공가" },
     { icon: <AnnualIcon width={20} height={20} />, label: "연차" },
     { icon: <AbsentIcon width={20} height={20} />, label: "결석" },
     { icon: <WeekendIcon />, label: "주말" },

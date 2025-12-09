@@ -24,7 +24,7 @@ export const generateAttendanceSummary = () => [
   },
   {
     status: "leave" as AttendanceStatus,
-    label: "휴가",
+    label: "공가",
     count: 2,
   },
   {
