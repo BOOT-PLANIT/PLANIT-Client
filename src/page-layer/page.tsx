@@ -1,77 +1,62 @@
 "use client";
-import { useToast } from "@/shared/lib";
-import { Button } from "@/shared/ui";
 
-const PlusIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-    <path d="M8 2v12M2 8h12" stroke="currentColor" strokeWidth="2" />
-  </svg>
-);
-
-const ArrowRightIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-    <path
-      d="M3 8h10M9 4l4 4-4 4"
-      stroke="currentColor"
-      strokeWidth="2"
-      fill="none"
-    />
-  </svg>
-);
-
-const SearchIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-    <circle
-      cx="6"
-      cy="6"
-      r="4"
-      stroke="currentColor"
-      strokeWidth="2"
-      fill="none"
-    />
-    <path d="M10 10l4 4" stroke="currentColor" strokeWidth="2" />
-  </svg>
-);
+import { Calendar, Card } from "@/shared/ui";
+import type { DateData } from "@/shared/ui";
 
 const Home = () => {
-  const toast = useToast();
+  const generateCurrentMonthData = (): DateData[] => {
+    const dates: DateData[] = [];
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+    const currentDay = today.getDate();
+
+    dates.push({
+      date: new Date(currentYear, currentMonth, currentDay),
+      status: "present",
+      hasSession: true,
+    });
+
+    for (let i = -5; i <= 5; i++) {
+      const date = new Date(currentYear, currentMonth, currentDay + i);
+      if (date.getMonth() === currentMonth) {
+        if (i !== 0) {
+          if (date.getDay() !== 0 && date.getDay() !== 6) {
+            dates.push({
+              date: date,
+              status: "present",
+              hasSession: i % 2 === 0, // 짝수 날짜에만 세션이 있다고 가정
+            });
+          }
+        }
+      }
+    }
+
+    return dates;
+  };
+
+  const calendarDates = generateCurrentMonthData();
+
   return (
     <div
       style={{
-        padding: 24,
         display: "flex",
-        flexDirection: "column",
-        gap: 16,
-        maxWidth: 400,
+        justifyContent: "center",
+        padding: 24,
       }}
     >
-      <h2>Button Variants</h2>
-      <Button
-        variant="primary"
-        onClick={() => toast.success("성공메시지입니다. 성공메시지입니다.")}
-      >
-        Primary
-      </Button>
-      <Button
-        variant="danger"
-        onClick={() => toast.error("에러메시지입니다. 에러메시지입니다.")}
-      >
-        Secondary
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() => toast.info("인포메시지입니다. 인포메시지입니다. ")}
-      >
-        Outline
-      </Button>
-      <Button disabled>Disabled</Button>
-
-      <h2 style={{ marginTop: 16 }}>With Icons</h2>
-      <Button icon={<PlusIcon />}>Add Item</Button>
-      <Button icon={<ArrowRightIcon />}>Next</Button>
-
-      <h2 style={{ marginTop: 16 }}>Custom Gap</h2>
-      <Button icon={<SearchIcon />}>Search</Button>
+      <Card variant="solid" width="100%">
+        <Calendar
+          dates={calendarDates}
+          initialMonth={new Date()}
+          onDateSelect={(dates) => {
+            console.log("Selected dates:", dates);
+          }}
+          onEdit={(dates) => {
+            console.log("Edit dates:", dates);
+          }}
+        />
+      </Card>
     </div>
   );
 };
