@@ -2,52 +2,76 @@
 .container {
   width: 100%;
   margin-top: 24px;
+  overflow-x: auto;
+}
+
+.tableLayout {
+  max-height: 560px;
+  overflow-y: auto;
 }
 
 /* 테이블 기본 스타일 */
 .table {
   width: 100%;
-  border-collapse: collapse; // border 사이 공백 제거
+  table-layout: fixed;
+  border-collapse: collapse;
   border-spacing: 0;
-  font-size: 14px;
+  font-size: var(--font-size-base);
 }
 
 /* 테이블 헤더 스타일 */
+
+// .table thead {
+//   position: sticky;
+//   top: 0;
+//   background: white; /* 뒤 배경 덮기 */
+//   z-index: 10;
+//   border-bottom: 2px solid var(--color-blue-light-intense);
+// }
+
 .table thead th {
   text-align: left;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 12px 8px;
-  color: #374151;
-  border-bottom: 1px solid #e5e7eb;
-  background: #f9fafb;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  padding: var(--spacing-16) var(--spacing-0) var(--spacing-16) var(--spacing-4);
+  color: var(--foreground);
+  position: sticky;
+  top: 0;
+  background: white; /* 뒤 배경 덮기 */
+  z-index: 10;
+  border-bottom: 2px solid var(--color-blue-light-intense);
 }
 
-// /* Index (#) 컬럼은 항상 중앙 정렬 */
-// .table thead th:first-child {
-//   text-align: center;
-//   width: 40px;
-// }
+.table tbody td {
+  text-align: left;
+}
 
 /* 각 컬럼간 간격 */
-// .table th:nth-child(1) {
-//   width: 180px;
-// }
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  min-width: 80px;
+  width: 160px;
+}
 
-// .table th:nth-child(2) {
-//   width: 280px;
-// }
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  min-width: 100px;
+  width: 280px;
+}
 
-// .table th:nth-child(3) {
-//   width: 260px;
-// }
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  min-width: 100px;
+  width: 200px;
+}
 
-// .table th:nth-child(4) {
-//   width: 120px;
-// }
-
-// .table th:nth-child(5),
-// .table th:nth-child(6) {
-//   width: 80px;
-//   text-align: center;
-// }
+.table th:nth-child(4),
+.table th:nth-child(5),
+.table th:nth-child(6),
+.table td:nth-child(4),
+.table td:nth-child(5),
+.table td:nth-child(6) {
+  min-width: 50px;
+  width: 70px;
+  text-align: center;
+}

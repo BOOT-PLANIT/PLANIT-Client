@@ -1,65 +1,66 @@
 .row {
   height: 56px;
-  border-bottom: 1px solid #e5e7eb; // light gray
-  font-size: 14px;
-  color: #111827;
+  border-bottom: 1px solid var(--color-grey-light-strong);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+  transition: all 0.3s ease;
 
   &:hover {
-    background: #f9fafb;
+    background: var(--color-cloud-normal);
   }
 }
+
 .selected {
-  background-color: #1d4ed8;
+  background-color: var(--color-blue-light);
+
   &:hover {
-    background: #1d4ed8;
+    background: var(--color-blue-light);
   }
 }
 
-.organization {
-  font-weight: 500;
-}
+// .organization {
+//   // padding: 0px var(--spacing-5);
+//   text-align: center;
+// }
 
-.name {
-  font-weight: 500;
-}
+// .duration {
+//   text-align: center;
+// }
 
-.duration {
-  text-align: center;
-}
-
-.kdt {
-  text-align: center;
-}
+// .kdt {
+//   text-align: center;
+// }
 
 .kdtBadge {
-  padding: 4px 10px;
-  font-size: 12px;
-  border-radius: 6px;
-  background-color: #dbeafe; // light blue
-  color: #1d4ed8; // blue
-  font-weight: 600;
+  padding: var(--spacing-4) var(--spacing-10);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-6);
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  font-weight: var(--font-weight-semibold);
 }
 
-.status {
-  text-align: center;
-}
+// .status {
+//   text-align: center;
+// }
 
 .activeBadge {
-  padding: 4px 10px;
-  font-size: 12px;
-  border-radius: 6px;
-  background-color: #dcfce7; // green bg
-  color: #15803d; // green text
-  font-weight: 600;
+  padding: var(--spacing-4) var(--spacing-10);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-6);
+  background-color: #dcfce7;
+  color: #15803d;
+  font-weight: var(--font-weight-semibold);
 }
 
 .endedBadge {
-  padding: 4px 10px;
-  font-size: 12px;
-  border-radius: 6px;
-  background-color: #e5e7eb; // gray bg
-  color: #374151; // gray text
-  font-weight: 600;
+  padding: var(--spacing-4) var(--spacing-10);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-6);
+  background-color: #e5e7eb;
+  color: #374151;
+  font-weight: var(--font-weight-semibold);
 }
 
 .icon {

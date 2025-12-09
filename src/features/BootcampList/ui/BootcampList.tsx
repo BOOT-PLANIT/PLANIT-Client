@@ -32,7 +32,28 @@ const bootcampDummy: Bootcamp[] = [
     startedAt: "2024-03-01",
     endedAt: "2024-06-30",
     isEnded: true,
-    classDates: ["2024-03-01", "2024-03-03", "2024-03-05"],
+    classDates: [
+      "2024-03-01",
+      "2024-03-03",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+    ],
   },
   {
     id: 2,
@@ -74,6 +95,97 @@ const bootcampDummy: Bootcamp[] = [
     isEnded: true,
     classDates: ["2024-01-10", "2024-01-12", "2024-01-15"],
   },
+  {
+    id: 6,
+    name: "웹 개발 기초 부트캠프",
+    organizer: "한국IT교육원",
+    isKdt: false,
+    startedAt: "2024-03-01",
+    endedAt: "2024-06-30",
+    isEnded: true,
+    classDates: [
+      "2024-03-01",
+      "2024-03-03",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+      "2024-03-05",
+    ],
+  },
+  {
+    id: 7,
+    name: "KDT 프론트엔드 심화 과정",
+    organizer: "KDT연구소",
+    isKdt: true,
+    startedAt: "2024-07-01",
+    endedAt: "2024-12-20",
+    isEnded: false,
+    classDates: ["2024-07-01", "2024-07-02", "2024-07-03"],
+  },
+  {
+    id: 8,
+    name: "백엔드 스프링 부트 실전",
+    organizer: "코딩아카데미",
+    isKdt: false,
+    startedAt: "2024-02-15",
+    endedAt: "2024-05-15",
+    isEnded: true,
+    classDates: ["2024-02-15", "2024-02-17", "2024-02-20"],
+  },
+  {
+    id: 9,
+    name: "데이터 분석 입문 캠프",
+    organizer: "데이터사이언스랩",
+    isKdt: false,
+    startedAt: "2024-08-10",
+    endedAt: "2024-11-30",
+    isEnded: false,
+    classDates: ["2024-08-10", "2024-08-12", "2024-08-14"],
+  },
+  {
+    id: 10,
+    name: "AI 기반 풀스택 개발자 과정",
+    organizer: "AI융합센터",
+    isKdt: true,
+    startedAt: "2024-01-10",
+    endedAt: "2024-07-25",
+    isEnded: true,
+    classDates: ["2024-01-10", "2024-01-12", "2024-01-15"],
+  },
+  {
+    id: 11,
+    name: "AI 기반 풀스택 개발자 과정",
+    organizer: "AI융합센터",
+    isKdt: true,
+    startedAt: "2024-01-10",
+    endedAt: "2024-07-25",
+    isEnded: true,
+    classDates: ["2024-01-10", "2024-01-12", "2024-01-15"],
+  },
+  {
+    id: 12,
+    name: "AI 기반 풀스택 개발자 과정",
+    organizer: "AI융합센터",
+    isKdt: true,
+    startedAt: "2024-01-10",
+    endedAt: "2024-07-25",
+    isEnded: true,
+    classDates: ["2024-01-10", "2024-01-12", "2024-01-15"],
+  },
 ];
 
 const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
@@ -105,6 +217,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
         placeholder="검색하실 부트캠프 이름 또는 교육기관을 입력하세요..."
         icon={<SearchIcon />}
       />
+
       <table className={styles.table}>
         <thead>
           <tr>
@@ -117,21 +230,24 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
             {manage && <th colSpan={2}>관리</th>}
           </tr>
         </thead>
-
-        <tbody>
-          {bootcampDummy.map((b) => (
-            <BootcampListItem
-              key={b.id}
-              isSelect={b.id === selectedItem?.id}
-              Bootcamp={b}
-              manage={manage}
-              selectItem={() => handleSelect(b)}
-              editItem={() => handleEdit(b)}
-              deleteItem={() => handleDelete(b)}
-            />
-          ))}
-        </tbody>
       </table>
+      <div className={styles.tableLayout}>
+        <table className={styles.table}>
+          <tbody>
+            {bootcampDummy.map((b) => (
+              <BootcampListItem
+                key={b.id}
+                isSelect={b.id === selectedItem?.id}
+                Bootcamp={b}
+                manage={manage}
+                selectItem={() => handleSelect(b)}
+                editItem={() => handleEdit(b)}
+                deleteItem={() => handleDelete(b)}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
