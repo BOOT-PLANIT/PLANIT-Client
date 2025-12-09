@@ -47,10 +47,10 @@ const GoogleIcon = () => (
 );
 
 const features = [
-  "Track daily attendance and check-in/out",
-  "Monitor your bootcamp progress",
-  "View training allowance and deductions",
-  "Manage leave balance and requests",
+  "일일 출석 체크",
+  "부트캠프 진행 상황 모니터링",
+  "훈련 수당 및 공제 내역 조회",
+  "휴가 일수 및 신청 관리",
 ];
 
 const SignIn = () => {
@@ -63,7 +63,7 @@ const SignIn = () => {
           </div>
           <h1 className={styles.title}>PLANIT</h1>
           <p className={styles.subtitle}>
-            Track your attendance, progress, and training allowance
+            출석, 진행 상황, 훈련 수당을 추적하세요
           </p>
         </div>
 
@@ -83,12 +83,12 @@ const SignIn = () => {
             icon={<GoogleIcon />}
             className={styles.googleButton}
           >
-            Continue with Google
+            Google로 계속하기
           </Button>
         </div>
 
         <p className={styles.footer}>
-          By continuing, you agree to our Terms of Service and Privacy Policy
+          계속 진행하면 서비스 약관 및 개인정보 처리방침에 동의하는 것입니다
         </p>
       </div>
     </div>
