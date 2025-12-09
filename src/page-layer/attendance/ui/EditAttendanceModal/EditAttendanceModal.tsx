@@ -48,7 +48,7 @@ const attendanceOptions: {
   },
   {
     value: "annual",
-    label: "연차",
+    label: "월차",
     icon: <AnnualIcon width={20} height={20} />,
   },
   {
@@ -75,12 +75,11 @@ const EditAttendanceModal = ({
     <Modal onClose={onClose}>
       <div className={styles.content}>
         <h2 className={styles.title}>출결 수정</h2>
-        <p className={styles.dateInfo}>
-          {selectedDates.length}개의 날짜 선택됨
-        </p>
 
         <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>출결 상태</h3>
+          <h3 className={styles.sectionTitle}>
+            {selectedDates.length}개의 날짜 선택됨
+          </h3>
           <div className={styles.options}>
             {attendanceOptions.map((option) => (
               <label

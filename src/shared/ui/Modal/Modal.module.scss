@@ -15,7 +15,8 @@
   position: relative;
   width: fit-content;
   max-width: 1000px;
-  padding: var(--spacing-20);
+  padding: var(--spacing-28) var(--spacing-20) var(--spacing-20)
+    var(--spacing-20);
   background: var(--color-white);
   border-radius: 8px;
   box-shadow: var(--shadow-raised);

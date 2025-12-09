@@ -184,4 +184,9 @@
   position: absolute;
   top: var(--spacing-8);
   left: var(--spacing-8);
+
+  @media (width <= 400px) {
+    top: 0;
+    left: 0;
+  }
 }

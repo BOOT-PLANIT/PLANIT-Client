@@ -72,7 +72,7 @@ const generateMockData = (): DateData[] => {
     });
   });
 
-  // Annual (연차)
+  // Annual (월차)
   dates.push({
     date: new Date(2025, 9, 18),
     status: "annual",

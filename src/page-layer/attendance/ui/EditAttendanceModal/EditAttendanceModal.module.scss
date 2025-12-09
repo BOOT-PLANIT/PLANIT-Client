@@ -16,20 +16,11 @@
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   color: var(--foreground);
-  text-align: center;
-  margin: 0;
+  text-align: left;
 
   @media (width <= 400px) {
     font-size: var(--font-size-lg);
   }
-}
-
-.dateInfo {
-  font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  color: var(--foreground-lighter);
-  text-align: center;
-  margin: 0;
 }
 
 .section {
@@ -40,7 +31,7 @@
 
 .sectionTitle {
   font-family: var(--font-family);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-mg);
   font-weight: var(--font-weight-semibold);
   color: var(--foreground);
   margin: 0;
@@ -107,5 +98,4 @@
   justify-content: flex-end;
   gap: var(--spacing-12);
   padding-top: var(--spacing-8);
-  border-top: 1px solid var(--border-normal);
 }

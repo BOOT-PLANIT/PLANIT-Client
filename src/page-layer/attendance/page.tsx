@@ -3,6 +3,13 @@
 import { useState } from "react";
 
 import {
+  AttendanceSummaryCard,
+  EditAttendanceModal,
+  IconGuide,
+  PeriodAllowanceCard,
+  UnitPeriodStatsCard,
+} from "@/page-layer/attendance/ui";
+import {
   AbsentIcon,
   AnnualIcon,
   LateIcon,
@@ -12,14 +19,8 @@ import {
 } from "@/shared/assets/icons";
 import { Calendar, Card, Combobox } from "@/shared/ui";
 import type { AttendanceStatus, DateData } from "@/shared/ui";
-import {
-  AttendanceSummaryCard,
-  EditAttendanceModal,
-  IconGuide,
-  PeriodAllowanceCard,
-  UnitPeriodStatsCard,
-} from "@/widgets/attendance";
 
+import styles from "./Attendance.module.scss";
 import {
   generateAttendanceSummary,
   generateBootcampOptions,
@@ -27,9 +28,7 @@ import {
   generatePeriodAllowance,
   generateUnitStats,
   getCurrentUnit,
-} from "../model/mockData";
-
-import styles from "./Attendance.module.scss";
+} from "./model/mockData";
 
 const WeekendIcon = () => (
   <div
@@ -87,7 +86,7 @@ const Attendance = () => {
     { icon: <LateIcon width={20} height={20} />, label: "지각" },
     { icon: <LeftEarlyIcon width={20} height={20} />, label: "조퇴" },
     { icon: <LeaveIcon width={20} height={20} />, label: "공가" },
-    { icon: <AnnualIcon width={20} height={20} />, label: "연차" },
+    { icon: <AnnualIcon width={20} height={20} />, label: "월차" },
     { icon: <AbsentIcon width={20} height={20} />, label: "결석" },
     { icon: <WeekendIcon />, label: "주말" },
     { icon: <HasSessionIcon />, label: "교육일" },

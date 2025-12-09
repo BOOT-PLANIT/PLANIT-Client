@@ -1,1 +1,1 @@
-export { default as Attendance } from "./ui/Attendance";
+export { default as Attendance } from "./page";

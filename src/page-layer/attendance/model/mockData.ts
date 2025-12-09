@@ -29,7 +29,7 @@ export const generateAttendanceSummary = () => [
   },
   {
     status: "annual" as AttendanceStatus,
-    label: "연차",
+    label: "월차",
     count: 1,
   },
   {
