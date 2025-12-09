@@ -113,6 +113,7 @@
   --foreground-error: var(--color-system-error);
   --foreground-notice: var(--color-system-notice);
   --foreground-like: var(--color-system-like);
+  --foreground-disable: var(--color-grey-normal);
 
   /* Border */
   --border-normal: var(--color-grey-light-intense);
