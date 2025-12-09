@@ -18,7 +18,6 @@ import {
   UnitPeriodStatsCard,
 } from "@/widgets/attendance";
 
-import styles from "./Attendance.module.scss";
 import {
   generateAttendanceSummary,
   generateBootcampOptions,
@@ -26,7 +25,9 @@ import {
   generatePeriodAllowance,
   generateUnitStats,
   getCurrentUnit,
-} from "./mockData";
+} from "../model/mockData";
+
+import styles from "./Attendance.module.scss";
 
 const WeekendIcon = () => (
   <div
