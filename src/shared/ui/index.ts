@@ -3,3 +3,4 @@ export { Avatar } from "./Avatar";
 export { Card } from "./Card";
 export { Combobox } from "./Combobox";
 export { GlobalComponents } from "./GlobalComponents";
+export { Input } from "./Input";
