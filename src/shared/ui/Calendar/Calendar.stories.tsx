@@ -23,6 +23,10 @@ const meta: Meta<typeof Calendar> = {
       action: "editClicked",
       description: "편집 버튼 클릭 시 호출되는 콜백 함수",
     },
+    onMonthChange: {
+      action: "monthChanged",
+      description: "월 변경 시 호출되는 콜백 함수",
+    },
     initialMonth: {
       control: "date",
       description: "초기 표시할 월",
@@ -210,6 +214,29 @@ export const EmptyState: Story = {
   args: {
     dates: [],
     initialMonth: new Date(2025, 9, 1),
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ padding: 20 }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
+
+export const WithMonthChange: Story = {
+  args: {
+    dates: generateMockData(),
+    initialMonth: new Date(2025, 9, 1),
+    onMonthChange: (month) => {
+      console.log("월이 변경되었습니다:", month);
+      alert(
+        `월이 변경되었습니다: ${month.toLocaleDateString("ko-KR", {
+          year: "numeric",
+          month: "long",
+        })}`,
+      );
+    },
   },
   decorators: [
     (Story) => (
