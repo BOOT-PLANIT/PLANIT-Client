@@ -2,14 +2,10 @@
 
 import React, { useState, useMemo } from "react";
 
-import {
-  X as XIcon,
-  ChevronLeft,
-  ChevronRight,
-  Pencil,
-} from "@/shared/assets/icons";
+import { ChevronLeft, ChevronRight } from "@/shared/assets/icons";
 
 import styles from "./Calendar.module.scss";
+import FloatingBar from "./FloatingBar";
 
 export type AttendanceStatus =
   | "present"
@@ -23,6 +19,7 @@ export interface DateData {
   date: Date;
   status?: AttendanceStatus;
   isCurrentUnit?: boolean;
+  hasSession?: boolean;
 }
 
 interface CalendarProps {
@@ -31,6 +28,8 @@ interface CalendarProps {
   onEdit?: (dates: Date[]) => void;
   initialMonth?: Date;
 }
+
+const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
 const getDateKey = (date: Date): string => {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
@@ -157,8 +156,6 @@ const Calendar = ({
     }
   };
 
-  const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
-
   return (
     <div className={styles.calendar}>
       <div className={styles.header}>
@@ -200,12 +197,13 @@ const Calendar = ({
             const weekend = isWeekend(date);
             const isCurrentUnit = dateData?.isCurrentUnit;
             const today = isToday(date);
+            const hasSession = dateData?.hasSession;
 
             return (
               <button
                 key={`${date.getTime()}-${index}`}
                 type="button"
-                className={`${styles.day} ${!currentMonthDay ? styles.otherMonth : ""} ${selected ? styles.selected : ""} ${isCurrentUnit ? styles.currentUnit : ""} ${weekend ? styles.weekend : ""} ${today ? styles.today : ""} ${dateData?.status ? styles[`status-${dateData.status}`] : ""}`}
+                className={`${styles.day} ${!currentMonthDay ? styles.otherMonth : ""} ${selected ? styles.selected : ""} ${isCurrentUnit ? styles.currentUnit : ""} ${weekend ? styles.weekend : ""} ${today ? styles.today : ""} ${hasSession ? styles.hasSession : ""} ${dateData?.status ? styles[`status-${dateData.status}`] : ""}`}
                 onClick={() => handleDateClick(date)}
                 disabled={!currentMonthDay}
               >
@@ -217,27 +215,11 @@ const Calendar = ({
       </div>
 
       {selectedDates.length > 0 && (
-        <div className={styles.floatingBar}>
-          <span className={styles.selectionText}>
-            {selectedDates.length}개 날짜 선택됨
-          </span>
-          <button
-            type="button"
-            className={styles.clearButton}
-            onClick={handleClearSelection}
-            aria-label="선택 초기화"
-          >
-            <XIcon width={16} height={16} />
-          </button>
-          <button
-            type="button"
-            className={styles.editButton}
-            onClick={handleEdit}
-            aria-label="출결 등록"
-          >
-            <Pencil width={16} height={16} />
-          </button>
-        </div>
+        <FloatingBar
+          selectedCount={selectedDates.length}
+          onClear={handleClearSelection}
+          onEdit={handleEdit}
+        />
       )}
     </div>
   );
