@@ -36,7 +36,7 @@
   font-weight: var(--font-weight-semibold);
   color: var(--foreground);
 
-  @media (max-width: 400px) {
+  @media (width <= 400px) {
     display: none;
   }
 }

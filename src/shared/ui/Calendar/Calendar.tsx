@@ -27,6 +27,7 @@ interface CalendarProps {
   onDateSelect?: (dates: Date[]) => void;
   onEdit?: (dates: Date[]) => void;
   initialMonth?: Date;
+  onMonthChange?: (month: Date) => void;
 }
 
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
@@ -35,11 +36,25 @@ const getDateKey = (date: Date): string => {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 };
 
+const getStatusClassName = (status?: AttendanceStatus): string => {
+  if (!status) return "";
+  const statusMap: Record<AttendanceStatus, string> = {
+    present: "statusPresent",
+    late: "statusLate",
+    leftEarly: "statusLeftEarly",
+    leave: "statusLeave",
+    annual: "statusAnnual",
+    absent: "statusAbsent",
+  };
+  return styles[statusMap[status]] || "";
+};
+
 const Calendar = ({
   dates = [],
   onDateSelect,
   onEdit,
   initialMonth = new Date(),
+  onMonthChange,
 }: CalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(
     new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1),
@@ -134,15 +149,23 @@ const Calendar = ({
   };
 
   const handlePreviousMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1),
+    const newMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth() - 1,
+      1,
     );
+    setCurrentMonth(newMonth);
+    onMonthChange?.(newMonth);
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1),
+    const newMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth() + 1,
+      1,
     );
+    setCurrentMonth(newMonth);
+    onMonthChange?.(newMonth);
   };
 
   const handleClearSelection = () => {
@@ -203,7 +226,7 @@ const Calendar = ({
               <button
                 key={`${date.getTime()}-${index}`}
                 type="button"
-                className={`${styles.day} ${!currentMonthDay ? styles.otherMonth : ""} ${selected ? styles.selected : ""} ${isCurrentUnit ? styles.currentUnit : ""} ${weekend ? styles.weekend : ""} ${today ? styles.today : ""} ${hasSession ? styles.hasSession : ""} ${dateData?.status ? styles[`status-${dateData.status}`] : ""}`}
+                className={`${styles.day} ${!currentMonthDay ? styles.otherMonth : ""} ${selected ? styles.selected : ""} ${isCurrentUnit ? styles.currentUnit : ""} ${weekend ? styles.weekend : ""} ${today ? styles.today : ""} ${hasSession ? styles.hasSession : ""} ${getStatusClassName(dateData?.status)}`}
                 onClick={() => handleDateClick(date)}
                 disabled={!currentMonthDay}
               >

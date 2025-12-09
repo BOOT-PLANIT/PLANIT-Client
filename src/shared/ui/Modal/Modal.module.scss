@@ -1,0 +1,48 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-black-alpha-50);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  padding: var(--spacing-20);
+  background: var(--color-white);
+  border-radius: 8px;
+  box-shadow: var(--shadow-raised);
+}
+
+.closeButton {
+  position: absolute;
+  top: var(--spacing-8);
+  right: var(--spacing-8);
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--border-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}

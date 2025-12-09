@@ -2,8 +2,8 @@
   /* ==================== Colors ==================== */
 
   /* Black & White */
-  --color-white: #ffffff;
-  --color-black: #000000;
+  --color-white: #fff;
+  --color-black: #000;
 
   /* Blue (Primary) */
   --color-blue-light: #7fa2ff;
@@ -55,7 +55,7 @@
   --color-yellow-normal: #ffc05b;
 
   /* Black Alpha */
-  --color-black-alpha-0: #00000000;
+  --color-black-alpha-0: #0000;
   --color-black-alpha-2: #00000005;
   --color-black-alpha-4: #0000000a;
   --color-black-alpha-5: #0000000d;
@@ -64,7 +64,7 @@
   --color-black-alpha-10: #0000001a;
   --color-black-alpha-12: #0000001f;
   --color-black-alpha-16: #00000029;
-  --color-black-alpha-20: #00000033;
+  --color-black-alpha-20: #0003;
   --color-black-alpha-24: #0000003d;
   --color-black-alpha-28: #00000047;
   --color-black-alpha-32: #00000052;
@@ -73,7 +73,7 @@
   --color-black-alpha-90: #000000e6;
 
   /* White Alpha */
-  --color-white-alpha-0: #ffffff00;
+  --color-white-alpha-0: #fff0;
   --color-white-alpha-10: #ffffff1a;
   --color-white-alpha-50: #ffffff80;
   --color-white-alpha-84: #ffffffd6;
@@ -126,7 +126,7 @@
 
   /* Font Family */
   --font-family:
-    "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    "Pretendard", -apple-system, blinkmacsystemfont, system-ui, roboto,
     "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
     "Malgun Gothic", sans-serif;
 
