@@ -2,5 +2,7 @@ export { Button } from "./Button";
 export { Avatar } from "./Avatar";
 export { Card } from "./Card";
 export { Combobox } from "./Combobox";
+export { GlobalComponents } from "./GlobalComponents";
+export { Input } from "./Input";
 export { Calendar } from "./Calendar";
 export type { AttendanceStatus, DateData } from "./Calendar";

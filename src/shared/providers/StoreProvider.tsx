@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Provider } from "react-redux";
 
-import { makeStore } from "@/shared/store";
+import { makeStore } from "@/shared/store/store";
 
 interface StoreProviderProps {
   children: React.ReactNode;
