@@ -27,6 +27,7 @@ interface CalendarProps {
   onDateSelect?: (dates: Date[]) => void;
   onEdit?: (dates: Date[]) => void;
   initialMonth?: Date;
+  onMonthChange?: (month: Date) => void;
 }
 
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
@@ -40,6 +41,7 @@ const Calendar = ({
   onDateSelect,
   onEdit,
   initialMonth = new Date(),
+  onMonthChange,
 }: CalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(
     new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1),
@@ -134,15 +136,23 @@ const Calendar = ({
   };
 
   const handlePreviousMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1),
+    const newMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth() - 1,
+      1,
     );
+    setCurrentMonth(newMonth);
+    onMonthChange?.(newMonth);
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1),
+    const newMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth() + 1,
+      1,
     );
+    setCurrentMonth(newMonth);
+    onMonthChange?.(newMonth);
   };
 
   const handleClearSelection = () => {
