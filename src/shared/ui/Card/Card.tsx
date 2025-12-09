@@ -8,6 +8,7 @@ interface CardProps {
   titleIcon?: React.ReactNode;
   children: React.ReactNode;
   width?: string;
+  onClick?: () => void;
 }
 
 const Card = ({
@@ -16,9 +17,14 @@ const Card = ({
   titleIcon,
   children,
   width = "100%",
+  onClick,
 }: CardProps) => {
   return (
-    <div className={`${styles.card} ${styles[variant]}`} style={{ width }}>
+    <div
+      className={`${styles.card} ${styles[variant]}`}
+      style={{ width }}
+      onClick={onClick}
+    >
       {title && (
         <div className={styles.header}>
           {titleIcon && <span className={styles.titleIcon}>{titleIcon}</span>}
