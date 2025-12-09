@@ -135,7 +135,7 @@
     background: var(--color-purple-lightest);
   }
 
-  &[class*="status-"]::after {
+  &[class*="status"]::after {
     content: "";
     position: absolute;
     top: 50%;
