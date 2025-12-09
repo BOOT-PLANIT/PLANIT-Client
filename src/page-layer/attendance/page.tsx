@@ -129,7 +129,6 @@ const Attendance = () => {
               options={bootcampOptions}
               value={selectedBootcampIndex}
               onChange={setSelectedBootcampIndex}
-              width="400px"
             />
             <div className={styles.currentUnit}>
               <svg
