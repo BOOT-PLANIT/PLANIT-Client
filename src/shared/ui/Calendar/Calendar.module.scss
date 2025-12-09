@@ -110,10 +110,11 @@
     opacity: 0.3;
   }
 
-  &.selected {
+  &.selected,
+  &.hasSession.selected {
     background: var(--color-blue-light-intense);
     border-color: var(--border-primary);
-    box-shadow: 0 0 0 2px var(--color-blue-light);
+    box-shadow: 0 0 0 1px var(--color-blue-light);
   }
 
   &.currentUnit {
@@ -132,13 +133,6 @@
   &.hasSession {
     position: relative;
     background: var(--color-purple-lightest);
-    border-color: var(--color-purple-light);
-  }
-
-  &.hasSession.selected {
-    background: var(--color-blue-light-intense);
-    border-color: var(--border-primary);
-    box-shadow: 0 0 0 2px var(--color-blue-light);
   }
 
   &[class*="status-"]::after {
