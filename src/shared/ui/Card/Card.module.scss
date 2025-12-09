@@ -3,6 +3,7 @@
   box-shadow: var(--shadow-embossed);
   border: 1px solid var(--border-secondary);
   padding: var(--spacing-20);
+  container-type: inline-size;
 }
 
 .solid {
