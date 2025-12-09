@@ -11,10 +11,14 @@ import {
   PresentIcon,
 } from "@/shared/assets/icons";
 import { Calendar, Card, Combobox } from "@/shared/ui";
+import {
+  AttendanceSummaryCard,
+  IconGuide,
+  PeriodAllowanceCard,
+  UnitPeriodStatsCard,
+} from "@/widgets/attendance";
 
 import styles from "./Attendance.module.scss";
-import AttendanceSummaryCard from "./AttendanceSummaryCard";
-import IconGuide from "./IconGuide";
 import {
   generateAttendanceSummary,
   generateBootcampOptions,
@@ -23,8 +27,6 @@ import {
   generateUnitStats,
   getCurrentUnit,
 } from "./mockData";
-import PeriodAllowanceCard from "./PeriodAllowanceCard";
-import UnitPeriodStatsCard from "./UnitPeriodStatsCard";
 
 const WeekendIcon = () => (
   <div
