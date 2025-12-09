@@ -1,0 +1,120 @@
+"use client";
+
+import { useState } from "react";
+
+import {
+  AbsentIcon,
+  AnnualIcon,
+  LateIcon,
+  LeftEarlyIcon,
+  LeaveIcon,
+  PresentIcon,
+} from "@/shared/assets/icons";
+import { Button, Modal } from "@/shared/ui";
+import type { AttendanceStatus } from "@/shared/ui";
+
+import styles from "./EditAttendanceModal.module.scss";
+
+interface EditAttendanceModalProps {
+  selectedDates: Date[];
+  onClose: () => void;
+  onSave: (dates: Date[], status: AttendanceStatus) => void;
+}
+
+const attendanceOptions: {
+  value: AttendanceStatus;
+  label: string;
+  icon: React.ReactNode;
+}[] = [
+  {
+    value: "present",
+    label: "출석",
+    icon: <PresentIcon width={20} height={20} />,
+  },
+  {
+    value: "late",
+    label: "지각",
+    icon: <LateIcon width={20} height={20} />,
+  },
+  {
+    value: "leftEarly",
+    label: "조퇴",
+    icon: <LeftEarlyIcon width={20} height={20} />,
+  },
+  {
+    value: "leave",
+    label: "휴가",
+    icon: <LeaveIcon width={20} height={20} />,
+  },
+  {
+    value: "annual",
+    label: "연차",
+    icon: <AnnualIcon width={20} height={20} />,
+  },
+  {
+    value: "absent",
+    label: "결석",
+    icon: <AbsentIcon width={20} height={20} />,
+  },
+];
+
+const EditAttendanceModal = ({
+  selectedDates,
+  onClose,
+  onSave,
+}: EditAttendanceModalProps) => {
+  const [selectedStatus, setSelectedStatus] =
+    useState<AttendanceStatus>("present");
+
+  const handleSave = () => {
+    onSave(selectedDates, selectedStatus);
+    onClose();
+  };
+
+  return (
+    <Modal onClose={onClose}>
+      <div className={styles.content}>
+        <h2 className={styles.title}>출결 수정</h2>
+        <p className={styles.dateInfo}>
+          {selectedDates.length}개의 날짜 선택됨
+        </p>
+
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>출결 상태</h3>
+          <div className={styles.options}>
+            {attendanceOptions.map((option) => (
+              <label
+                key={option.value}
+                className={`${styles.option} ${
+                  selectedStatus === option.value ? styles.selected : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="attendanceStatus"
+                  value={option.value}
+                  checked={selectedStatus === option.value}
+                  onChange={() => setSelectedStatus(option.value)}
+                  className={styles.radio}
+                />
+                <div className={styles.icon}>{option.icon}</div>
+                <span className={styles.label}>{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.actions}>
+          <Button variant="outline" onClick={onClose} width="auto">
+            취소
+          </Button>
+          <Button variant="primary" onClick={handleSave} width="auto">
+            저장
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+export default EditAttendanceModal;

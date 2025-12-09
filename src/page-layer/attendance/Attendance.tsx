@@ -11,15 +11,14 @@ import {
   PresentIcon,
 } from "@/shared/assets/icons";
 import { Calendar, Card, Combobox } from "@/shared/ui";
-import type { AttendanceStatus, DateData } from "@/shared/ui";
 import {
   AttendanceSummaryCard,
-  EditAttendanceModal,
   IconGuide,
   PeriodAllowanceCard,
   UnitPeriodStatsCard,
 } from "@/widgets/attendance";
 
+import styles from "./Attendance.module.scss";
 import {
   generateAttendanceSummary,
   generateBootcampOptions,
@@ -27,9 +26,7 @@ import {
   generatePeriodAllowance,
   generateUnitStats,
   getCurrentUnit,
-} from "../model/mockData";
-
-import styles from "./Attendance.module.scss";
+} from "./model/mockData";
 
 const WeekendIcon = () => (
   <div
@@ -55,17 +52,13 @@ const HasSessionIcon = () => (
 
 const Attendance = () => {
   const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
-  const [calendarDates, setCalendarDates] = useState<DateData[]>(
-    generateCalendarDates(),
-  );
 
   const bootcampOptions = generateBootcampOptions();
   const currentUnit = getCurrentUnit();
   const attendanceSummaryData = generateAttendanceSummary();
   const unitStats = generateUnitStats();
   const periodAllowance = generatePeriodAllowance();
+  const calendarDates = generateCalendarDates();
   const initialMonth = new Date();
 
   const iconMap = {
@@ -92,34 +85,6 @@ const Attendance = () => {
     { icon: <WeekendIcon />, label: "주말" },
     { icon: <HasSessionIcon />, label: "교육일" },
   ];
-
-  const handleEdit = (dates: Date[]) => {
-    setSelectedDatesForEdit(dates);
-    setIsEditModalOpen(true);
-  };
-
-  const handleSaveEdit = (dates: Date[], status: AttendanceStatus) => {
-    setCalendarDates((prevDates) => {
-      const datesMap = new Map(
-        prevDates.map((dateData) => [
-          `${dateData.date.getFullYear()}-${dateData.date.getMonth()}-${dateData.date.getDate()}`,
-          dateData,
-        ]),
-      );
-
-      dates.forEach((date) => {
-        const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-        const existing = datesMap.get(key);
-        if (existing) {
-          datesMap.set(key, { ...existing, status });
-        } else {
-          datesMap.set(key, { date, status });
-        }
-      });
-
-      return Array.from(datesMap.values());
-    });
-  };
 
   return (
     <div className={styles.container}>
@@ -169,22 +134,10 @@ const Attendance = () => {
         </div>
 
         <Card variant="solid" width="100%">
-          <Calendar
-            dates={calendarDates}
-            initialMonth={initialMonth}
-            onEdit={handleEdit}
-          />
+          <Calendar dates={calendarDates} initialMonth={initialMonth} />
           <IconGuide items={iconGuideItems} />
         </Card>
       </div>
-
-      {isEditModalOpen && (
-        <EditAttendanceModal
-          selectedDates={selectedDatesForEdit}
-          onClose={() => setIsEditModalOpen(false)}
-          onSave={handleSaveEdit}
-        />
-      )}
     </div>
   );
 };
