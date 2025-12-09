@@ -8,6 +8,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   label?: string;
   errorMessage?: string;
   width?: string;
+  icon?: React.ReactNode;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -17,6 +18,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       errorMessage,
       width = "100%",
       className = "",
+      icon,
       ...props
     }: InputProps,
     ref,
@@ -25,12 +27,17 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       <div className={`${styles.wrapper}`}>
         {label && <label className={styles.label}>{label}</label>}
 
-        <input
-          ref={ref}
-          className={`${styles.input} ${className} ${errorMessage ? styles.error : ""}`}
+        <div
+          className={`${styles.inputContainer} ${errorMessage ? styles.error : ""}`}
           style={{ width }}
-          {...props}
-        />
+        >
+          {icon && <div className={styles.icon}>{icon}</div>}
+          <input
+            ref={ref}
+            className={`${styles.input} ${className} ${icon ? styles.withIcon : ""}`}
+            {...props}
+          />
+        </div>
 
         {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
       </div>

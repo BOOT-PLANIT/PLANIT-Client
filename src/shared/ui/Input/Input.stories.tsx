@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
+import { InfoIcon, ErrorIcon } from "@/shared/assets/icons";
+
 import Input from "./Input";
 
 const meta = {
@@ -43,5 +45,22 @@ export const Disabled: Story = {
 export const OnlyInput: Story = {
   args: {
     placeholder: "라벨 없이 사용",
+  },
+};
+
+export const WithIcon: Story = {
+  args: {
+    label: "이메일",
+    placeholder: "이메일을 입력하세요",
+    icon: <InfoIcon />,
+  },
+};
+
+export const WithIconAndError: Story = {
+  args: {
+    label: "비밀번호",
+    placeholder: "비밀번호를 입력하세요",
+    icon: <ErrorIcon />,
+    errorMessage: "비밀번호가 너무 짧습니다.",
   },
 };

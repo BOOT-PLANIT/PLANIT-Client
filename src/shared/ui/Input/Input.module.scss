@@ -10,22 +10,46 @@
   color: var(--foreground);
 }
 
-.input {
-  padding: var(--spacing-10) var(--spacing-12);
+.inputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
   background-color: var(--color-cloud-normal-strong);
   border: 1px solid var(--border-normal);
+  border-radius: var(--radius-8);
+  transition: border-color 0.2s;
+
+  &:focus-within {
+    border-color: var(--border-primary);
+  }
+
+  &.error {
+    border-color: var(--foreground-error) !important;
+  }
+}
+
+.input {
+  flex: 1;
+  padding: var(--spacing-10) var(--spacing-12);
+  background-color: transparent;
+  border: none;
   border-radius: var(--radius-8);
   font-size: var(--font-size-base);
   outline: none;
   transition: border-color 0.2s;
 
-  &:focus {
-    border-color: var(--border-primary);
+  &.withIcon {
+    padding-left: var(--spacing-8);
   }
 }
 
-.error {
-  border-color: var(--foreground-error) !important;
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-lighter);
+  flex-shrink: 0;
+  padding-left: var(--spacing-12);
 }
 
 .errorMessage {
