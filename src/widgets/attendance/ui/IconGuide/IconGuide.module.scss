@@ -1,0 +1,30 @@
+.iconGuide {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-16);
+  padding: var(--spacing-16) 0;
+  border-top: 1px solid var(--border-normal);
+  margin-top: var(--spacing-24);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  color: var(--foreground);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.label {
+  color: var(--foreground);
+}

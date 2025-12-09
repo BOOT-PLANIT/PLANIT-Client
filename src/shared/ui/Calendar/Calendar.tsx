@@ -36,6 +36,19 @@ const getDateKey = (date: Date): string => {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 };
 
+const getStatusClassName = (status?: AttendanceStatus): string => {
+  if (!status) return "";
+  const statusMap: Record<AttendanceStatus, string> = {
+    present: "statusPresent",
+    late: "statusLate",
+    leftEarly: "statusLeftEarly",
+    leave: "statusLeave",
+    annual: "statusAnnual",
+    absent: "statusAbsent",
+  };
+  return styles[statusMap[status]] || "";
+};
+
 const Calendar = ({
   dates = [],
   onDateSelect,
@@ -213,7 +226,7 @@ const Calendar = ({
               <button
                 key={`${date.getTime()}-${index}`}
                 type="button"
-                className={`${styles.day} ${!currentMonthDay ? styles.otherMonth : ""} ${selected ? styles.selected : ""} ${isCurrentUnit ? styles.currentUnit : ""} ${weekend ? styles.weekend : ""} ${today ? styles.today : ""} ${hasSession ? styles.hasSession : ""} ${dateData?.status ? styles[`status-${dateData.status}`] : ""}`}
+                className={`${styles.day} ${!currentMonthDay ? styles.otherMonth : ""} ${selected ? styles.selected : ""} ${isCurrentUnit ? styles.currentUnit : ""} ${weekend ? styles.weekend : ""} ${today ? styles.today : ""} ${hasSession ? styles.hasSession : ""} ${getStatusClassName(dateData?.status)}`}
                 onClick={() => handleDateClick(date)}
                 disabled={!currentMonthDay}
               >
