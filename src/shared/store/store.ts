@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-const dummyReducer = (state = {}) => state;
+import toastReducer from "./toastSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      app: dummyReducer,
+      toast: toastReducer,
     },
   });
 };

@@ -4,3 +4,5 @@ export { Card } from "./Card";
 export { Combobox } from "./Combobox";
 export { Calendar } from "./Calendar";
 export type { AttendanceStatus, DateData } from "./Calendar";
+export { GlobalComponents } from "./GlobalComponents";
+export { Input } from "./Input";
