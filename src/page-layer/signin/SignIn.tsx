@@ -63,7 +63,7 @@ const SignIn = () => {
           </div>
           <h1 className={styles.title}>PLANIT</h1>
           <p className={styles.subtitle}>
-            출석, 진행 상황, 훈련 수당을 추적하세요
+            출석, 진행 상황, 훈련 수당을 관리하세요
           </p>
         </div>
 
@@ -86,10 +86,6 @@ const SignIn = () => {
             Google로 계속하기
           </Button>
         </div>
-
-        <p className={styles.footer}>
-          계속 진행하면 서비스 약관 및 개인정보 처리방침에 동의하는 것입니다
-        </p>
       </div>
     </div>
   );
