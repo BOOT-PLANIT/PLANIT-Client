@@ -12,14 +12,15 @@
   border-radius: var(--radius-12);
   box-shadow: var(--shadow-floated);
   z-index: 1000;
-  animation: slideUp 0.3s ease-out;
+  animation: slide-up 0.3s ease-out;
 }
 
-@keyframes slideUp {
+@keyframes slide-up {
   from {
     opacity: 0;
     transform: translateX(-50%) translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -34,8 +35,7 @@
   white-space: nowrap;
 }
 
-.clearButton,
-.editButton {
+.clearButton {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,11 +60,25 @@
 }
 
 .editButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-normal);
+  border-radius: var(--radius-6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
   background: var(--background-primary);
   color: var(--foreground-accent);
   border-color: var(--border-primary);
 
   &:hover {
     background: var(--background-primary-dark);
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 }

@@ -7,7 +7,6 @@
   min-width: 220px;
   min-height: 60px;
   box-shadow: var(--shadow-floated);
-
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -17,7 +16,6 @@
   border-radius: var(--radius-6);
   padding: var(--spacing-8) var(--spacing-16);
   gap: var(--spacing-16);
-
   opacity: 0;
   animation:
     fadeIn 0.3s ease forwards,
@@ -25,11 +23,12 @@
 }
 
 /* 등장 애니메이션 */
-@keyframes fadeIn {
+@keyframes fade-in {
   from {
     opacity: 0;
     transform: translate(-50%, -10px);
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, 0);
@@ -37,11 +36,12 @@
 }
 
 /* 사라짐 애니메이션 */
-@keyframes fadeOut {
+@keyframes fade-out {
   from {
     opacity: 1;
     transform: translate(-50%, 0);
   }
+
   to {
     opacity: 0;
     transform: translate(-50%, -10px);
@@ -67,6 +67,7 @@
 
 .success {
   border: solid 1px var(--border-primary);
+
   .icon {
     color: var(--color-blue-normal);
   }
@@ -74,6 +75,7 @@
 
 .error {
   border: solid 1px var(--color-system-error);
+
   .icon {
     color: var(--color-system-error);
   }

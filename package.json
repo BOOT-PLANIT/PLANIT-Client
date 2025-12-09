@@ -8,19 +8,25 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "lint-fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format-check": "prettier --check .",
+    "fix:js": "eslint . --fix",
+    "fix:format": "prettier --write .",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "fix:css": "stylelint \"**/*.{css,scss}\" --fix",
+    "lint:css": "stylelint \"**/*.{css,scss}\"",
+    "fix": "npm run fix:js && npm run fix:format && npm run fix:css"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{json,md,css,scss,html}": [
+    "*.{css,scss}": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,html}": [
       "prettier --write"
     ]
   },
@@ -68,8 +74,15 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "playwright": "^1.57.0",
+    "postcss-scss": "^4.0.9",
     "prettier": "^3.7.4",
     "storybook": "^10.1.4",
+    "stylelint": "^16.26.1",
+    "stylelint-config-prettier": "^9.0.5",
+    "stylelint-config-prettier-scss": "^1.0.0",
+    "stylelint-config-recommended-scss": "^16.0.2",
+    "stylelint-config-standard": "^39.0.1",
+    "stylelint-config-standard-scss": "^16.0.0",
     "typescript": "^5",
     "typescript-eslint": "^8.48.1",
     "vite": "^7.2.6",
