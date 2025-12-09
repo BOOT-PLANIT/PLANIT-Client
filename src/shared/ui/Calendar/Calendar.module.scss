@@ -69,7 +69,7 @@
 .weekDay {
   text-align: center;
   font-family: var(--font-family);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--foreground-lighter);
   padding: var(--spacing-8);
@@ -97,7 +97,7 @@
   grid-column: span 1;
 
   &:hover:not(:disabled) {
-    background: var(--background-secondary);
+    background: var(--color-blue-light-intense);
     border-color: var(--border-primary-light);
   }
 
@@ -110,10 +110,11 @@
     opacity: 0.3;
   }
 
-  &.selected {
+  &.selected,
+  &.hasSession.selected {
     background: var(--color-blue-light-intense);
     border-color: var(--border-primary);
-    box-shadow: 0 0 0 2px var(--color-blue-light);
+    box-shadow: 0 0 0 1px var(--color-blue-light);
   }
 
   &.currentUnit {
@@ -127,6 +128,11 @@
   &.today {
     border: 2px solid var(--border-primary);
     font-weight: var(--font-weight-bold);
+  }
+
+  &.hasSession {
+    position: relative;
+    background: var(--color-purple-lightest);
   }
 
   &[class*="status-"]::after {
@@ -178,75 +184,4 @@
   position: absolute;
   top: var(--spacing-8);
   left: var(--spacing-8);
-}
-
-.floatingBar {
-  position: fixed;
-  bottom: var(--spacing-24);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-12);
-  padding: var(--spacing-12) var(--spacing-20);
-  background: var(--background);
-  border: 1px solid var(--border-normal);
-  border-radius: var(--radius-12);
-  box-shadow: var(--shadow-floated);
-  z-index: 1000;
-  animation: slideUp 0.3s ease-out;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-.selectionText {
-  font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--foreground);
-  white-space: nowrap;
-}
-
-.clearButton,
-.editButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--border-normal);
-  border-radius: var(--radius-6);
-  background: var(--background);
-  color: var(--foreground);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-
-  &:hover {
-    background: var(--background-secondary);
-    border-color: var(--border-primary);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-}
-
-.editButton {
-  background: var(--background-primary);
-  color: var(--foreground-accent);
-  border-color: var(--border-primary);
-
-  &:hover {
-    background: var(--background-primary-dark);
-  }
 }

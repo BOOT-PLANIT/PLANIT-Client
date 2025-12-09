@@ -14,6 +14,7 @@ const Home = () => {
     dates.push({
       date: new Date(currentYear, currentMonth, currentDay),
       status: "present",
+      hasSession: true,
     });
 
     for (let i = -5; i <= 5; i++) {
@@ -24,6 +25,7 @@ const Home = () => {
             dates.push({
               date: date,
               status: "present",
+              hasSession: i % 2 === 0, // 짝수 날짜에만 세션이 있다고 가정
             });
           }
         }
