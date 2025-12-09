@@ -18,6 +18,11 @@ export interface Bootcamp {
   classDates: string[];
 }
 
+interface BootcampListProps {
+  onSelectBootcamp: (bootcamp: Bootcamp | null) => void;
+  manage: boolean; // 관리자모드
+}
+
 const bootcampDummy: Bootcamp[] = [
   {
     id: 1,
@@ -71,35 +76,45 @@ const bootcampDummy: Bootcamp[] = [
   },
 ];
 
-const BootcampList = () => {
-  const [selectBootcamp, setSelectBootcamp] = useState<Bootcamp>();
+const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
+  const [selectedItem, setSelectedItem] = useState<Bootcamp | null>(null);
 
   const handleSelect = (bootcamp: Bootcamp) => {
-    setSelectBootcamp(bootcamp);
-    console.log(selectBootcamp);
+    if (!manage) {
+      if (selectedItem?.id === bootcamp.id) {
+        setSelectedItem(null);
+        onSelectBootcamp(null);
+      } else {
+        setSelectedItem(bootcamp);
+        onSelectBootcamp(bootcamp);
+      }
+    }
+  };
+
+  const handleDelete = (bootcamp: Bootcamp) => {
+    console.log("부트캠프 삭제", bootcamp);
+  };
+
+  const handleEdit = (bootcamp: Bootcamp) => {
+    console.log("부트캠프 수정", bootcamp);
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.container}>
       <Input
         placeholder="검색하실 부트캠프 이름 또는 교육기관을 입력하세요..."
         icon={<SearchIcon />}
       />
-      {/* <div>
-        {bootcampDummy.map((bootcamp) => (
-          <BootcampListItem key={bootcamp.id} Bootcamp={bootcamp} selectItem={() => handleSelect} />
-        ))}
-      </div> */}
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Organization</th>
-            <th>Bootcamp Name</th>
-            <th>Schedule</th>
-            <th>Duration</th>
+            <th>훈련기관</th>
+            <th>부트캠프 이름</th>
+            <th>일정</th>
+            <th>훈련일수</th>
             <th>KDT</th>
-            <th>Status</th>
+            <th>상태</th>
+            {manage && <th colSpan={2}>관리</th>}
           </tr>
         </thead>
 
@@ -107,8 +122,12 @@ const BootcampList = () => {
           {bootcampDummy.map((b) => (
             <BootcampListItem
               key={b.id}
+              isSelect={b.id === selectedItem?.id}
               Bootcamp={b}
-              selectItem={() => handleSelect}
+              manage={manage}
+              selectItem={() => handleSelect(b)}
+              editItem={() => handleEdit(b)}
+              deleteItem={() => handleDelete(b)}
             />
           ))}
         </tbody>

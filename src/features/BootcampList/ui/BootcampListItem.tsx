@@ -1,37 +1,38 @@
 import React from "react";
 
+import { EditIcon, DeleteIcon } from "@/shared/assets";
+
 import type { Bootcamp } from "./BootcampList";
 import styles from "./BootcampListItem.module.scss";
 
 interface BootcampListItemProps {
   Bootcamp: Bootcamp;
+  isSelect?: boolean;
+  manage: boolean;
   selectItem: () => void;
-  editItem?: () => void;
-  deleteItem?: () => void;
+  editItem: () => void;
+  deleteItem: () => void;
 }
 
 const BootcampListItem = ({
   Bootcamp,
-  //   selectItem,
-  //   editItem,
-  //   deleteItem,
+  isSelect,
+  manage,
+  selectItem,
+  editItem,
+  deleteItem,
 }: BootcampListItemProps) => {
   return (
-    <tr className={styles.row}>
-      <td className={styles.organization}>
-        <span className={styles.icon}>🏫</span>
-        {Bootcamp.organizer}
-      </td>
+    <tr
+      className={`${styles.row} ${isSelect ? styles.selected : ""}`}
+      onClick={selectItem}
+    >
+      <td className={styles.organization}>{Bootcamp.organizer}</td>
 
-      <td className={styles.name}>
-        <span className={styles.tag}>🏷️</span>
-        {Bootcamp.name}
-      </td>
+      <td className={styles.name}>{Bootcamp.name}</td>
 
       <td className={styles.schedule}>
-        <div className={styles.date}>
-          {Bootcamp.startedAt} - {Bootcamp.endedAt}
-        </div>
+        {Bootcamp.startedAt} - {Bootcamp.endedAt}
       </td>
 
       <td className={styles.duration}>{Bootcamp.classDates.length} 일</td>
@@ -47,6 +48,25 @@ const BootcampListItem = ({
           {Bootcamp.isEnded ? "Active" : "Ended"}
         </span>
       </td>
+
+      {manage && (
+        <>
+          <td>
+            <div className={styles.icon} onClick={editItem}>
+              <EditIcon />
+            </div>
+          </td>
+
+          <td>
+            <div
+              className={`${styles.delete} ${styles.icon}`}
+              onClick={deleteItem}
+            >
+              <DeleteIcon />
+            </div>
+          </td>
+        </>
+      )}
     </tr>
   );
 };

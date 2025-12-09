@@ -1,0 +1,53 @@
+/* 리스트 전체 레이아웃 */
+.container {
+  width: 100%;
+  margin-top: 24px;
+}
+
+/* 테이블 기본 스타일 */
+.table {
+  width: 100%;
+  border-collapse: collapse; // border 사이 공백 제거
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+/* 테이블 헤더 스타일 */
+.table thead th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 8px;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+// /* Index (#) 컬럼은 항상 중앙 정렬 */
+// .table thead th:first-child {
+//   text-align: center;
+//   width: 40px;
+// }
+
+/* 각 컬럼간 간격 */
+// .table th:nth-child(1) {
+//   width: 180px;
+// }
+
+// .table th:nth-child(2) {
+//   width: 280px;
+// }
+
+// .table th:nth-child(3) {
+//   width: 260px;
+// }
+
+// .table th:nth-child(4) {
+//   width: 120px;
+// }
+
+// .table th:nth-child(5),
+// .table th:nth-child(6) {
+//   width: 80px;
+//   text-align: center;
+// }

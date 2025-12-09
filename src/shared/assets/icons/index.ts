@@ -7,3 +7,5 @@ export { default as InfoIcon } from "./InfoIcon";
 export { default as ErrorIcon } from "./ErrorIcon";
 export { default as SuccessIcon } from "./SuccessIcon";
 export { default as SearchIcon } from "./SearchIcon";
+export { default as DeleteIcon } from "./DeleteIcon";
+export { default as EditIcon } from "./EditIcon";

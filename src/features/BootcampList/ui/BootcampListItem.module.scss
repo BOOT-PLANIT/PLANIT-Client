@@ -8,44 +8,23 @@
     background: #f9fafb;
   }
 }
-
-.index {
-  text-align: center;
-  width: 40px;
-  color: #6b7280;
+.selected {
+  background-color: #1d4ed8;
+  &:hover {
+    background: #1d4ed8;
+  }
 }
 
-.organization,
-.name {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.organization {
   font-weight: 500;
 }
 
-.icon {
-  font-size: 16px;
-  opacity: 0.7;
-}
-
-.tag {
-  opacity: 0.7;
-}
-
-.schedule {
-  .date {
-    font-weight: 500;
-    color: #111827;
-  }
-
-  .days {
-    font-size: 12px;
-    color: #6b7280;
-  }
+.name {
+  font-weight: 500;
 }
 
 .duration {
-  font-weight: 500;
+  text-align: center;
 }
 
 .kdt {
@@ -81,4 +60,16 @@
   background-color: #e5e7eb; // gray bg
   color: #374151; // gray text
   font-weight: 600;
+}
+
+.icon {
+  width: fit-content;
+
+  &:hover {
+    opacity: 0.6;
+  }
+}
+
+.delete {
+  color: var(--color-system-error);
 }
