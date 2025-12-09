@@ -1,0 +1,84 @@
+.row {
+  height: 56px;
+  border-bottom: 1px solid #e5e7eb; // light gray
+  font-size: 14px;
+  color: #111827;
+
+  &:hover {
+    background: #f9fafb;
+  }
+}
+
+.index {
+  text-align: center;
+  width: 40px;
+  color: #6b7280;
+}
+
+.organization,
+.name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.icon {
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.tag {
+  opacity: 0.7;
+}
+
+.schedule {
+  .date {
+    font-weight: 500;
+    color: #111827;
+  }
+
+  .days {
+    font-size: 12px;
+    color: #6b7280;
+  }
+}
+
+.duration {
+  font-weight: 500;
+}
+
+.kdt {
+  text-align: center;
+}
+
+.kdtBadge {
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  background-color: #dbeafe; // light blue
+  color: #1d4ed8; // blue
+  font-weight: 600;
+}
+
+.status {
+  text-align: center;
+}
+
+.activeBadge {
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  background-color: #dcfce7; // green bg
+  color: #15803d; // green text
+  font-weight: 600;
+}
+
+.endedBadge {
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  background-color: #e5e7eb; // gray bg
+  color: #374151; // gray text
+  font-weight: 600;
+}
