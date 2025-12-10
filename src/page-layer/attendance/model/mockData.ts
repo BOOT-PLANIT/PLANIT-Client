@@ -1,42 +1,9 @@
-import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
+import type { DateData } from "@/shared/ui/Calendar";
 
 export const generateBootcampOptions = () => [
   { value: "fullstack", label: "풀스택 웹 개발 부트캠프" },
   { value: "frontend", label: "프론트엔드 개발 부트캠프" },
   { value: "backend", label: "백엔드 개발 부트캠프" },
-];
-
-export const generateAttendanceSummary = () => [
-  {
-    status: "present" as AttendanceStatus,
-    label: "출석",
-    count: 13,
-  },
-  {
-    status: "late" as AttendanceStatus,
-    label: "지각",
-    count: 2,
-  },
-  {
-    status: "leftEarly" as AttendanceStatus,
-    label: "조퇴",
-    count: 2,
-  },
-  {
-    status: "leave" as AttendanceStatus,
-    label: "공가",
-    count: 2,
-  },
-  {
-    status: "annual" as AttendanceStatus,
-    label: "월차",
-    count: 1,
-  },
-  {
-    status: "absent" as AttendanceStatus,
-    label: "결석",
-    count: 0,
-  },
 ];
 
 export const generateUnitStats = () => ({
