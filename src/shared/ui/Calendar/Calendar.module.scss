@@ -121,6 +121,11 @@
     background: var(--color-purple-lightest);
   }
 
+  &.otherUnit {
+    position: relative;
+    background: var(--color-yellow-lightest);
+  }
+
   &.weekend {
     background: var(--background-tertiary-darker);
   }

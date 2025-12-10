@@ -52,6 +52,17 @@ const CurrentUnitIcon = () => (
   />
 );
 
+const OtherUnitIcon = () => (
+  <div
+    style={{
+      width: "16px",
+      height: "16px",
+      backgroundColor: "var(--color-yellow-lightest)",
+      borderRadius: "4px",
+    }}
+  />
+);
+
 const getUnitPeriodForDate = (
   date: Date,
   unitPeriods: Array<{ startDate: Date; endDate: Date; unitNumber: number }>,
@@ -159,34 +170,55 @@ const Attendance = () => {
         ).period
       : null;
 
-  const calendarDates = !selectedPeriod
-    ? []
-    : allCalendarDates
-        .filter((dateData) => {
-          const date = dateData.date;
-          const isInTargetMonth =
-            date.getFullYear() === targetYear &&
-            date.getMonth() === targetMonthIndex;
+  const calendarDates = allCalendarDates
+    .filter((dateData) => {
+      const date = dateData.date;
+      const isInTargetMonth =
+        date.getFullYear() === targetYear &&
+        date.getMonth() === targetMonthIndex;
 
-          const prevMonth = new Date(targetYear, targetMonthIndex, 1);
-          prevMonth.setMonth(prevMonth.getMonth() - 1);
-          const isInPrevMonth =
-            date.getFullYear() === prevMonth.getFullYear() &&
-            date.getMonth() === prevMonth.getMonth();
+      const prevMonth = new Date(targetYear, targetMonthIndex, 1);
+      prevMonth.setMonth(prevMonth.getMonth() - 1);
+      const isInPrevMonth =
+        date.getFullYear() === prevMonth.getFullYear() &&
+        date.getMonth() === prevMonth.getMonth();
 
-          if (!isInTargetMonth && !isInPrevMonth) {
-            return false;
-          }
+      const nextMonth = new Date(targetYear, targetMonthIndex, 1);
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      const isInNextMonth =
+        date.getFullYear() === nextMonth.getFullYear() &&
+        date.getMonth() === nextMonth.getMonth();
 
-          return (
-            date.getTime() >= selectedPeriod.startDate.getTime() &&
-            date.getTime() <= selectedPeriod.endDate.getTime()
-          );
-        })
-        .map((dateData) => ({
-          ...dateData,
-          isCurrentUnit: true,
-        }));
+      if (!isInTargetMonth && !isInPrevMonth && !isInNextMonth) {
+        return false;
+      }
+
+      return unitPeriods.some(
+        (period) =>
+          date.getTime() >= period.startDate.getTime() &&
+          date.getTime() <= period.endDate.getTime(),
+      );
+    })
+    .map((dateData) => {
+      const date = dateData.date;
+      const isInCurrentPeriod =
+        selectedPeriod !== null &&
+        date.getTime() >= selectedPeriod.startDate.getTime() &&
+        date.getTime() <= selectedPeriod.endDate.getTime();
+
+      const isInOtherPeriod = unitPeriods.some(
+        (period) =>
+          period !== selectedPeriod &&
+          date.getTime() >= period.startDate.getTime() &&
+          date.getTime() <= period.endDate.getTime(),
+      );
+
+      return {
+        ...dateData,
+        isCurrentUnit: isInCurrentPeriod ? true : undefined,
+        isOtherUnit: isInOtherPeriod ? true : undefined,
+      };
+    });
 
   const handleMonthChange = (month: Date) => {
     setCurrentMonth(month);
@@ -215,6 +247,7 @@ const Attendance = () => {
     { icon: <AbsentIcon width={20} height={20} />, label: "결석" },
     { icon: <WeekendIcon />, label: "주말" },
     { icon: <CurrentUnitIcon />, label: "현재 단위 기간" },
+    { icon: <OtherUnitIcon />, label: "다른 단위 기간" },
   ];
 
   const handleEdit = (dates: Date[]) => {

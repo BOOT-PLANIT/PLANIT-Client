@@ -19,6 +19,7 @@ export interface DateData {
   date: Date;
   status?: AttendanceStatus;
   isCurrentUnit?: boolean;
+  isOtherUnit?: boolean;
 }
 
 interface CalendarProps {
@@ -238,6 +239,7 @@ const Calendar = ({
             const weekend = isWeekend(date);
             const today = isToday(date);
             const isCurrentUnit = dateData?.isCurrentUnit;
+            const isOtherUnit = dateData?.isOtherUnit;
 
             const dayClasses = [
               styles.day,
@@ -246,6 +248,7 @@ const Calendar = ({
               weekend && styles.weekend,
               today && styles.today,
               isCurrentUnit && styles.currentUnit,
+              isOtherUnit && styles.otherUnit,
               getStatusClassName(dateData?.status),
             ]
               .filter(Boolean)
