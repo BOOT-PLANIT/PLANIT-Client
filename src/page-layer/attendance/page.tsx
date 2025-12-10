@@ -99,7 +99,7 @@ const Attendance = () => {
           day: "numeric",
         });
 
-        const daysDiff = allCalendarDates.filter((dateData) => {
+        const sessionCount = allCalendarDates.filter((dateData) => {
           const date = dateData.date;
           return (
             date.getTime() >= unitPeriod.startDate.getTime() &&
@@ -107,7 +107,7 @@ const Attendance = () => {
           );
         }).length;
 
-        return `${startStr} - ${endStr} (${daysDiff}일)`;
+        return `${startStr} - ${endStr} (${sessionCount}일)`;
       })()
     : "단위기간 정보 없음";
 
