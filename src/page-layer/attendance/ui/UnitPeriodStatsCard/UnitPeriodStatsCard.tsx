@@ -9,7 +9,6 @@ interface UnitPeriodStatsCardProps {
   totalAttendance: number;
   totalAbsent: number;
   totalUnrecorded: number;
-  totalDays: number;
 }
 
 const ATTENDANCE_COLORS = {

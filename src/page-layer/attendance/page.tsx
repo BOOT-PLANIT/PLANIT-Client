@@ -352,7 +352,6 @@ const Attendance = () => {
             totalAttendance={unitStats.totalAttendance}
             totalAbsent={unitStats.totalAbsent}
             totalUnrecorded={unitStats.totalUnrecorded}
-            totalDays={unitStats.totalDays}
           />
           <PeriodAllowanceCard
             amount={periodAllowance.amount}
