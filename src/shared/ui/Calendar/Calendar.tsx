@@ -5,6 +5,7 @@ import React, { useState, useMemo, useCallback, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "@/shared/assets/icons";
 
 import styles from "./Calendar.module.scss";
+import CalendarDay from "./CalendarDay";
 import FloatingBar from "./FloatingBar";
 
 export type AttendanceStatus =
@@ -170,14 +171,17 @@ const Calendar = ({
     [currentMonth],
   );
 
-  const isToday = useCallback((date: Date): boolean => {
+  const todayKey = useMemo(() => {
     const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
+    return getDateKey(today);
   }, []);
+
+  const isToday = useCallback(
+    (date: Date): boolean => {
+      return getDateKey(date) === todayKey;
+    },
+    [todayKey],
+  );
 
   const handleDateMouseDown = useCallback(
     (date: Date, e?: React.MouseEvent | React.TouchEvent) => {
@@ -426,29 +430,22 @@ const Calendar = ({
             const isOtherUnit = dateData?.isOtherUnit;
             const inDragRange = isInDragRange(date);
 
-            const dayClasses = [
-              styles.day,
-              !currentMonthDay && styles.otherMonth,
-              selected && styles.selected,
-              today && styles.today,
-              isCurrentUnit && styles.currentUnit,
-              isOtherUnit && styles.otherUnit,
-              inDragRange && styles.dragRange,
-              getStatusClassName(dateData?.status),
-            ]
-              .filter(Boolean)
-              .join(" ");
-
             return (
-              <button
+              <CalendarDay
                 key={`${date.getTime()}-${index}`}
-                type="button"
-                className={dayClasses}
-                onClick={() => handleDateClick(date)}
-                onMouseDown={() => handleDateMouseDown(date)}
-                onMouseEnter={() => handleDateMouseEnter(date)}
+                date={date}
+                dateData={dateData}
+                selected={selected}
+                currentMonthDay={currentMonthDay}
+                today={today}
+                isCurrentUnit={isCurrentUnit}
+                isOtherUnit={isOtherUnit}
+                inDragRange={inDragRange}
+                onDateClick={handleDateClick}
+                onMouseDown={handleDateMouseDown}
+                onMouseEnter={handleDateMouseEnter}
                 onMouseUp={handleDateMouseUp}
-                onTouchStart={(e) => {
+                onTouchStart={(e, date) => {
                   e.preventDefault();
                   const touch = e.touches[0];
                   touchStartRef.current = {
@@ -497,11 +494,8 @@ const Calendar = ({
                   handleDateMouseUp();
                   touchStartRef.current = null;
                 }}
-                data-date={date.getTime()}
-                disabled={!currentMonthDay}
-              >
-                <span className={styles.dayNumber}>{date.getDate()}</span>
-              </button>
+                getStatusClassName={getStatusClassName}
+              />
             );
           })}
         </div>
