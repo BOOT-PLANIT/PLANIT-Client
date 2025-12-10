@@ -6,18 +6,6 @@ export const generateBootcampOptions = () => [
   { value: "backend", label: "백엔드 개발 부트캠프" },
 ];
 
-export const generateUnitStats = () => ({
-  totalAttendance: 9,
-  totalAbsent: 0,
-  totalUnrecorded: 0,
-  totalDays: 9,
-});
-
-export const generatePeriodAllowance = () => ({
-  amount: 500000,
-  dateRange: "10월 14-25일",
-});
-
 // 단위기간 생성: 2025년 8월 25일부터 2026년 3월 24일까지 1달 단위
 export const generateUnitPeriods = (): Array<{
   startDate: Date;
