@@ -58,70 +58,33 @@ const OtherUnitIcon = () => (
 const getUnitPeriodForDate = (
   date: Date,
   unitPeriods: Array<{ startDate: Date; endDate: Date; unitNumber: number }>,
+  allCalendarDates: DateData[],
 ): { unitNumber: number; startDate: Date; endDate: Date } | null => {
   const targetYear = date.getFullYear();
   const targetMonth = date.getMonth();
   const monthStart = new Date(targetYear, targetMonth, 1);
   const monthEnd = new Date(targetYear, targetMonth + 1, 0);
 
-  for (const period of unitPeriods) {
-    const overlapStart = new Date(
-      Math.max(period.startDate.getTime(), monthStart.getTime()),
-    );
-    const overlapEnd = new Date(
-      Math.min(period.endDate.getTime(), monthEnd.getTime()),
-    );
-
-    if (overlapStart <= overlapEnd) {
-      return period;
-    }
-  }
-  return null;
-};
-
-const Attendance = () => {
-  const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
-  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
-  const [allCalendarDates, setAllCalendarDates] = useState<DateData[]>(
-    generateCalendarDates(),
+  const today = new Date();
+  const periodContainingToday = unitPeriods.find(
+    (period) =>
+      today.getTime() >= period.startDate.getTime() &&
+      today.getTime() <= period.endDate.getTime(),
   );
 
-  const bootcampOptions = generateBootcampOptions();
-  const unitPeriods = generateUnitPeriods();
-  const unitPeriod = getUnitPeriodForDate(currentMonth, unitPeriods);
-  const currentUnit = unitPeriod
-    ? (() => {
-        const startStr = unitPeriod.startDate.toLocaleDateString("ko-KR", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-        const endStr = unitPeriod.endDate.toLocaleDateString("ko-KR", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
+  if (periodContainingToday) {
+    return periodContainingToday;
+  }
 
-        const sessionCount = allCalendarDates.filter((dateData) => {
-          const date = dateData.date;
-          return (
-            date.getTime() >= unitPeriod.startDate.getTime() &&
-            date.getTime() <= unitPeriod.endDate.getTime()
-          );
-        }).length;
+  const periodContainingDate = unitPeriods.find(
+    (period) =>
+      date.getTime() >= period.startDate.getTime() &&
+      date.getTime() <= period.endDate.getTime(),
+  );
 
-        return `${startStr} - ${endStr} (${sessionCount}일)`;
-      })()
-    : "단위기간 정보 없음";
-
-  const targetYear = currentMonth.getFullYear();
-  const targetMonthIndex = currentMonth.getMonth();
-
-  const monthStart = new Date(targetYear, targetMonthIndex, 1);
-  const monthEnd = new Date(targetYear, targetMonthIndex + 1, 0);
+  if (periodContainingDate) {
+    return periodContainingDate;
+  }
 
   const overlappingPeriods = unitPeriods
     .map((period) => {
@@ -153,12 +116,61 @@ const Attendance = () => {
         item !== null,
     );
 
-  const selectedPeriod =
-    overlappingPeriods.length > 0
-      ? overlappingPeriods.reduce((max, current) =>
-          current.dayCount > max.dayCount ? current : max,
-        ).period
-      : null;
+  if (overlappingPeriods.length > 0) {
+    return overlappingPeriods.reduce((max, current) =>
+      current.dayCount > max.dayCount ? current : max,
+    ).period;
+  }
+
+  return null;
+};
+
+const Attendance = () => {
+  const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+  const [allCalendarDates, setAllCalendarDates] = useState<DateData[]>(
+    generateCalendarDates(),
+  );
+
+  const bootcampOptions = generateBootcampOptions();
+  const unitPeriods = generateUnitPeriods();
+  const unitPeriod = getUnitPeriodForDate(
+    currentMonth,
+    unitPeriods,
+    allCalendarDates,
+  );
+  const currentUnit = unitPeriod
+    ? (() => {
+        const startStr = unitPeriod.startDate.toLocaleDateString("ko-KR", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        const endStr = unitPeriod.endDate.toLocaleDateString("ko-KR", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+
+        const sessionCount = allCalendarDates.filter((dateData) => {
+          const date = dateData.date;
+          return (
+            date.getTime() >= unitPeriod.startDate.getTime() &&
+            date.getTime() <= unitPeriod.endDate.getTime()
+          );
+        }).length;
+
+        return `${startStr} - ${endStr} (${sessionCount}일)`;
+      })()
+    : "단위기간 정보 없음";
+
+  const targetYear = currentMonth.getFullYear();
+  const targetMonthIndex = currentMonth.getMonth();
+
+  const selectedPeriod = unitPeriod;
 
   const calendarDates = allCalendarDates
     .filter((dateData) => {
@@ -285,13 +297,11 @@ const Attendance = () => {
         const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
         const existing = datesMap.get(key);
         if (status === undefined) {
-          // 상태 초기화: status를 undefined로 설정
           if (existing) {
             const { status: _, ...rest } = existing;
             datesMap.set(key, { ...rest, status: undefined });
           }
         } else {
-          // 상태 설정
           if (existing) {
             datesMap.set(key, { ...existing, status });
           } else {

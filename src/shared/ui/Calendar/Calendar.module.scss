@@ -92,6 +92,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   grid-column: span 1;
+  touch-action: none;
 
   &:disabled {
     cursor: not-allowed;
@@ -115,6 +116,11 @@
     background: var(--color-blue-light-intense);
     border-color: var(--border-primary);
     box-shadow: 0 0 0 1px var(--color-blue-light);
+  }
+
+  &.dragRange {
+    background: var(--color-blue-light-intense);
+    border-color: var(--border-primary-light);
   }
 
   &.currentUnit {
