@@ -33,7 +33,7 @@ const CurrentUnitIcon = () => (
       width: "16px",
       height: "16px",
       backgroundColor: "var(--color-purple-lightest)",
-      borderRadius: "4px",
+      borderRadius: "var(--radius-4)",
     }}
   />
 );
@@ -44,7 +44,7 @@ const OtherUnitIcon = () => (
       width: "16px",
       height: "16px",
       backgroundColor: "var(--color-yellow-lightest)",
-      borderRadius: "4px",
+      borderRadius: "var(--radius-4)",
     }}
   />
 );
