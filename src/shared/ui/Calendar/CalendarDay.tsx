@@ -73,7 +73,7 @@ const CalendarDay = memo(
     );
   },
   (prevProps, nextProps) => {
-    return (
+    const visualPropsEqual =
       prevProps.date.getTime() === nextProps.date.getTime() &&
       prevProps.selected === nextProps.selected &&
       prevProps.currentMonthDay === nextProps.currentMonthDay &&
@@ -81,8 +81,19 @@ const CalendarDay = memo(
       prevProps.isCurrentUnit === nextProps.isCurrentUnit &&
       prevProps.isOtherUnit === nextProps.isOtherUnit &&
       prevProps.inDragRange === nextProps.inDragRange &&
-      prevProps.dateData?.status === nextProps.dateData?.status
-    );
+      prevProps.dateData?.status === nextProps.dateData?.status;
+
+    const handlersEqual =
+      prevProps.onDateClick === nextProps.onDateClick &&
+      prevProps.onMouseDown === nextProps.onMouseDown &&
+      prevProps.onMouseEnter === nextProps.onMouseEnter &&
+      prevProps.onMouseUp === nextProps.onMouseUp &&
+      prevProps.onTouchStart === nextProps.onTouchStart &&
+      prevProps.onTouchMove === nextProps.onTouchMove &&
+      prevProps.onTouchEnd === nextProps.onTouchEnd &&
+      prevProps.getStatusClassName === nextProps.getStatusClassName;
+
+    return visualPropsEqual && handlersEqual;
   },
 );
 

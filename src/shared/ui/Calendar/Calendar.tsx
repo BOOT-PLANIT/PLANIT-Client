@@ -387,6 +387,60 @@ const Calendar = ({
     }
   }, [dragStartDate]);
 
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent, date: Date) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      touchStartRef.current = {
+        x: touch.clientX,
+        y: touch.clientY,
+      };
+      handleDateMouseDown(date, e);
+    },
+    [handleDateMouseDown],
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (!dragStartDate || !touchStartRef.current) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const touch = e.touches[0];
+      const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+      const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+
+      if (deltaX > 5 || deltaY > 5) {
+        setIsDragging(true);
+      }
+
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (target) {
+        const button = target.closest("button[data-date]");
+        if (button) {
+          const dateAttr = button.getAttribute("data-date");
+          if (dateAttr) {
+            const touchDate = new Date(parseInt(dateAttr, 10));
+            handleDateMouseEnter(touchDate);
+          }
+        }
+      }
+    },
+    [dragStartDate, handleDateMouseEnter],
+  );
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (isDragging) {
+        e.preventDefault();
+      }
+      handleDateMouseUp();
+      touchStartRef.current = null;
+    },
+    [isDragging, handleDateMouseUp],
+  );
+
   return (
     <div className={styles.calendar} onMouseLeave={handleMouseLeave}>
       <div className={styles.header}>
@@ -445,55 +499,9 @@ const Calendar = ({
                 onMouseDown={handleDateMouseDown}
                 onMouseEnter={handleDateMouseEnter}
                 onMouseUp={handleDateMouseUp}
-                onTouchStart={(e, date) => {
-                  e.preventDefault();
-                  const touch = e.touches[0];
-                  touchStartRef.current = {
-                    x: touch.clientX,
-                    y: touch.clientY,
-                  };
-                  handleDateMouseDown(date, e);
-                }}
-                onTouchMove={(e) => {
-                  if (!dragStartDate || !touchStartRef.current) return;
-
-                  e.preventDefault();
-                  e.stopPropagation();
-
-                  const touch = e.touches[0];
-                  const deltaX = Math.abs(
-                    touch.clientX - touchStartRef.current.x,
-                  );
-                  const deltaY = Math.abs(
-                    touch.clientY - touchStartRef.current.y,
-                  );
-
-                  if (deltaX > 5 || deltaY > 5) {
-                    setIsDragging(true);
-                  }
-
-                  const target = document.elementFromPoint(
-                    touch.clientX,
-                    touch.clientY,
-                  );
-                  if (target) {
-                    const button = target.closest("button[data-date]");
-                    if (button) {
-                      const dateAttr = button.getAttribute("data-date");
-                      if (dateAttr) {
-                        const touchDate = new Date(parseInt(dateAttr, 10));
-                        handleDateMouseEnter(touchDate);
-                      }
-                    }
-                  }
-                }}
-                onTouchEnd={(e) => {
-                  if (isDragging) {
-                    e.preventDefault();
-                  }
-                  handleDateMouseUp();
-                  touchStartRef.current = null;
-                }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
                 getStatusClassName={getStatusClassName}
               />
             );
