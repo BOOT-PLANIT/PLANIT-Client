@@ -1,6 +1,10 @@
 "use client";
 
+import { useMemo } from "react";
+
 import { Card } from "@/shared/ui";
+import { DoughnutChart } from "@/shared/ui/Chart";
+import type { ChartItem } from "@/shared/ui/Chart/DoughnutChart";
 
 import styles from "./UnitPeriodStatsCard.module.scss";
 
@@ -17,80 +21,68 @@ const UnitPeriodStatsCard = ({
   totalUnrecorded,
   totalDays,
 }: UnitPeriodStatsCardProps) => {
-  const attendancePercent =
-    totalDays > 0 ? (totalAttendance / totalDays) * 100 : 0;
-  const absentPercent = totalDays > 0 ? (totalAbsent / totalDays) * 100 : 0;
-  const unrecordedPercent =
-    totalDays > 0 ? (totalUnrecorded / totalDays) * 100 : 0;
+  const chartData = useMemo<ChartItem[]>(() => {
+    return [
+      {
+        label: "총출석",
+        value: totalAttendance,
+        color: "#048724",
+      },
+      {
+        label: "총결석",
+        value: totalAbsent,
+        color: "#d21c1c",
+      },
+      {
+        label: "미출결",
+        value: totalUnrecorded,
+        color: "#8d929f",
+      },
+    ];
+  }, [totalAttendance, totalAbsent, totalUnrecorded]);
 
-  const circumference = 2 * Math.PI * 40;
-  const attendanceOffset =
-    circumference - (attendancePercent / 100) * circumference;
+  const total = totalDays;
+  const showChart = total > 0;
+
+  const legendData = useMemo(() => {
+    return chartData.map((item) => ({
+      ...item,
+      percent: total === 0 ? "0.0" : ((item.value / total) * 100).toFixed(1),
+    }));
+  }, [chartData, total]);
 
   return (
     <Card variant="solid" title="기간 통계">
       <div className={styles.wrapper}>
-        <div className={styles.container}>
-          <div className={styles.chart}>
-            <svg width="120" height="120" viewBox="0 0 120 120">
-              <circle
-                cx="60"
-                cy="60"
-                r="40"
-                fill="none"
-                stroke="var(--color-grey-light-intense)"
-                strokeWidth="12"
-              />
-              <circle
-                cx="60"
-                cy="60"
-                r="40"
-                fill="none"
-                stroke="var(--color-attendance-present)"
-                strokeWidth="12"
-                strokeDasharray={circumference}
-                strokeDashoffset={attendanceOffset}
-                strokeLinecap="round"
-                transform="rotate(-90 60 60)"
-              />
-            </svg>
+        {!showChart ? (
+          <div className={styles.noDataBox}>
+            <span>데이터가 없습니다</span>
           </div>
-          <div className={styles.legend}>
-            <div className={styles.legendItem}>
-              <div className={styles.legendText}>
-                <div className={styles.labelRow}>
-                  <div className={`${styles.legendDot} ${styles.attendance}`} />
-                  <span>총출석</span>
-                </div>
-                <span className={styles.percent}>
-                  {totalAttendance} ({attendancePercent.toFixed(0)}%)
-                </span>
-              </div>
+        ) : (
+          <div className={styles.container}>
+            <div className={styles.chart}>
+              <DoughnutChart data={chartData} />
             </div>
-            <div className={styles.legendItem}>
-              <div className={styles.legendText}>
-                <div className={styles.labelRow}>
-                  <div className={`${styles.legendDot} ${styles.absent}`} />
-                  <span>총결석</span>
+            <div className={styles.legend}>
+              {legendData.map((item) => (
+                <div key={item.label} className={styles.legendItem}>
+                  <div className={styles.legendText}>
+                    <div className={styles.labelRow}>
+                      <span
+                        className={styles.colorDot}
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span>{item.label}</span>
+                    </div>
+                    <span className={styles.percent}>
+                      {item.value} ({item.percent}%)
+                    </span>
+                  </div>
                 </div>
-                <span className={styles.percent}>
-                  {totalAbsent} ({absentPercent.toFixed(0)}%)
-                </span>
-              </div>
-            </div>
-            <div className={styles.legendItem}>
-              <div className={styles.legendText}>
-                <div className={styles.labelRow}>
-                  <div className={`${styles.legendDot} ${styles.unrecorded}`} />
-                  <span>미출결</span>
-                </div>
-                <span className={styles.percent}>
-                  {totalUnrecorded} ({unrecordedPercent.toFixed(0)}%)
-                </span>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
       </div>
     </Card>
   );
