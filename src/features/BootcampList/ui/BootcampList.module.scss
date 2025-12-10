@@ -8,11 +8,16 @@
 
 .tableLayout {
   max-height: 570px;
+  min-height: 570px;
   overflow-y: auto;
 }
 
 .tableLayout::-webkit-scrollbar {
   display: none;
+}
+
+.scrollAnchor {
+  height: 20px;
 }
 
 .table {
@@ -55,6 +60,7 @@
 
 .table td:nth-child(7),
 .table td:nth-child(8) {
+  text-align: right;
   min-width: 35px;
   width: 35px;
 }

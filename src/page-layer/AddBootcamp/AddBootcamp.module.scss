@@ -17,6 +17,10 @@
   overflow-x: auto;
 }
 
+.tableScroll::-webkit-scrollbar {
+  display: none;
+}
+
 .subtitle {
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);

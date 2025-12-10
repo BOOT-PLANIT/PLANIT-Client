@@ -14,7 +14,9 @@
 }
 
 .selected {
-  background-color: var(--color-blue-light);
+  background-color: #c7d5ff;
+
+  // background-color: var(--color-blue-light);
 
   &:hover {
     background: var(--color-blue-light);
@@ -33,6 +35,7 @@
 .scheduleWrap {
   display: flex;
   flex-direction: row;
+
   @media (width <= 820px) {
     flex-direction: column;
   }
@@ -67,8 +70,8 @@
 
 .icon {
   width: fit-content;
-  margin: 0 auto;
   border: none;
+  padding: 0;
   background-color: transparent;
 
   &:hover {

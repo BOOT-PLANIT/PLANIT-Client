@@ -1,11 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 
 import SearchIcon from "@/shared/assets/icons/SearchIcon";
+import { dummyFetchBootcamps } from "@/shared/lib";
 import { Input } from "@/shared/ui";
 
 import styles from "./BootcampList.module.scss";
 import BootcampListItem from "./BootcampListItem";
+import Spinner from "./Spinner/Spinner";
 
 export interface Bootcamp {
   id: number;
@@ -23,173 +26,46 @@ interface BootcampListProps {
   manage: boolean; // 관리자모드
 }
 
-const bootcampDummy: Bootcamp[] = [
-  {
-    id: 1,
-    name: "웹 개발 기초 부트캠프",
-    organizer: "한국IT교육원",
-    isKdt: false,
-    startedAt: "2024-03-01",
-    endedAt: "2024-06-30",
-    isEnded: true,
-    classDates: [
-      "2024-03-01",
-      "2024-03-03",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-    ],
-  },
-  {
-    id: 2,
-    name: "KDT 프론트엔드 심화 과정",
-    organizer: "KDT연구소",
-    isKdt: true,
-    startedAt: "2024-07-01",
-    endedAt: "2024-12-20",
-    isEnded: false,
-    classDates: ["2024-07-01", "2024-07-02", "2024-07-03"],
-  },
-  {
-    id: 3,
-    name: "백엔드 스프링 부트 실전",
-    organizer: "코딩아카데미",
-    isKdt: false,
-    startedAt: "2024-02-15",
-    endedAt: "2024-05-15",
-    isEnded: true,
-    classDates: ["2024-02-15", "2024-02-17", "2024-02-20"],
-  },
-  {
-    id: 4,
-    name: "데이터 분석 입문 캠프",
-    organizer: "데이터사이언스랩",
-    isKdt: false,
-    startedAt: "2024-08-10",
-    endedAt: "2024-11-30",
-    isEnded: false,
-    classDates: ["2024-08-10", "2024-08-12", "2024-08-14"],
-  },
-  {
-    id: 5,
-    name: "AI 기반 풀스택 개발자 과정",
-    organizer: "AI융합센터",
-    isKdt: true,
-    startedAt: "2024-01-10",
-    endedAt: "2024-07-25",
-    isEnded: true,
-    classDates: ["2024-01-10", "2024-01-12", "2024-01-15"],
-  },
-  {
-    id: 6,
-    name: "웹 개발 기초 부트캠프",
-    organizer: "한국IT교육원",
-    isKdt: false,
-    startedAt: "2024-03-01",
-    endedAt: "2024-06-30",
-    isEnded: true,
-    classDates: [
-      "2024-03-01",
-      "2024-03-03",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-      "2024-03-05",
-    ],
-  },
-  {
-    id: 7,
-    name: "KDT 프론트엔드 심화 과정",
-    organizer: "KDT연구소",
-    isKdt: true,
-    startedAt: "2024-07-01",
-    endedAt: "2024-12-20",
-    isEnded: false,
-    classDates: ["2024-07-01", "2024-07-02", "2024-07-03"],
-  },
-  {
-    id: 8,
-    name: "백엔드 스프링 부트 실전",
-    organizer: "코딩아카데미",
-    isKdt: false,
-    startedAt: "2024-02-15",
-    endedAt: "2024-05-15",
-    isEnded: true,
-    classDates: ["2024-02-15", "2024-02-17", "2024-02-20"],
-  },
-  {
-    id: 9,
-    name: "데이터 분석 입문 캠프",
-    organizer: "데이터사이언스랩",
-    isKdt: false,
-    startedAt: "2024-08-10",
-    endedAt: "2024-11-30",
-    isEnded: false,
-    classDates: ["2024-08-10", "2024-08-12", "2024-08-14"],
-  },
-  {
-    id: 10,
-    name: "AI 기반 풀스택 개발자 과정",
-    organizer: "AI융합센터",
-    isKdt: true,
-    startedAt: "2024-01-10",
-    endedAt: "2024-07-25",
-    isEnded: true,
-    classDates: ["2024-01-10", "2024-01-12", "2024-01-15"],
-  },
-  {
-    id: 11,
-    name: "AI 기반 풀스택 개발자 과정",
-    organizer: "AI융합센터",
-    isKdt: true,
-    startedAt: "2024-01-10",
-    endedAt: "2024-07-25",
-    isEnded: true,
-    classDates: ["2024-01-10", "2024-01-12", "2024-01-15"],
-  },
-  {
-    id: 12,
-    name: "AI 기반 풀스택 개발자 과정",
-    organizer: "AI융합센터",
-    isKdt: true,
-    startedAt: "2024-01-10",
-    endedAt: "2024-07-25",
-    isEnded: true,
-    classDates: ["2024-01-10", "2024-01-12", "2024-01-15"],
-  },
-];
-
 const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
   const [selectedItem, setSelectedItem] = useState<Bootcamp | null>(null);
+
+  const [search, setSearch] = useState("");
+  const [debounced, setDebounced] = useState("");
+
+  //0.5초 검색할시간 유예
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(search), 500);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ["bootcamps", debounced],
+      queryFn: ({ pageParam = 1 }) =>
+        dummyFetchBootcamps({ query: debounced, pageParam }),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage) => lastPage.nextPage,
+    });
+
+  //옵저버
+  useEffect(() => {
+    const target = document.getElementById("scroll-anchor");
+    const scrollBox = document.getElementById("scroll-box");
+    if (!target || !scrollBox) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { root: scrollBox, threshold: 0.1 },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleSelect = (bootcamp: Bootcamp) => {
     if (!manage) {
@@ -215,11 +91,15 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
     }
   };
 
+  const flatList = data?.pages.flatMap((page) => page.items) ?? [];
+
   return (
     <div className={styles.container}>
       <Input
         placeholder="검색하실 부트캠프 이름 또는 교육기관을 입력하세요..."
         icon={<SearchIcon />}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
       />
 
       <table className={styles.table}>
@@ -235,10 +115,18 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
           </tr>
         </thead>
       </table>
-      <div className={styles.tableLayout}>
+      <div className={styles.tableLayout} id="scroll-box">
         <table className={styles.table}>
           <tbody>
-            {bootcampDummy.map((b) => (
+            {isLoading && (
+              <tr>
+                <td colSpan={6}>
+                  <Spinner />
+                </td>
+              </tr>
+            )}
+
+            {flatList.map((b) => (
               <BootcampListItem
                 key={b.id}
                 isSelect={b.id === selectedItem?.id}
@@ -249,6 +137,10 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
                 deleteItem={() => handleDelete(b)}
               />
             ))}
+            {/* 옵저버 */}
+            <tr id="scroll-anchor" className={styles.scrollAnchor}>
+              <td colSpan={6}>{isFetchingNextPage && <Spinner />}</td>
+            </tr>
           </tbody>
         </table>
       </div>
