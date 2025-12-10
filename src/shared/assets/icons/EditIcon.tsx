@@ -17,31 +17,3 @@ const EditIcon = () => {
 };
 
 export default EditIcon;
-
-// "use client";
-
-// import React from "react";
-
-// interface Props extends React.SVGProps<SVGSVGElement> {}
-
-// const EditIcon = (props: Props) => {
-//   return (
-//     <svg
-//       width="24"
-//       height="24"
-//       viewBox="0 0 24 24"
-//       fill="none"
-//       stroke="currentColor"
-//       strokeWidth="1.5"
-//       strokeLinecap="round"
-//       strokeLinejoin="round"
-//       {...props}
-//     >
-//       <path d="M15 5H6C4.895 5 4 5.895 4 7V18C4 19.105 4.895 20 6 20H17C18.105 20 19 19.105 19 18V10" />
-//       <path d="M14 4L20 10" />
-//       <path d="M20 4L14 10" />
-//     </svg>
-//   );
-// };
-
-// export default EditIcon;

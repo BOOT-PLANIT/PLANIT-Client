@@ -35,7 +35,7 @@ const AddBootcamp = () => {
           <span className={styles.subtitle}>
             등록하고 싶은 부트캠프 프로그램을 선택하세요!
           </span>
-          <BootcampList manage={false} onSelectBootcamp={setSelectedBootcamp} />
+          <BootcampList manage={true} onSelectBootcamp={setSelectedBootcamp} />
           <div className={styles.footer}>
             <Button
               disabled={!selectedBootcamp}

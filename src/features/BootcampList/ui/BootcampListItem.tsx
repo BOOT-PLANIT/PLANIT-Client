@@ -6,7 +6,7 @@ import type { Bootcamp } from "./BootcampList";
 import styles from "./BootcampListItem.module.scss";
 
 interface BootcampListItemProps {
-  Bootcamp: Bootcamp;
+  bootcamp: Bootcamp;
   isSelect?: boolean;
   manage: boolean;
   selectItem: () => void;
@@ -15,7 +15,7 @@ interface BootcampListItemProps {
 }
 
 const BootcampListItem = ({
-  Bootcamp,
+  bootcamp,
   isSelect,
   manage,
   selectItem,
@@ -27,32 +27,38 @@ const BootcampListItem = ({
       className={`${styles.row} ${isSelect ? styles.selected : ""}`}
       onClick={selectItem}
     >
-      <td className={styles.organization}>{Bootcamp.organizer}</td>
+      <td className={styles.organization}>{bootcamp.organizer}</td>
 
-      <td className={styles.name}>{Bootcamp.name}</td>
+      <td className={styles.name}>{bootcamp.name}</td>
 
       <td className={styles.schedule}>
-        {Bootcamp.startedAt} - {Bootcamp.endedAt}
+        {bootcamp.startedAt} - {bootcamp.endedAt}
       </td>
 
-      <td className={styles.duration}>{Bootcamp.classDates.length} 일</td>
+      <td className={styles.duration}>{bootcamp.classDates.length} 일</td>
 
       <td className={styles.kdt}>
-        {Bootcamp.isKdt ? <span className={styles.kdtBadge}>KDT</span> : "-"}
+        {bootcamp.isKdt ? <span className={styles.kdtBadge}>KDT</span> : "-"}
       </td>
 
       <td className={styles.status}>
         <span
-          className={Bootcamp.isEnded ? styles.activeBadge : styles.endedBadge}
+          className={bootcamp.isEnded ? styles.endedBadge : styles.activeBadge}
         >
-          {Bootcamp.isEnded ? "Active" : "Ended"}
+          {bootcamp.isEnded ? "Ended" : "Active"}
         </span>
       </td>
 
       {manage && (
         <>
           <td>
-            <div className={styles.icon} onClick={editItem}>
+            <div
+              className={styles.icon}
+              onClick={(e) => {
+                e.stopPropagation();
+                editItem();
+              }}
+            >
               <EditIcon />
             </div>
           </td>
@@ -60,7 +66,10 @@ const BootcampListItem = ({
           <td>
             <div
               className={`${styles.delete} ${styles.icon}`}
-              onClick={deleteItem}
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteItem();
+              }}
             >
               <DeleteIcon />
             </div>

@@ -242,7 +242,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
               <BootcampListItem
                 key={b.id}
                 isSelect={b.id === selectedItem?.id}
-                Bootcamp={b}
+                bootcamp={b}
                 manage={manage}
                 selectItem={() => handleSelect(b)}
                 editItem={() => handleEdit(b)}

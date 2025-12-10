@@ -19,6 +19,15 @@
   }
 }
 
+.organization,
+.name,
+.schedule,
+.duration,
+.kdt,
+.status {
+  padding: var(--spacing-16) var(--spacing-0) var(--spacing-16) var(--spacing-2);
+}
+
 .kdtBadge {
   padding: var(--spacing-4) var(--spacing-10);
   font-size: var(--font-size-sm);
@@ -48,6 +57,7 @@
 
 .icon {
   width: fit-content;
+  margin: 0 auto;
 
   &:hover {
     opacity: 0.6;

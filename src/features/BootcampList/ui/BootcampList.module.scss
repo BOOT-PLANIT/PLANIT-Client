@@ -24,7 +24,7 @@
   text-align: left;
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-lg);
-  padding: var(--spacing-16) var(--spacing-0) var(--spacing-16) var(--spacing-2);
+  padding: var(--spacing-16) var(--spacing-0) var(--spacing-16) var(--spacing-4);
   color: var(--foreground);
   position: sticky;
   top: 0;
@@ -35,7 +35,8 @@
 
 .table th:nth-child(4),
 .table th:nth-child(5),
-.table th:nth-child(6) {
+.table th:nth-child(6),
+.table th:nth-child(7) {
   min-width: 70px;
   width: 70px;
   text-align: center;
@@ -47,4 +48,10 @@
   min-width: 70px;
   width: 70px;
   text-align: center;
+}
+
+.table td:nth-child(7),
+.table td:nth-child(8) {
+  min-width: 35px;
+  width: 35px;
 }
