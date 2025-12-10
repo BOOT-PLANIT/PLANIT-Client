@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 
 import { ChevronLeft, ChevronRight } from "@/shared/assets/icons";
 
@@ -107,48 +107,78 @@ const Calendar = ({
     return days;
   }, [currentMonth]);
 
-  const getDateData = (date: Date): DateData | undefined => {
-    return datesMap.get(getDateKey(date));
-  };
+  const getDateData = useCallback(
+    (date: Date): DateData | undefined => {
+      return datesMap.get(getDateKey(date));
+    },
+    [datesMap],
+  );
 
-  const isSelected = (date: Date): boolean => {
-    return selectedDatesSet.has(getDateKey(date));
-  };
+  const isSelected = useCallback(
+    (date: Date): boolean => {
+      return selectedDatesSet.has(getDateKey(date));
+    },
+    [selectedDatesSet],
+  );
 
-  const isCurrentMonth = (date: Date): boolean => {
-    return (
-      date.getMonth() === currentMonth.getMonth() &&
-      date.getFullYear() === currentMonth.getFullYear()
-    );
-  };
+  const isCurrentMonth = useCallback(
+    (date: Date): boolean => {
+      return (
+        date.getMonth() === currentMonth.getMonth() &&
+        date.getFullYear() === currentMonth.getFullYear()
+      );
+    },
+    [currentMonth],
+  );
 
-  const isWeekend = (date: Date): boolean => {
+  const isWeekend = useCallback((date: Date): boolean => {
     const day = date.getDay();
     return day === 0 || day === 6;
-  };
+  }, []);
 
-  const isToday = (date: Date): boolean => {
+  const todayDate = useMemo(() => {
     const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  };
+    return {
+      date: today.getDate(),
+      month: today.getMonth(),
+      year: today.getFullYear(),
+    };
+  }, []);
 
-  const handleDateClick = (date: Date) => {
-    if (!isCurrentMonth(date)) return;
+  const isToday = useCallback(
+    (date: Date): boolean => {
+      return (
+        date.getDate() === todayDate.date &&
+        date.getMonth() === todayDate.month &&
+        date.getFullYear() === todayDate.year
+      );
+    },
+    [todayDate],
+  );
 
-    const dateKey = getDateKey(date);
-    const newSelectedDates = isSelected(date)
-      ? selectedDates.filter((d) => getDateKey(d) !== dateKey)
-      : [...selectedDates, date];
+  const handleDateClick = useCallback(
+    (date: Date) => {
+      if (
+        date.getMonth() !== currentMonth.getMonth() ||
+        date.getFullYear() !== currentMonth.getFullYear()
+      ) {
+        return;
+      }
 
-    setSelectedDates(newSelectedDates);
-    onDateSelect?.(newSelectedDates);
-  };
+      const dateKey = getDateKey(date);
+      setSelectedDates((prev) => {
+        const isCurrentlySelected = selectedDatesSet.has(dateKey);
+        const newSelectedDates = isCurrentlySelected
+          ? prev.filter((d) => getDateKey(d) !== dateKey)
+          : [...prev, date];
+        onDateSelect?.(newSelectedDates);
+        return newSelectedDates;
+      });
+    },
+    [currentMonth, selectedDatesSet, onDateSelect],
+  );
 
-  const handlePreviousMonth = () => {
+  const handlePreviousMonth = useCallback(() => {
     const newMonth = new Date(
       currentMonth.getFullYear(),
       currentMonth.getMonth() - 1,
@@ -156,9 +186,9 @@ const Calendar = ({
     );
     setCurrentMonth(newMonth);
     onMonthChange?.(newMonth);
-  };
+  }, [currentMonth, onMonthChange]);
 
-  const handleNextMonth = () => {
+  const handleNextMonth = useCallback(() => {
     const newMonth = new Date(
       currentMonth.getFullYear(),
       currentMonth.getMonth() + 1,
@@ -166,18 +196,18 @@ const Calendar = ({
     );
     setCurrentMonth(newMonth);
     onMonthChange?.(newMonth);
-  };
+  }, [currentMonth, onMonthChange]);
 
-  const handleClearSelection = () => {
+  const handleClearSelection = useCallback(() => {
     setSelectedDates([]);
     onDateSelect?.([]);
-  };
+  }, [onDateSelect]);
 
-  const handleEdit = () => {
+  const handleEdit = useCallback(() => {
     if (selectedDates.length > 0) {
       onEdit?.(selectedDates);
     }
-  };
+  }, [selectedDates, onEdit]);
 
   return (
     <div className={styles.calendar}>
@@ -222,11 +252,24 @@ const Calendar = ({
             const today = isToday(date);
             const hasSession = dateData?.hasSession;
 
+            const dayClasses = [
+              styles.day,
+              !currentMonthDay && styles.otherMonth,
+              selected && styles.selected,
+              isCurrentUnit && styles.currentUnit,
+              weekend && styles.weekend,
+              today && styles.today,
+              hasSession && styles.hasSession,
+              getStatusClassName(dateData?.status),
+            ]
+              .filter(Boolean)
+              .join(" ");
+
             return (
               <button
                 key={`${date.getTime()}-${index}`}
                 type="button"
-                className={`${styles.day} ${!currentMonthDay ? styles.otherMonth : ""} ${selected ? styles.selected : ""} ${isCurrentUnit ? styles.currentUnit : ""} ${weekend ? styles.weekend : ""} ${today ? styles.today : ""} ${hasSession ? styles.hasSession : ""} ${getStatusClassName(dateData?.status)}`}
+                className={dayClasses}
                 onClick={() => handleDateClick(date)}
                 disabled={!currentMonthDay}
               >
