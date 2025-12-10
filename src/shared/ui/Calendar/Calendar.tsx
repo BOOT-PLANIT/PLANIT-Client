@@ -1,10 +1,17 @@
 "use client";
 
-import React, { useState, useMemo, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
 
 import { ChevronLeft, ChevronRight } from "@/shared/assets/icons";
 
 import styles from "./Calendar.module.scss";
+import CalendarDay from "./CalendarDay";
 import FloatingBar from "./FloatingBar";
 
 export type AttendanceStatus =
@@ -170,14 +177,49 @@ const Calendar = ({
     [currentMonth],
   );
 
-  const isToday = useCallback((date: Date): boolean => {
+  const [todayKey, setTodayKey] = useState(() => {
     const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
+    return getDateKey(today);
+  });
+
+  useEffect(() => {
+    const updateTodayKey = () => {
+      const today = new Date();
+      setTodayKey(getDateKey(today));
+    };
+
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    const msUntilMidnight = tomorrow.getTime() - now.getTime();
+
+    let intervalId: NodeJS.Timeout | null = null;
+
+    const timeoutId = setTimeout(() => {
+      updateTodayKey();
+      intervalId = setInterval(
+        () => {
+          updateTodayKey();
+        },
+        24 * 60 * 60 * 1000,
+      );
+    }, msUntilMidnight);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, []);
+
+  const isToday = useCallback(
+    (date: Date): boolean => {
+      return getDateKey(date) === todayKey;
+    },
+    [todayKey],
+  );
 
   const handleDateMouseDown = useCallback(
     (date: Date, e?: React.MouseEvent | React.TouchEvent) => {
@@ -383,6 +425,60 @@ const Calendar = ({
     }
   }, [dragStartDate]);
 
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent, date: Date) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      touchStartRef.current = {
+        x: touch.clientX,
+        y: touch.clientY,
+      };
+      handleDateMouseDown(date, e);
+    },
+    [handleDateMouseDown],
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (!dragStartDate || !touchStartRef.current) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const touch = e.touches[0];
+      const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+      const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+
+      if (deltaX > 5 || deltaY > 5) {
+        setIsDragging(true);
+      }
+
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (target) {
+        const button = target.closest("button[data-date]");
+        if (button) {
+          const dateAttr = button.getAttribute("data-date");
+          if (dateAttr) {
+            const touchDate = new Date(parseInt(dateAttr, 10));
+            handleDateMouseEnter(touchDate);
+          }
+        }
+      }
+    },
+    [dragStartDate, handleDateMouseEnter],
+  );
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (isDragging) {
+        e.preventDefault();
+      }
+      handleDateMouseUp();
+      touchStartRef.current = null;
+    },
+    [isDragging, handleDateMouseUp],
+  );
+
   return (
     <div className={styles.calendar} onMouseLeave={handleMouseLeave}>
       <div className={styles.header}>
@@ -426,82 +522,26 @@ const Calendar = ({
             const isOtherUnit = dateData?.isOtherUnit;
             const inDragRange = isInDragRange(date);
 
-            const dayClasses = [
-              styles.day,
-              !currentMonthDay && styles.otherMonth,
-              selected && styles.selected,
-              today && styles.today,
-              isCurrentUnit && styles.currentUnit,
-              isOtherUnit && styles.otherUnit,
-              inDragRange && styles.dragRange,
-              getStatusClassName(dateData?.status),
-            ]
-              .filter(Boolean)
-              .join(" ");
-
             return (
-              <button
+              <CalendarDay
                 key={`${date.getTime()}-${index}`}
-                type="button"
-                className={dayClasses}
-                onClick={() => handleDateClick(date)}
-                onMouseDown={() => handleDateMouseDown(date)}
-                onMouseEnter={() => handleDateMouseEnter(date)}
+                date={date}
+                dateData={dateData}
+                selected={selected}
+                currentMonthDay={currentMonthDay}
+                today={today}
+                isCurrentUnit={isCurrentUnit}
+                isOtherUnit={isOtherUnit}
+                inDragRange={inDragRange}
+                onDateClick={handleDateClick}
+                onMouseDown={handleDateMouseDown}
+                onMouseEnter={handleDateMouseEnter}
                 onMouseUp={handleDateMouseUp}
-                onTouchStart={(e) => {
-                  e.preventDefault();
-                  const touch = e.touches[0];
-                  touchStartRef.current = {
-                    x: touch.clientX,
-                    y: touch.clientY,
-                  };
-                  handleDateMouseDown(date, e);
-                }}
-                onTouchMove={(e) => {
-                  if (!dragStartDate || !touchStartRef.current) return;
-
-                  e.preventDefault();
-                  e.stopPropagation();
-
-                  const touch = e.touches[0];
-                  const deltaX = Math.abs(
-                    touch.clientX - touchStartRef.current.x,
-                  );
-                  const deltaY = Math.abs(
-                    touch.clientY - touchStartRef.current.y,
-                  );
-
-                  if (deltaX > 5 || deltaY > 5) {
-                    setIsDragging(true);
-                  }
-
-                  const target = document.elementFromPoint(
-                    touch.clientX,
-                    touch.clientY,
-                  );
-                  if (target) {
-                    const button = target.closest("button[data-date]");
-                    if (button) {
-                      const dateAttr = button.getAttribute("data-date");
-                      if (dateAttr) {
-                        const touchDate = new Date(parseInt(dateAttr, 10));
-                        handleDateMouseEnter(touchDate);
-                      }
-                    }
-                  }
-                }}
-                onTouchEnd={(e) => {
-                  if (isDragging) {
-                    e.preventDefault();
-                  }
-                  handleDateMouseUp();
-                  touchStartRef.current = null;
-                }}
-                data-date={date.getTime()}
-                disabled={!currentMonthDay}
-              >
-                <span className={styles.dayNumber}>{date.getDate()}</span>
-              </button>
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                getStatusClassName={getStatusClassName}
+              />
             );
           })}
         </div>
