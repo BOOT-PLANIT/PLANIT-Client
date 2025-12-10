@@ -110,14 +110,15 @@
   }
 
   &.selected,
-  &.hasSession.selected {
+  &.currentUnit.selected {
     background: var(--color-blue-light-intense);
     border-color: var(--border-primary);
     box-shadow: 0 0 0 1px var(--color-blue-light);
   }
 
   &.currentUnit {
-    background: var(--color-blue-light);
+    position: relative;
+    background: var(--color-purple-lightest);
   }
 
   &.weekend {
@@ -127,11 +128,6 @@
   &.today {
     border: 2px solid var(--border-primary);
     font-weight: var(--font-weight-bold);
-  }
-
-  &.hasSession {
-    position: relative;
-    background: var(--color-purple-lightest);
   }
 
   &[class*="status"]::after {

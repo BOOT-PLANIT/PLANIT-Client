@@ -41,7 +41,7 @@ const WeekendIcon = () => (
   />
 );
 
-const HasSessionIcon = () => (
+const CurrentUnitIcon = () => (
   <div
     style={{
       width: "16px",
@@ -89,7 +89,7 @@ const Attendance = () => {
     { icon: <AnnualIcon width={20} height={20} />, label: "월차" },
     { icon: <AbsentIcon width={20} height={20} />, label: "결석" },
     { icon: <WeekendIcon />, label: "주말" },
-    { icon: <HasSessionIcon />, label: "교육일" },
+    { icon: <CurrentUnitIcon />, label: "현재 단위 기간" },
   ];
 
   const handleEdit = (dates: Date[]) => {

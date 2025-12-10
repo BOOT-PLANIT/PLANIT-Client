@@ -19,7 +19,6 @@ export interface DateData {
   date: Date;
   status?: AttendanceStatus;
   isCurrentUnit?: boolean;
-  hasSession?: boolean;
 }
 
 interface CalendarProps {
@@ -237,18 +236,16 @@ const Calendar = ({
             const selected = isSelected(date);
             const currentMonthDay = isCurrentMonth(date);
             const weekend = isWeekend(date);
-            const isCurrentUnit = dateData?.isCurrentUnit;
             const today = isToday(date);
-            const hasSession = dateData?.hasSession;
+            const isCurrentUnit = dateData?.isCurrentUnit;
 
             const dayClasses = [
               styles.day,
               !currentMonthDay && styles.otherMonth,
               selected && styles.selected,
-              isCurrentUnit && styles.currentUnit,
               weekend && styles.weekend,
               today && styles.today,
-              hasSession && styles.hasSession,
+              isCurrentUnit && styles.currentUnit,
               getStatusClassName(dateData?.status),
             ]
               .filter(Boolean)
