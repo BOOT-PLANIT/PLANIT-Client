@@ -156,7 +156,8 @@ const Calendar = ({
 
       const dateKey = getDateKey(date);
       setSelectedDates((prev) => {
-        const isCurrentlySelected = selectedDatesSet.has(dateKey);
+        const prevKeys = new Set(prev.map(getDateKey));
+        const isCurrentlySelected = prevKeys.has(dateKey);
         const newSelectedDates = isCurrentlySelected
           ? prev.filter((d) => getDateKey(d) !== dateKey)
           : [...prev, date];
@@ -164,7 +165,7 @@ const Calendar = ({
         return newSelectedDates;
       });
     },
-    [currentMonth, selectedDatesSet, onDateSelect],
+    [currentMonth, onDateSelect],
   );
 
   const handlePreviousMonth = useCallback(() => {
