@@ -55,36 +55,24 @@ const OtherUnitIcon = () => (
   />
 );
 
-const getUnitPeriodForDate = (
-  date: Date,
-  unitPeriods: Array<{ startDate: Date; endDate: Date; unitNumber: number }>,
-  allCalendarDates: DateData[],
-): { unitNumber: number; startDate: Date; endDate: Date } | null => {
-  const targetYear = date.getFullYear();
-  const targetMonth = date.getMonth();
-  const monthStart = new Date(targetYear, targetMonth, 1);
-  const monthEnd = new Date(targetYear, targetMonth + 1, 0);
-
-  const today = new Date();
-  const periodContainingToday = unitPeriods.find(
-    (period) =>
-      today.getTime() >= period.startDate.getTime() &&
-      today.getTime() <= period.endDate.getTime(),
+const Attendance = () => {
+  const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+  const [allCalendarDates, setAllCalendarDates] = useState<DateData[]>(
+    generateCalendarDates(),
   );
 
-  if (periodContainingToday) {
-    return periodContainingToday;
-  }
+  const bootcampOptions = generateBootcampOptions();
+  const unitPeriods = generateUnitPeriods();
 
-  const periodContainingDate = unitPeriods.find(
-    (period) =>
-      date.getTime() >= period.startDate.getTime() &&
-      date.getTime() <= period.endDate.getTime(),
-  );
+  const targetYear = currentMonth.getFullYear();
+  const targetMonthIndex = currentMonth.getMonth();
 
-  if (periodContainingDate) {
-    return periodContainingDate;
-  }
+  const monthStart = new Date(targetYear, targetMonthIndex, 1);
+  const monthEnd = new Date(targetYear, targetMonthIndex + 1, 0);
 
   const overlappingPeriods = unitPeriods
     .map((period) => {
@@ -116,40 +104,21 @@ const getUnitPeriodForDate = (
         item !== null,
     );
 
-  if (overlappingPeriods.length > 0) {
-    return overlappingPeriods.reduce((max, current) =>
-      current.dayCount > max.dayCount ? current : max,
-    ).period;
-  }
+  const selectedPeriod =
+    overlappingPeriods.length > 0
+      ? overlappingPeriods.reduce((max, current) =>
+          current.dayCount > max.dayCount ? current : max,
+        ).period
+      : null;
 
-  return null;
-};
-
-const Attendance = () => {
-  const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
-  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
-  const [allCalendarDates, setAllCalendarDates] = useState<DateData[]>(
-    generateCalendarDates(),
-  );
-
-  const bootcampOptions = generateBootcampOptions();
-  const unitPeriods = generateUnitPeriods();
-  const unitPeriod = getUnitPeriodForDate(
-    currentMonth,
-    unitPeriods,
-    allCalendarDates,
-  );
-  const currentUnit = unitPeriod
+  const currentUnit = selectedPeriod
     ? (() => {
-        const startStr = unitPeriod.startDate.toLocaleDateString("ko-KR", {
+        const startStr = selectedPeriod.startDate.toLocaleDateString("ko-KR", {
           year: "numeric",
           month: "long",
           day: "numeric",
         });
-        const endStr = unitPeriod.endDate.toLocaleDateString("ko-KR", {
+        const endStr = selectedPeriod.endDate.toLocaleDateString("ko-KR", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -158,8 +127,8 @@ const Attendance = () => {
         const sessionCount = allCalendarDates.filter((dateData) => {
           const date = dateData.date;
           return (
-            date.getTime() >= unitPeriod.startDate.getTime() &&
-            date.getTime() <= unitPeriod.endDate.getTime()
+            date.getTime() >= selectedPeriod.startDate.getTime() &&
+            date.getTime() <= selectedPeriod.endDate.getTime()
           );
         }).length;
 
@@ -167,10 +136,12 @@ const Attendance = () => {
       })()
     : "단위기간 정보 없음";
 
-  const targetYear = currentMonth.getFullYear();
-  const targetMonthIndex = currentMonth.getMonth();
-
-  const selectedPeriod = unitPeriod;
+  const today = new Date();
+  const currentPeriodForCalendar = unitPeriods.find(
+    (period) =>
+      today.getTime() >= period.startDate.getTime() &&
+      today.getTime() <= period.endDate.getTime(),
+  );
 
   const calendarDates = allCalendarDates
     .filter((dateData) => {
@@ -204,13 +175,13 @@ const Attendance = () => {
     .map((dateData) => {
       const date = dateData.date;
       const isInCurrentPeriod =
-        selectedPeriod !== null &&
-        date.getTime() >= selectedPeriod.startDate.getTime() &&
-        date.getTime() <= selectedPeriod.endDate.getTime();
+        currentPeriodForCalendar !== undefined &&
+        date.getTime() >= currentPeriodForCalendar.startDate.getTime() &&
+        date.getTime() <= currentPeriodForCalendar.endDate.getTime();
 
       const isInOtherPeriod = unitPeriods.some(
         (period) =>
-          period !== selectedPeriod &&
+          period !== currentPeriodForCalendar &&
           date.getTime() >= period.startDate.getTime() &&
           date.getTime() <= period.endDate.getTime(),
       );
