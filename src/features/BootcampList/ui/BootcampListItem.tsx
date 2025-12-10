@@ -32,7 +32,7 @@ const BootcampListItem = ({
       <td className={styles.name}>{bootcamp.name}</td>
 
       <td className={styles.schedule}>
-        <div className={styles.scheduleWrab}>
+        <div className={styles.scheduleWrap}>
           <div>{bootcamp.startedAt} ~</div>
           <div>{bootcamp.endedAt}</div>
         </div>
@@ -55,7 +55,8 @@ const BootcampListItem = ({
       {manage && (
         <>
           <td>
-            <div
+            <button
+              type="button"
               className={styles.icon}
               onClick={(e) => {
                 e.stopPropagation();
@@ -63,11 +64,12 @@ const BootcampListItem = ({
               }}
             >
               <EditIcon />
-            </div>
+            </button>
           </td>
 
           <td>
-            <div
+            <button
+              type="button"
               className={`${styles.delete} ${styles.icon}`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -75,7 +77,7 @@ const BootcampListItem = ({
               }}
             >
               <DeleteIcon />
-            </div>
+            </button>
           </td>
         </>
       )}
