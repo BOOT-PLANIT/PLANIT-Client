@@ -204,11 +204,15 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
   };
 
   const handleDelete = (bootcamp: Bootcamp) => {
-    console.log("부트캠프 삭제", bootcamp);
+    if (manage) {
+      console.log("부트캠프 삭제", bootcamp);
+    }
   };
 
   const handleEdit = (bootcamp: Bootcamp) => {
-    console.log("부트캠프 수정", bootcamp);
+    if (manage) {
+      console.log("부트캠프 수정", bootcamp);
+    }
   };
 
   return (

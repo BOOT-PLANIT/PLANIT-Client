@@ -1,16 +1,17 @@
 .container {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
   background: var(--background-tertiary-darker);
   padding: var(--spacing-16);
+  overflow-x: auto;
 }
 
 .card {
-  width: 100%;
-  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 1000px;
+  min-width: 600px;
 }
 
 .subtitle {
