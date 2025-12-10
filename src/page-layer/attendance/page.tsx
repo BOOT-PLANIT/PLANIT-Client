@@ -26,8 +26,8 @@ import {
   generateBootcampOptions,
   generateCalendarDates,
   generatePeriodAllowance,
+  generateUnitPeriods,
   generateUnitStats,
-  getCurrentUnit,
 } from "./model/mockData";
 
 const WeekendIcon = () => (
@@ -52,20 +52,145 @@ const CurrentUnitIcon = () => (
   />
 );
 
+const getUnitPeriodForDate = (
+  date: Date,
+  unitPeriods: Array<{ startDate: Date; endDate: Date; unitNumber: number }>,
+): { unitNumber: number; startDate: Date; endDate: Date } | null => {
+  const targetYear = date.getFullYear();
+  const targetMonth = date.getMonth();
+  const monthStart = new Date(targetYear, targetMonth, 1);
+  const monthEnd = new Date(targetYear, targetMonth + 1, 0);
+
+  for (const period of unitPeriods) {
+    const overlapStart = new Date(
+      Math.max(period.startDate.getTime(), monthStart.getTime()),
+    );
+    const overlapEnd = new Date(
+      Math.min(period.endDate.getTime(), monthEnd.getTime()),
+    );
+
+    if (overlapStart <= overlapEnd) {
+      return period;
+    }
+  }
+  return null;
+};
+
 const Attendance = () => {
   const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
-  const [calendarDates, setCalendarDates] = useState<DateData[]>(
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+  const [allCalendarDates, setAllCalendarDates] = useState<DateData[]>(
     generateCalendarDates(),
   );
 
   const bootcampOptions = generateBootcampOptions();
-  const currentUnit = getCurrentUnit();
+  const unitPeriods = generateUnitPeriods();
+  const unitPeriod = getUnitPeriodForDate(currentMonth, unitPeriods);
+  const currentUnit = unitPeriod
+    ? (() => {
+        const startStr = unitPeriod.startDate.toLocaleDateString("ko-KR", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        const endStr = unitPeriod.endDate.toLocaleDateString("ko-KR", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+
+        const daysDiff = allCalendarDates.filter((dateData) => {
+          const date = dateData.date;
+          return (
+            date.getTime() >= unitPeriod.startDate.getTime() &&
+            date.getTime() <= unitPeriod.endDate.getTime()
+          );
+        }).length;
+
+        return `${startStr} - ${endStr} (${daysDiff}일)`;
+      })()
+    : "단위기간 정보 없음";
   const attendanceSummaryData = generateAttendanceSummary();
   const unitStats = generateUnitStats();
   const periodAllowance = generatePeriodAllowance();
-  const initialMonth = new Date();
+
+  const targetYear = currentMonth.getFullYear();
+  const targetMonthIndex = currentMonth.getMonth();
+
+  const monthStart = new Date(targetYear, targetMonthIndex, 1);
+  const monthEnd = new Date(targetYear, targetMonthIndex + 1, 0);
+
+  const overlappingPeriods = unitPeriods
+    .map((period) => {
+      const overlapStart = new Date(
+        Math.max(period.startDate.getTime(), monthStart.getTime()),
+      );
+      const overlapEnd = new Date(
+        Math.min(period.endDate.getTime(), monthEnd.getTime()),
+      );
+
+      if (overlapStart <= overlapEnd) {
+        const dayCount = allCalendarDates.filter((dateData) => {
+          const date = dateData.date;
+          return (
+            date.getTime() >= overlapStart.getTime() &&
+            date.getTime() <= overlapEnd.getTime()
+          );
+        }).length;
+
+        return {
+          period,
+          dayCount,
+        };
+      }
+      return null;
+    })
+    .filter(
+      (item): item is { period: (typeof unitPeriods)[0]; dayCount: number } =>
+        item !== null,
+    );
+
+  const selectedPeriod =
+    overlappingPeriods.length > 0
+      ? overlappingPeriods.reduce((max, current) =>
+          current.dayCount > max.dayCount ? current : max,
+        ).period
+      : null;
+
+  const calendarDates = !selectedPeriod
+    ? []
+    : allCalendarDates
+        .filter((dateData) => {
+          const date = dateData.date;
+          const isInTargetMonth =
+            date.getFullYear() === targetYear &&
+            date.getMonth() === targetMonthIndex;
+
+          const prevMonth = new Date(targetYear, targetMonthIndex, 1);
+          prevMonth.setMonth(prevMonth.getMonth() - 1);
+          const isInPrevMonth =
+            date.getFullYear() === prevMonth.getFullYear() &&
+            date.getMonth() === prevMonth.getMonth();
+
+          if (!isInTargetMonth && !isInPrevMonth) {
+            return false;
+          }
+
+          return (
+            date.getTime() >= selectedPeriod.startDate.getTime() &&
+            date.getTime() <= selectedPeriod.endDate.getTime()
+          );
+        })
+        .map((dateData) => ({
+          ...dateData,
+          isCurrentUnit: true,
+        }));
+
+  const handleMonthChange = (month: Date) => {
+    setCurrentMonth(month);
+  };
 
   const iconMap = {
     present: <PresentIcon width={20} height={20} />,
@@ -98,8 +223,8 @@ const Attendance = () => {
   };
 
   const handleSaveEdit = (dates: Date[], status: AttendanceStatus) => {
-    setCalendarDates((prevDates) => {
-      const datesMap = new Map(
+    setAllCalendarDates((prevDates: DateData[]) => {
+      const datesMap = new Map<string, DateData>(
         prevDates.map((dateData) => [
           `${dateData.date.getFullYear()}-${dateData.date.getMonth()}-${dateData.date.getDate()}`,
           dateData,
@@ -162,15 +287,24 @@ const Attendance = () => {
 
         <div className={styles.summaryCards}>
           <AttendanceSummaryCard items={attendanceSummary} />
-          <UnitPeriodStatsCard {...unitStats} />
-          <PeriodAllowanceCard {...periodAllowance} />
+          <UnitPeriodStatsCard
+            totalAttendance={unitStats.totalAttendance}
+            totalAbsent={unitStats.totalAbsent}
+            totalUnrecorded={unitStats.totalUnrecorded}
+            totalDays={unitStats.totalDays}
+          />
+          <PeriodAllowanceCard
+            amount={periodAllowance.amount}
+            dateRange={periodAllowance.dateRange}
+          />
         </div>
 
         <Card variant="solid" width="100%">
           <Calendar
             dates={calendarDates}
-            initialMonth={initialMonth}
+            initialMonth={currentMonth}
             onEdit={handleEdit}
+            onMonthChange={handleMonthChange}
           />
           <IconGuide items={iconGuideItems} />
         </Card>
