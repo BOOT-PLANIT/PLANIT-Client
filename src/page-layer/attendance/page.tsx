@@ -18,7 +18,7 @@ import {
   PresentIcon,
 } from "@/shared/assets/icons";
 import { Calendar, Card, Combobox } from "@/shared/ui";
-import type { AttendanceStatus, DateData } from "@/shared/ui";
+import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
 
 import styles from "./Attendance.module.scss";
 import {

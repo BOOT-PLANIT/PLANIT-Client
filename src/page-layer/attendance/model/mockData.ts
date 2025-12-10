@@ -1,4 +1,4 @@
-import type { AttendanceStatus, DateData } from "@/shared/ui";
+import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
 
 export const generateBootcampOptions = () => [
   { value: "fullstack", label: "풀스택 웹 개발 부트캠프" },

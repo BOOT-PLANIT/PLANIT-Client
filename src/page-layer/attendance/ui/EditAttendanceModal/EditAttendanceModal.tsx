@@ -11,7 +11,7 @@ import {
   PresentIcon,
 } from "@/shared/assets/icons";
 import { Button, Modal } from "@/shared/ui";
-import type { AttendanceStatus } from "@/shared/ui";
+import type { AttendanceStatus } from "@/shared/ui/Calendar";
 
 import styles from "./EditAttendanceModal.module.scss";
 
