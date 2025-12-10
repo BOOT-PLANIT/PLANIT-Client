@@ -30,17 +30,6 @@ import {
   generateUnitStats,
 } from "./model/mockData";
 
-const WeekendIcon = () => (
-  <div
-    style={{
-      width: "16px",
-      height: "16px",
-      backgroundColor: "var(--background-tertiary-darker)",
-      borderRadius: "4px",
-    }}
-  />
-);
-
 const CurrentUnitIcon = () => (
   <div
     style={{
@@ -245,7 +234,6 @@ const Attendance = () => {
     { icon: <LeaveIcon width={20} height={20} />, label: "공가" },
     { icon: <AnnualIcon width={20} height={20} />, label: "월차" },
     { icon: <AbsentIcon width={20} height={20} />, label: "결석" },
-    { icon: <WeekendIcon />, label: "주말" },
     { icon: <CurrentUnitIcon />, label: "현재 단위 기간" },
     { icon: <OtherUnitIcon />, label: "다른 단위 기간" },
   ];

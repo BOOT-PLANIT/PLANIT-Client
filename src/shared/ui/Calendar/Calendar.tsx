@@ -131,11 +131,6 @@ const Calendar = ({
     [currentMonth],
   );
 
-  const isWeekend = useCallback((date: Date): boolean => {
-    const day = date.getDay();
-    return day === 0 || day === 6;
-  }, []);
-
   const isToday = useCallback((date: Date): boolean => {
     const today = new Date();
     return (
@@ -237,7 +232,6 @@ const Calendar = ({
             const dateData = getDateData(date);
             const selected = isSelected(date);
             const currentMonthDay = isCurrentMonth(date);
-            const weekend = isWeekend(date);
             const today = isToday(date);
             const isCurrentUnit = dateData?.isCurrentUnit;
             const isOtherUnit = dateData?.isOtherUnit;
@@ -246,7 +240,6 @@ const Calendar = ({
               styles.day,
               !currentMonthDay && styles.otherMonth,
               selected && styles.selected,
-              weekend && styles.weekend,
               today && styles.today,
               isCurrentUnit && styles.currentUnit,
               isOtherUnit && styles.otherUnit,
