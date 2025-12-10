@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useMemo, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
 
 import { ChevronLeft, ChevronRight } from "@/shared/assets/icons";
 
@@ -171,9 +177,41 @@ const Calendar = ({
     [currentMonth],
   );
 
-  const todayKey = useMemo(() => {
+  const [todayKey, setTodayKey] = useState(() => {
     const today = new Date();
     return getDateKey(today);
+  });
+
+  useEffect(() => {
+    const updateTodayKey = () => {
+      const today = new Date();
+      setTodayKey(getDateKey(today));
+    };
+
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    const msUntilMidnight = tomorrow.getTime() - now.getTime();
+
+    let intervalId: NodeJS.Timeout | null = null;
+
+    const timeoutId = setTimeout(() => {
+      updateTodayKey();
+      intervalId = setInterval(
+        () => {
+          updateTodayKey();
+        },
+        24 * 60 * 60 * 1000,
+      );
+    }, msUntilMidnight);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, []);
 
   const isToday = useCallback(
