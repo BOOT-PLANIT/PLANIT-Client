@@ -136,25 +136,14 @@ const Calendar = ({
     return day === 0 || day === 6;
   }, []);
 
-  const todayDate = useMemo(() => {
+  const isToday = useCallback((date: Date): boolean => {
     const today = new Date();
-    return {
-      date: today.getDate(),
-      month: today.getMonth(),
-      year: today.getFullYear(),
-    };
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
   }, []);
-
-  const isToday = useCallback(
-    (date: Date): boolean => {
-      return (
-        date.getDate() === todayDate.date &&
-        date.getMonth() === todayDate.month &&
-        date.getFullYear() === todayDate.year
-      );
-    },
-    [todayDate],
-  );
 
   const handleDateClick = useCallback(
     (date: Date) => {
