@@ -24,6 +24,7 @@ export interface DateData {
 
 interface CalendarProps {
   dates?: DateData[];
+  selectedDates?: Date[];
   onDateSelect?: (dates: Date[]) => void;
   onEdit?: (dates: Date[]) => void;
   initialMonth?: Date;
@@ -51,6 +52,7 @@ const getStatusClassName = (status?: AttendanceStatus): string => {
 
 const Calendar = ({
   dates = [],
+  selectedDates: externalSelectedDates,
   onDateSelect,
   onEdit,
   initialMonth = new Date(),
@@ -59,7 +61,13 @@ const Calendar = ({
   const [currentMonth, setCurrentMonth] = useState(
     new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1),
   );
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [internalSelectedDates, setInternalSelectedDates] = useState<Date[]>(
+    [],
+  );
+  const selectedDates =
+    externalSelectedDates !== undefined
+      ? externalSelectedDates
+      : internalSelectedDates;
 
   const monthYear = useMemo(() => {
     return currentMonth.toLocaleDateString("ko-KR", {
@@ -150,17 +158,21 @@ const Calendar = ({
       }
 
       const dateKey = getDateKey(date);
-      setSelectedDates((prev) => {
-        const prevKeys = new Set(prev.map(getDateKey));
-        const isCurrentlySelected = prevKeys.has(dateKey);
-        const newSelectedDates = isCurrentlySelected
-          ? prev.filter((d) => getDateKey(d) !== dateKey)
-          : [...prev, date];
-        onDateSelect?.(newSelectedDates);
-        return newSelectedDates;
-      });
+      const updateSelectedDates = (newDates: Date[]) => {
+        if (externalSelectedDates === undefined) {
+          setInternalSelectedDates(newDates);
+        }
+        onDateSelect?.(newDates);
+      };
+
+      const prevKeys = new Set(selectedDates.map(getDateKey));
+      const isCurrentlySelected = prevKeys.has(dateKey);
+      const newSelectedDates = isCurrentlySelected
+        ? selectedDates.filter((d) => getDateKey(d) !== dateKey)
+        : [...selectedDates, date];
+      updateSelectedDates(newSelectedDates);
     },
-    [currentMonth, onDateSelect],
+    [currentMonth, onDateSelect, externalSelectedDates, selectedDates],
   );
 
   const handlePreviousMonth = useCallback(() => {
@@ -184,9 +196,11 @@ const Calendar = ({
   }, [currentMonth, onMonthChange]);
 
   const handleClearSelection = useCallback(() => {
-    setSelectedDates([]);
+    if (externalSelectedDates === undefined) {
+      setInternalSelectedDates([]);
+    }
     onDateSelect?.([]);
-  }, [onDateSelect]);
+  }, [onDateSelect, externalSelectedDates]);
 
   const handleEdit = useCallback(() => {
     if (selectedDates.length > 0) {
