@@ -52,3 +52,10 @@
   min-width: 50px;
   padding: var(--spacing-8);
 }
+
+.noDataBox {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

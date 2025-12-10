@@ -147,9 +147,6 @@ importers:
       stylelint:
         specifier: ^16.26.1
         version: 16.26.1(typescript@5.9.3)
-      stylelint-config-prettier-scss:
-        specifier: ^1.0.0
-        version: 1.0.0(stylelint@16.26.1(typescript@5.9.3))
       stylelint-config-recommended-scss:
         specifier: ^16.0.2
         version: 16.0.2(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3))
@@ -3684,13 +3681,6 @@ packages:
         optional: true
       babel-plugin-macros:
         optional: true
-
-  stylelint-config-prettier-scss@1.0.0:
-    resolution: {integrity: sha512-Gr2qLiyvJGKeDk0E/+awNTrZB/UtNVPLqCDOr07na/sLekZwm26Br6yYIeBYz3ulsEcQgs5j+2IIMXCC+wsaQA==}
-    engines: {node: 14.* || 16.* || >= 18}
-    hasBin: true
-    peerDependencies:
-      stylelint: '>=15.0.0'
 
   stylelint-config-recommended-scss@16.0.2:
     resolution: {integrity: sha512-aUTHhPPWCvFyWaxtckJlCPaXTDFsp4pKO8evXNCsW9OwsaUWyMd6jvcUhSmfGWPrTddvzNqK4rS/UuSLcbVGdQ==}
@@ -7763,10 +7753,6 @@ snapshots:
       react: 19.2.1
     optionalDependencies:
       '@babel/core': 7.28.5
-
-  stylelint-config-prettier-scss@1.0.0(stylelint@16.26.1(typescript@5.9.3)):
-    dependencies:
-      stylelint: 16.26.1(typescript@5.9.3)
 
   stylelint-config-recommended-scss@16.0.2(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)):
     dependencies:

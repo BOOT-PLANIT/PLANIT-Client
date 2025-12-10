@@ -8,7 +8,7 @@ interface CardProps {
   titleIcon?: React.ReactNode;
   children: React.ReactNode;
   width?: string;
-  onClick?: () => void;
+  isClickable?: boolean;
 }
 
 const Card = ({
@@ -17,14 +17,12 @@ const Card = ({
   titleIcon,
   children,
   width = "100%",
-  onClick,
+  isClickable = false,
 }: CardProps) => {
+  const Wrapper = isClickable ? "button" : "div";
+
   return (
-    <div
-      className={`${styles.card} ${styles[variant]}`}
-      style={{ width }}
-      onClick={onClick}
-    >
+    <Wrapper className={`${styles.card} ${styles[variant]}`} style={{ width }}>
       {title && (
         <div className={styles.header}>
           {titleIcon && <span className={styles.titleIcon}>{titleIcon}</span>}
@@ -32,7 +30,7 @@ const Card = ({
         </div>
       )}
       <div className={styles.content}>{children}</div>
-    </div>
+    </Wrapper>
   );
 };
 
