@@ -18,7 +18,7 @@ interface UnitPeriodStatsCardProps {
 const ATTENDANCE_COLORS = {
   attendance: "var(--color-attendance-present)",
   absent: "var(--color-attendance-absent)",
-  unrecorded: "var(--color-grey-normal-intense)",
+  unrecorded: "var(--foreground-disable)",
 } as const;
 
 const UnitPeriodStatsCard = ({
