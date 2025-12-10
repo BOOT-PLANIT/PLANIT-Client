@@ -200,7 +200,7 @@ const Combobox = forwardRef<ComboboxRef, ComboboxProps>(
       if (triggerRef.current) {
         const rect = triggerRef.current.getBoundingClientRect();
         setDropdownPosition({
-          top: rect.bottom + 4,
+          top: rect.bottom,
           left: rect.left,
           width: rect.width,
         });
