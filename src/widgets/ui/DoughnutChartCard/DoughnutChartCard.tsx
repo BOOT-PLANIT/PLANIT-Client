@@ -14,20 +14,21 @@ interface DoughnutChartCardProps {
 }
 
 const DoughnutChartCard = ({ title, data }: DoughnutChartCardProps) => {
+  const total = data.reduce((sum, item) => sum + item.value, 0);
+
+  const showChart = data.length > 0 && total !== 0;
+
   const legendData = useMemo(() => {
-    const total = data.reduce((sum, item) => sum + item.value, 0);
     return data.map((item) => ({
       ...item,
-      percent: ((item.value / total) * 100).toFixed(1),
+      percent: total === 0 ? "0.0" : ((item.value / total) * 100).toFixed(1),
     }));
-  }, [data]);
-
-  const hasData = data.length > 0;
+  }, [data, total]);
 
   return (
     <Card title={title}>
       <div className={styles.cardContainer}>
-        {!hasData ? (
+        {!showChart ? (
           <div className={styles.noDataBox}>
             <span>데이터가 없습니다</span>
           </div>
