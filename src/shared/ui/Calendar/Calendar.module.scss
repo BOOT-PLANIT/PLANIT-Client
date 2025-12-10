@@ -2,7 +2,6 @@
   width: 100%;
   min-width: 0;
   background: var(--background);
-  padding: var(--spacing-10);
 }
 
 .header {
@@ -87,7 +86,7 @@
   aspect-ratio: 1;
   width: 100%;
   min-width: 0;
-  padding: var(--spacing-8);
+  padding: var(--spacing-4);
   border: 1px solid var(--border-secondary);
   border-radius: var(--radius-8);
   background: var(--background);
@@ -141,10 +140,10 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: min(20%, 24px);
-    height: min(20%, 24px);
-    min-width: 12px;
-    min-height: 12px;
+    width: min(20%, 36px);
+    height: min(20%, 36px);
+    min-width: 14px;
+    min-height: 14px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -185,8 +184,9 @@
   top: var(--spacing-8);
   left: var(--spacing-8);
 
-  @media (width <= 400px) {
-    top: 0;
-    left: 0;
+  @media (width <= 480px) {
+    font-size: var(--font-size-sm);
+    top: 2px;
+    left: 2px;
   }
 }

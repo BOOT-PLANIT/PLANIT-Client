@@ -4,10 +4,10 @@
   gap: var(--spacing-24);
   min-width: 380px;
 
-  @media (width <= 400px) {
-    min-width: unset;
+  @media (width <= 480px) {
+    min-width: 80vw;
     width: 100%;
-    gap: var(--spacing-16);
+    gap: var(--spacing-8);
   }
 }
 
