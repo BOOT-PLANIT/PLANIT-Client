@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/shared/ui";
-import type { AttendanceStatus } from "@/shared/ui";
+import type { AttendanceStatus } from "@/shared/ui/Calendar";
 
 import styles from "./AttendanceSummaryCard.module.scss";
 

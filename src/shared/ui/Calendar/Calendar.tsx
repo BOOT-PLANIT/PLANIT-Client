@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 
 import { ChevronLeft, ChevronRight } from "@/shared/assets/icons";
 
@@ -19,11 +19,12 @@ export interface DateData {
   date: Date;
   status?: AttendanceStatus;
   isCurrentUnit?: boolean;
-  hasSession?: boolean;
+  isOtherUnit?: boolean;
 }
 
 interface CalendarProps {
   dates?: DateData[];
+  selectedDates?: Date[];
   onDateSelect?: (dates: Date[]) => void;
   onEdit?: (dates: Date[]) => void;
   initialMonth?: Date;
@@ -51,6 +52,7 @@ const getStatusClassName = (status?: AttendanceStatus): string => {
 
 const Calendar = ({
   dates = [],
+  selectedDates: externalSelectedDates,
   onDateSelect,
   onEdit,
   initialMonth = new Date(),
@@ -59,7 +61,17 @@ const Calendar = ({
   const [currentMonth, setCurrentMonth] = useState(
     new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1),
   );
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [internalSelectedDates, setInternalSelectedDates] = useState<Date[]>(
+    [],
+  );
+  const [dragStartDate, setDragStartDate] = useState<Date | null>(null);
+  const [dragEndDate, setDragEndDate] = useState<Date | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const selectedDates =
+    externalSelectedDates !== undefined
+      ? externalSelectedDates
+      : internalSelectedDates;
 
   const monthYear = useMemo(() => {
     return currentMonth.toLocaleDateString("ko-KR", {
@@ -107,48 +119,231 @@ const Calendar = ({
     return days;
   }, [currentMonth]);
 
-  const getDateData = (date: Date): DateData | undefined => {
-    return datesMap.get(getDateKey(date));
-  };
+  const getDateData = useCallback(
+    (date: Date): DateData | undefined => {
+      return datesMap.get(getDateKey(date));
+    },
+    [datesMap],
+  );
 
-  const isSelected = (date: Date): boolean => {
-    return selectedDatesSet.has(getDateKey(date));
-  };
+  const isSelected = useCallback(
+    (date: Date): boolean => {
+      return selectedDatesSet.has(getDateKey(date));
+    },
+    [selectedDatesSet],
+  );
 
-  const isCurrentMonth = (date: Date): boolean => {
-    return (
-      date.getMonth() === currentMonth.getMonth() &&
-      date.getFullYear() === currentMonth.getFullYear()
-    );
-  };
+  const isInDragRange = useCallback(
+    (date: Date): boolean => {
+      if (!dragStartDate || !dragEndDate) {
+        return false;
+      }
+      if (
+        date.getMonth() !== currentMonth.getMonth() ||
+        date.getFullYear() !== currentMonth.getFullYear()
+      ) {
+        return false;
+      }
+      const dateKey = getDateKey(date);
+      const dateData = datesMap.get(dateKey);
+      if (!dateData) {
+        return false;
+      }
+      const dateTime = date.getTime();
+      const startTime = Math.min(
+        dragStartDate.getTime(),
+        dragEndDate.getTime(),
+      );
+      const endTime = Math.max(dragStartDate.getTime(), dragEndDate.getTime());
+      return dateTime >= startTime && dateTime <= endTime;
+    },
+    [dragStartDate, dragEndDate, currentMonth, datesMap],
+  );
 
-  const isWeekend = (date: Date): boolean => {
-    const day = date.getDay();
-    return day === 0 || day === 6;
-  };
+  const isCurrentMonth = useCallback(
+    (date: Date): boolean => {
+      return (
+        date.getMonth() === currentMonth.getMonth() &&
+        date.getFullYear() === currentMonth.getFullYear()
+      );
+    },
+    [currentMonth],
+  );
 
-  const isToday = (date: Date): boolean => {
+  const isToday = useCallback((date: Date): boolean => {
     const today = new Date();
     return (
       date.getDate() === today.getDate() &&
       date.getMonth() === today.getMonth() &&
       date.getFullYear() === today.getFullYear()
     );
-  };
+  }, []);
 
-  const handleDateClick = (date: Date) => {
-    if (!isCurrentMonth(date)) return;
+  const handleDateMouseDown = useCallback(
+    (date: Date, e?: React.MouseEvent | React.TouchEvent) => {
+      if (
+        date.getMonth() !== currentMonth.getMonth() ||
+        date.getFullYear() !== currentMonth.getFullYear()
+      ) {
+        return;
+      }
 
-    const dateKey = getDateKey(date);
-    const newSelectedDates = isSelected(date)
-      ? selectedDates.filter((d) => getDateKey(d) !== dateKey)
-      : [...selectedDates, date];
+      const dateKey = getDateKey(date);
+      const dateData = datesMap.get(dateKey);
+      if (!dateData) {
+        return;
+      }
 
-    setSelectedDates(newSelectedDates);
-    onDateSelect?.(newSelectedDates);
-  };
+      if (e && "touches" in e) {
+        e.preventDefault();
+      }
 
-  const handlePreviousMonth = () => {
+      setDragStartDate(date);
+      setDragEndDate(date);
+      setIsDragging(false);
+    },
+    [currentMonth, datesMap],
+  );
+
+  const handleDateMouseEnter = useCallback(
+    (date: Date) => {
+      if (!dragStartDate) {
+        return;
+      }
+
+      if (
+        date.getMonth() !== currentMonth.getMonth() ||
+        date.getFullYear() !== currentMonth.getFullYear()
+      ) {
+        return;
+      }
+
+      const dateKey = getDateKey(date);
+      const dateData = datesMap.get(dateKey);
+      if (!dateData) {
+        return;
+      }
+
+      setIsDragging(true);
+      setDragEndDate(date);
+    },
+    [dragStartDate, datesMap, currentMonth],
+  );
+
+  const handleDateMouseUp = useCallback(() => {
+    if (!dragStartDate || !dragEndDate) {
+      setDragStartDate(null);
+      setDragEndDate(null);
+      setIsDragging(false);
+      return;
+    }
+
+    if (isDragging) {
+      const startTime = Math.min(
+        dragStartDate.getTime(),
+        dragEndDate.getTime(),
+      );
+      const endTime = Math.max(dragStartDate.getTime(), dragEndDate.getTime());
+
+      const datesInRange: Date[] = [];
+      const currentDate = new Date(startTime);
+      while (currentDate.getTime() <= endTime) {
+        if (
+          currentDate.getMonth() === currentMonth.getMonth() &&
+          currentDate.getFullYear() === currentMonth.getFullYear()
+        ) {
+          const dateKey = getDateKey(currentDate);
+          const dateData = datesMap.get(dateKey);
+          if (dateData) {
+            datesInRange.push(new Date(currentDate));
+          }
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      const updateSelectedDates = (newDates: Date[]) => {
+        if (externalSelectedDates === undefined) {
+          setInternalSelectedDates(newDates);
+        }
+        onDateSelect?.(newDates);
+      };
+
+      const existingKeys = new Set(selectedDates.map(getDateKey));
+      const rangeKeys = new Set(datesInRange.map(getDateKey));
+      const allSelected = datesInRange.every((d) =>
+        existingKeys.has(getDateKey(d)),
+      );
+
+      const newSelectedDates = allSelected
+        ? selectedDates.filter((d) => !rangeKeys.has(getDateKey(d)))
+        : [
+            ...selectedDates.filter((d) => !rangeKeys.has(getDateKey(d))),
+            ...datesInRange,
+          ];
+
+      updateSelectedDates(newSelectedDates);
+    }
+
+    setTimeout(() => {
+      setDragStartDate(null);
+      setDragEndDate(null);
+      setIsDragging(false);
+    }, 0);
+  }, [
+    dragStartDate,
+    dragEndDate,
+    isDragging,
+    datesMap,
+    externalSelectedDates,
+    onDateSelect,
+    selectedDates,
+    currentMonth,
+  ]);
+
+  const handleDateClick = useCallback(
+    (date: Date) => {
+      if (isDragging) {
+        return;
+      }
+
+      if (
+        date.getMonth() !== currentMonth.getMonth() ||
+        date.getFullYear() !== currentMonth.getFullYear()
+      ) {
+        return;
+      }
+
+      const dateKey = getDateKey(date);
+      const dateData = datesMap.get(dateKey);
+      if (!dateData) {
+        return;
+      }
+
+      const updateSelectedDates = (newDates: Date[]) => {
+        if (externalSelectedDates === undefined) {
+          setInternalSelectedDates(newDates);
+        }
+        onDateSelect?.(newDates);
+      };
+
+      const prevKeys = new Set(selectedDates.map(getDateKey));
+      const isCurrentlySelected = prevKeys.has(dateKey);
+      const newSelectedDates = isCurrentlySelected
+        ? selectedDates.filter((d) => getDateKey(d) !== dateKey)
+        : [...selectedDates, date];
+      updateSelectedDates(newSelectedDates);
+    },
+    [
+      currentMonth,
+      onDateSelect,
+      externalSelectedDates,
+      selectedDates,
+      datesMap,
+      isDragging,
+    ],
+  );
+
+  const handlePreviousMonth = useCallback(() => {
     const newMonth = new Date(
       currentMonth.getFullYear(),
       currentMonth.getMonth() - 1,
@@ -156,9 +351,9 @@ const Calendar = ({
     );
     setCurrentMonth(newMonth);
     onMonthChange?.(newMonth);
-  };
+  }, [currentMonth, onMonthChange]);
 
-  const handleNextMonth = () => {
+  const handleNextMonth = useCallback(() => {
     const newMonth = new Date(
       currentMonth.getFullYear(),
       currentMonth.getMonth() + 1,
@@ -166,21 +361,30 @@ const Calendar = ({
     );
     setCurrentMonth(newMonth);
     onMonthChange?.(newMonth);
-  };
+  }, [currentMonth, onMonthChange]);
 
-  const handleClearSelection = () => {
-    setSelectedDates([]);
+  const handleClearSelection = useCallback(() => {
+    if (externalSelectedDates === undefined) {
+      setInternalSelectedDates([]);
+    }
     onDateSelect?.([]);
-  };
+  }, [onDateSelect, externalSelectedDates]);
 
-  const handleEdit = () => {
+  const handleEdit = useCallback(() => {
     if (selectedDates.length > 0) {
       onEdit?.(selectedDates);
     }
-  };
+  }, [selectedDates, onEdit]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (dragStartDate) {
+      setDragStartDate(null);
+      setDragEndDate(null);
+    }
+  }, [dragStartDate]);
 
   return (
-    <div className={styles.calendar}>
+    <div className={styles.calendar} onMouseLeave={handleMouseLeave}>
       <div className={styles.header}>
         <div className={styles.monthYear}>{monthYear}</div>
         <div className={styles.navigation}>
@@ -217,17 +421,83 @@ const Calendar = ({
             const dateData = getDateData(date);
             const selected = isSelected(date);
             const currentMonthDay = isCurrentMonth(date);
-            const weekend = isWeekend(date);
-            const isCurrentUnit = dateData?.isCurrentUnit;
             const today = isToday(date);
-            const hasSession = dateData?.hasSession;
+            const isCurrentUnit = dateData?.isCurrentUnit;
+            const isOtherUnit = dateData?.isOtherUnit;
+            const inDragRange = isInDragRange(date);
+
+            const dayClasses = [
+              styles.day,
+              !currentMonthDay && styles.otherMonth,
+              selected && styles.selected,
+              today && styles.today,
+              isCurrentUnit && styles.currentUnit,
+              isOtherUnit && styles.otherUnit,
+              inDragRange && styles.dragRange,
+              getStatusClassName(dateData?.status),
+            ]
+              .filter(Boolean)
+              .join(" ");
 
             return (
               <button
                 key={`${date.getTime()}-${index}`}
                 type="button"
-                className={`${styles.day} ${!currentMonthDay ? styles.otherMonth : ""} ${selected ? styles.selected : ""} ${isCurrentUnit ? styles.currentUnit : ""} ${weekend ? styles.weekend : ""} ${today ? styles.today : ""} ${hasSession ? styles.hasSession : ""} ${getStatusClassName(dateData?.status)}`}
+                className={dayClasses}
                 onClick={() => handleDateClick(date)}
+                onMouseDown={() => handleDateMouseDown(date)}
+                onMouseEnter={() => handleDateMouseEnter(date)}
+                onMouseUp={handleDateMouseUp}
+                onTouchStart={(e) => {
+                  e.preventDefault();
+                  const touch = e.touches[0];
+                  touchStartRef.current = {
+                    x: touch.clientX,
+                    y: touch.clientY,
+                  };
+                  handleDateMouseDown(date, e);
+                }}
+                onTouchMove={(e) => {
+                  if (!dragStartDate || !touchStartRef.current) return;
+
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  const touch = e.touches[0];
+                  const deltaX = Math.abs(
+                    touch.clientX - touchStartRef.current.x,
+                  );
+                  const deltaY = Math.abs(
+                    touch.clientY - touchStartRef.current.y,
+                  );
+
+                  if (deltaX > 5 || deltaY > 5) {
+                    setIsDragging(true);
+                  }
+
+                  const target = document.elementFromPoint(
+                    touch.clientX,
+                    touch.clientY,
+                  );
+                  if (target) {
+                    const button = target.closest("button[data-date]");
+                    if (button) {
+                      const dateAttr = button.getAttribute("data-date");
+                      if (dateAttr) {
+                        const touchDate = new Date(parseInt(dateAttr, 10));
+                        handleDateMouseEnter(touchDate);
+                      }
+                    }
+                  }
+                }}
+                onTouchEnd={(e) => {
+                  if (isDragging) {
+                    e.preventDefault();
+                  }
+                  handleDateMouseUp();
+                  touchStartRef.current = null;
+                }}
+                data-date={date.getTime()}
                 disabled={!currentMonthDay}
               >
                 <span className={styles.dayNumber}>{date.getDate()}</span>

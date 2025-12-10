@@ -6,4 +6,3 @@ export { GlobalComponents } from "./GlobalComponents";
 export { Input } from "./Input";
 export { Calendar } from "./Calendar";
 export { Modal } from "./Modal";
-export type { AttendanceStatus, DateData } from "./Calendar";

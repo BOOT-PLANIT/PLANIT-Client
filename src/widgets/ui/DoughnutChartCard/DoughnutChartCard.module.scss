@@ -1,0 +1,61 @@
+.cardContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  width: auto;
+  justify-content: center;
+  align-items: start;
+  margin-left: auto;
+}
+
+.legendItem {
+  display: flex;
+  width: auto;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-8);
+}
+
+.colorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+}
+
+.label {
+  font-size: var(--font-size-md);
+}
+
+.value {
+  color: var(--foreground);
+  font-size: var(--font-size-md);
+}
+
+.percent {
+  color: var(--foreground-disable);
+  font-size: var(--font-size-md);
+}
+
+.chartBox {
+  flex: 1 1 auto;
+  max-width: 200px;
+  min-width: 50px;
+  padding: var(--spacing-8);
+}
+
+.noDataBox {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -13,7 +13,7 @@ const meta: Meta<typeof Calendar> = {
   argTypes: {
     dates: {
       control: "object",
-      description: "날짜 데이터 배열 (상태 및 Current Unit 정보 포함)",
+      description: "날짜 데이터 배열 (상태 및 현재 단위 기간 정보 포함)",
     },
     onDateSelect: {
       action: "dateSelected",
@@ -46,7 +46,6 @@ const generateMockData = (): DateData[] => {
     dates.push({
       date: new Date(2025, 9, day),
       status: "present",
-      isCurrentUnit: [14, 15, 16, 17, 22, 23, 24].includes(day),
     });
   });
 
@@ -72,7 +71,7 @@ const generateMockData = (): DateData[] => {
     });
   });
 
-  // Annual (연차)
+  // Annual (월차)
   dates.push({
     date: new Date(2025, 9, 18),
     status: "annual",
