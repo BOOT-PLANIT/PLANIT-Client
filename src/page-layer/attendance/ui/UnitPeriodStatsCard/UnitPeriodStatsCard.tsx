@@ -15,6 +15,12 @@ interface UnitPeriodStatsCardProps {
   totalDays: number;
 }
 
+const ATTENDANCE_COLORS = {
+  attendance: "#048724",
+  absent: "#d21c1c",
+  unrecorded: "#8d929f",
+} as const;
+
 const UnitPeriodStatsCard = ({
   totalAttendance,
   totalAbsent,
@@ -26,17 +32,17 @@ const UnitPeriodStatsCard = ({
       {
         label: "총출석",
         value: totalAttendance,
-        color: "#048724",
+        color: ATTENDANCE_COLORS.attendance,
       },
       {
         label: "총결석",
         value: totalAbsent,
-        color: "#d21c1c",
+        color: ATTENDANCE_COLORS.absent,
       },
       {
         label: "미출결",
         value: totalUnrecorded,
-        color: "#8d929f",
+        color: ATTENDANCE_COLORS.unrecorded,
       },
     ];
   }, [totalAttendance, totalAbsent, totalUnrecorded]);
