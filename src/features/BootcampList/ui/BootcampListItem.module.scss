@@ -27,15 +27,23 @@
 .duration,
 .kdt,
 .status {
-  padding: var(--spacing-16) var(--spacing-0) var(--spacing-16) var(--spacing-2);
+  padding: 0 0 0 var(--spacing-2);
+}
+
+.scheduleWrab {
+  display: flex;
+  flex-direction: row;
+  @media (width <= 830px) {
+    flex-direction: column;
+  }
 }
 
 .kdtBadge {
   padding: var(--spacing-4) var(--spacing-10);
   font-size: var(--font-size-sm);
   border-radius: var(--radius-6);
-  background-color: #dbeafe;
-  color: #1d4ed8;
+  background-color: var(--color-badge-kdt-bg);
+  color: var(--color-badge-kdt-f);
   font-weight: var(--font-weight-semibold);
 }
 
@@ -43,8 +51,8 @@
   padding: var(--spacing-4) var(--spacing-10);
   font-size: var(--font-size-sm);
   border-radius: var(--radius-6);
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--color-badge-active-bg);
+  color: var(--color-badge-active-f);
   font-weight: var(--font-weight-semibold);
 }
 
@@ -52,8 +60,8 @@
   padding: var(--spacing-4) var(--spacing-10);
   font-size: var(--font-size-sm);
   border-radius: var(--radius-6);
-  background-color: #e5e7eb;
-  color: #374151;
+  background-color: var(--color-badge-ended-bg);
+  color: var(--color-badge-ended-f);
   font-weight: var(--font-weight-semibold);
 }
 

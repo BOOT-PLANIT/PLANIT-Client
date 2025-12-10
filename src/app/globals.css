@@ -86,6 +86,14 @@
   --color-attendance-annual: #00aff0;
   --color-attendance-absent: #d21c1c;
 
+  /* Bootcamp Badge */
+  --color-badge-kdt-bg: #dbeafe;
+  --color-badge-kdt-f: #1d4ed8;
+  --color-badge-active-bg: #dcfce7;
+  --color-badge-active-f: #15803d;
+  --color-badge-ended-bg: #e5e7eb;
+  --color-badge-ended-f: #374151;
+
   /* ==================== Semantic Colors ==================== */
 
   /* Background */
