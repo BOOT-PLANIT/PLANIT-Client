@@ -26,6 +26,12 @@ import {
   generateCalendarDates,
   generateUnitPeriods,
 } from "./model/mockData";
+import {
+  calculateAttendanceSummary,
+  calculatePeriodAllowance,
+  calculateStatusCounts,
+  calculateUnitStats,
+} from "./utils/calculator";
 
 const CurrentUnitIcon = () => (
   <div
@@ -216,15 +222,7 @@ const Attendance = () => {
       )
     : [];
 
-  const statusCounts = periodDates.reduce(
-    (acc, dateData) => {
-      if (dateData.status) {
-        acc[dateData.status] = (acc[dateData.status] || 0) + 1;
-      }
-      return acc;
-    },
-    {} as Record<AttendanceStatus, number>,
-  );
+  const statusCounts = calculateStatusCounts(periodDates);
 
   const iconMap = {
     present: <PresentIcon width={20} height={20} />,
@@ -235,83 +233,16 @@ const Attendance = () => {
     absent: <AbsentIcon width={20} height={20} />,
   };
 
-  const attendanceSummary = [
-    {
-      status: "present" as AttendanceStatus,
-      label: "출석",
-      count: statusCounts.present || 0,
-    },
-    {
-      status: "late" as AttendanceStatus,
-      label: "지각",
-      count: statusCounts.late || 0,
-    },
-    {
-      status: "leftEarly" as AttendanceStatus,
-      label: "조퇴",
-      count: statusCounts.leftEarly || 0,
-    },
-    {
-      status: "leave" as AttendanceStatus,
-      label: "공가",
-      count: statusCounts.leave || 0,
-    },
-    {
-      status: "annual" as AttendanceStatus,
-      label: "월차",
-      count: statusCounts.annual || 0,
-    },
-    {
-      status: "absent" as AttendanceStatus,
-      label: "결석",
-      count: statusCounts.absent || 0,
-    },
-  ].map((item) => ({
-    ...item,
-    icon: iconMap[item.status],
-  }));
+  const attendanceSummary = calculateAttendanceSummary(statusCounts).map(
+    (item) => ({
+      ...item,
+      icon: iconMap[item.status],
+    }),
+  );
 
-  const totalDays = periodDates.length;
-  const lateAndLeftEarlyCount =
-    (statusCounts.late || 0) + (statusCounts.leftEarly || 0);
-  const lateAndLeftEarlyAbsentCount = Math.floor(lateAndLeftEarlyCount / 3);
-  const lateAndLeftEarlyAttendanceCount =
-    lateAndLeftEarlyAbsentCount * 2 + (lateAndLeftEarlyCount % 3);
+  const unitStats = calculateUnitStats(periodDates, statusCounts);
 
-  const totalAttendance =
-    (statusCounts.present || 0) +
-    lateAndLeftEarlyAttendanceCount +
-    (statusCounts.leave || 0) +
-    (statusCounts.annual || 0);
-  const totalAbsent = (statusCounts.absent || 0) + lateAndLeftEarlyAbsentCount;
-  const totalUnrecorded =
-    totalDays -
-    (statusCounts.present || 0) -
-    (statusCounts.late || 0) -
-    (statusCounts.leftEarly || 0) -
-    (statusCounts.leave || 0) -
-    (statusCounts.annual || 0) -
-    (statusCounts.absent || 0);
-
-  const unitStats = {
-    totalAttendance,
-    totalAbsent,
-    totalUnrecorded: Math.max(0, totalUnrecorded),
-    totalDays,
-  };
-
-  const periodAllowance = selectedPeriod
-    ? {
-        amount: 500000,
-        dateRange: `${selectedPeriod.startDate.toLocaleDateString("ko-KR", {
-          month: "long",
-          day: "numeric",
-        })}-${selectedPeriod.endDate.toLocaleDateString("ko-KR", {
-          month: "long",
-          day: "numeric",
-        })}`,
-      }
-    : { amount: 0, dateRange: "" };
+  const periodAllowance = calculatePeriodAllowance(selectedPeriod);
 
   const iconGuideItems = [
     { icon: <PresentIcon width={20} height={20} />, label: "출석" },
