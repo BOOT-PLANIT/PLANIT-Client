@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 
 import type { ChartItem } from "@/shared/ui/Chart/DoughnutChart";
-import { DoughnutChartCard } from "@/widgets/ui/DoughnutChartCard";
+import { DoughnutChartCard } from "@/widgets/ui";
 
 interface UnitPeriodStatsCardProps {
   totalAttendance: number;

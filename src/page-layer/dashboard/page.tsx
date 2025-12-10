@@ -1,4 +1,4 @@
-import { DoughnutChartCard } from "@/widgets/ui/DoughnutChartCard";
+import { DoughnutChartCard } from "@/widgets/ui";
 
 const data = [
   { label: "총 출석", value: 12, color: "var(--foreground-success)" },
