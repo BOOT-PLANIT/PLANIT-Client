@@ -1,9 +1,9 @@
 import type { DateData } from "@/shared/ui/Calendar";
 
 export const generateBootcampOptions = () => [
-  { value: "fullstack", label: "풀스택 웹 개발 부트캠프" },
-  { value: "frontend", label: "프론트엔드 개발 부트캠프" },
-  { value: "backend", label: "백엔드 개발 부트캠프" },
+  { value: "fullstack", label: "풀스택 웹 개발 부트캠프", isKdt: true },
+  { value: "frontend", label: "프론트엔드 개발 부트캠프", isKdt: false },
+  { value: "backend", label: "백엔드 개발 부트캠프", isKdt: false },
 ];
 
 // 단위기간 생성: 2025년 8월 25일부터 2026년 3월 24일까지 1달 단위

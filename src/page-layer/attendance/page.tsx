@@ -242,7 +242,12 @@ const Attendance = () => {
 
   const unitStats = calculateUnitStats(periodDates, statusCounts);
 
-  const periodAllowance = calculatePeriodAllowance(selectedPeriod);
+  const selectedBootcamp = bootcampOptions[selectedBootcampIndex];
+  const periodAllowance = calculatePeriodAllowance(
+    selectedPeriod,
+    unitStats.totalAttendance,
+    selectedBootcamp?.isKdt ?? false,
+  );
 
   const iconGuideItems = [
     { icon: <PresentIcon width={20} height={20} />, label: "출석" },
@@ -264,7 +269,10 @@ const Attendance = () => {
     setSelectedDates(dates);
   };
 
-  const handleSaveEdit = (dates: Date[], status: AttendanceStatus) => {
+  const handleSaveEdit = (
+    dates: Date[],
+    status: AttendanceStatus | undefined,
+  ) => {
     setAllCalendarDates((prevDates: DateData[]) => {
       const datesMap = new Map<string, DateData>(
         prevDates.map((dateData) => [
@@ -276,10 +284,19 @@ const Attendance = () => {
       dates.forEach((date) => {
         const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
         const existing = datesMap.get(key);
-        if (existing) {
-          datesMap.set(key, { ...existing, status });
+        if (status === undefined) {
+          // 상태 초기화: status를 undefined로 설정
+          if (existing) {
+            const { status: _, ...rest } = existing;
+            datesMap.set(key, { ...rest, status: undefined });
+          }
         } else {
-          datesMap.set(key, { date, status });
+          // 상태 설정
+          if (existing) {
+            datesMap.set(key, { ...existing, status });
+          } else {
+            datesMap.set(key, { date, status });
+          }
         }
       });
 

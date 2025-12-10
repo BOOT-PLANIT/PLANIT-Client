@@ -18,7 +18,7 @@ import styles from "./EditAttendanceModal.module.scss";
 interface EditAttendanceModalProps {
   selectedDates: Date[];
   onClose: () => void;
-  onSave: (dates: Date[], status: AttendanceStatus) => void;
+  onSave: (dates: Date[], status: AttendanceStatus | undefined) => void;
 }
 
 const attendanceOptions: {
@@ -63,11 +63,15 @@ const EditAttendanceModal = ({
   onClose,
   onSave,
 }: EditAttendanceModalProps) => {
-  const [selectedStatus, setSelectedStatus] =
-    useState<AttendanceStatus>("present");
+  const [selectedStatus, setSelectedStatus] = useState<
+    AttendanceStatus | "clear"
+  >("present");
 
   const handleSave = () => {
-    onSave(selectedDates, selectedStatus);
+    onSave(
+      selectedDates,
+      selectedStatus === "clear" ? undefined : selectedStatus,
+    );
     onClose();
   };
 
@@ -100,6 +104,38 @@ const EditAttendanceModal = ({
                 <span className={styles.label}>{option.label}</span>
               </label>
             ))}
+            <label
+              className={`${styles.option} ${
+                selectedStatus === "clear" ? styles.selected : ""
+              }`}
+            >
+              <input
+                type="radio"
+                name="attendanceStatus"
+                value="clear"
+                checked={selectedStatus === "clear"}
+                onChange={() => setSelectedStatus("clear")}
+                className={styles.radio}
+              />
+              <div className={styles.icon}>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M15 5L5 15M5 5L15 15"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <span className={styles.label}>초기화</span>
+            </label>
           </div>
         </div>
 

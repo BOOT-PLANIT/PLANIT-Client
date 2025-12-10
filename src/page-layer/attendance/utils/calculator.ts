@@ -121,16 +121,25 @@ export const calculateUnitStats = (
 
 /**
  * 기간 수당 정보 계산
+ * - isKdt가 true일 경우: 출석일 하루당 15,800원
+ * - isKdt가 false일 경우: 출석일 하루당 5,800원
+ * - 최대 20일까지 누적
  */
 export const calculatePeriodAllowance = (
   selectedPeriod: Period | null,
+  totalAttendance: number,
+  isKdt: boolean,
 ): PeriodAllowance => {
   if (!selectedPeriod) {
     return { amount: 0, dateRange: "" };
   }
 
+  const dailyAllowance = isKdt ? 15800 : 5800;
+  const attendanceDays = Math.min(totalAttendance, 20);
+  const amount = attendanceDays * dailyAllowance;
+
   return {
-    amount: 500000,
+    amount,
     dateRange: `${selectedPeriod.startDate.toLocaleDateString("ko-KR", {
       month: "long",
       day: "numeric",
