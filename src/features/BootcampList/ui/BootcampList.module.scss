@@ -1,5 +1,8 @@
 .container {
+  max-width: 1000px;
   width: 100%;
+  min-width: 550px;
+  margin: 0 auto;
   margin-top: 24px;
 }
 
@@ -30,7 +33,7 @@
   top: 0;
   background: white;
   z-index: 10;
-  border-bottom: 2px solid var(--color-blue-light-intense);
+  border-bottom: 2px solid var(--color-grey-light-strong);
 }
 
 .table th:nth-child(4),

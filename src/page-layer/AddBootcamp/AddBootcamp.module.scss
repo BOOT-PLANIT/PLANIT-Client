@@ -3,7 +3,6 @@
   width: 100%;
   background: var(--background-tertiary-darker);
   padding: var(--spacing-16);
-  overflow-x: auto;
 }
 
 .card {
@@ -11,8 +10,12 @@
   flex-direction: column;
   margin: 0 auto;
   max-width: 1000px;
+}
+
+.tableScroll {
+  max-width: 1000px;
   width: 100%;
-  min-width: 550px;
+  overflow-x: auto;
 }
 
 .subtitle {
@@ -22,10 +25,10 @@
 }
 
 .header {
+  min-width: 350px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   margin-bottom: 30px;
 
   .title {
@@ -37,11 +40,20 @@
   .subtitle {
     font-size: var(--font-size-lg);
   }
+
+  @media (width <= 480px) {
+    .title {
+      font-size: var(--font-size-xl);
+    }
+
+    .subtitle {
+      font-size: var(--font-size-md);
+    }
+  }
 }
 
 .footer {
   display: flex;
   justify-content: flex-end;
   padding-top: 20px;
-  border-top: 2px solid var(--color-blue-light-intense);
 }

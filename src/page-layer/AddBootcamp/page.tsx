@@ -21,21 +21,24 @@ const AddBootcamp = () => {
 
   return (
     <div className={styles.container}>
+      <div className={styles.header}>
+        <Image alt="logo" src="/logo.svg" width={150} height={150} priority />
+        <span className={styles.title}>교육 프로그램 등록을 시작해볼까요?</span>
+        <span className={styles.subtitle}>
+          등록한 교육 프로그램을 기반으로 출석, 기간, 현황 분석이 제공됩니다.
+        </span>
+      </div>
       <div className={styles.card}>
-        <div className={styles.header}>
-          <Image alt="logo" src="/logo.svg" width={150} height={150} priority />
-          <span className={styles.title}>
-            교육 프로그램 등록을 시작해볼까요?
-          </span>
-          <span className={styles.subtitle}>
-            등록한 교육 프로그램을 기반으로 출석, 기간, 현황 분석이 제공됩니다.
-          </span>
-        </div>
         <Card variant="solid" title="교육과정 선택">
           <span className={styles.subtitle}>
             등록하고 싶은 부트캠프 프로그램을 선택하세요!
           </span>
-          <BootcampList manage={true} onSelectBootcamp={setSelectedBootcamp} />
+          <div className={styles.tableScroll}>
+            <BootcampList
+              manage={false}
+              onSelectBootcamp={setSelectedBootcamp}
+            />
+          </div>
           <div className={styles.footer}>
             <Button
               disabled={!selectedBootcamp}

@@ -32,10 +32,13 @@ const BootcampListItem = ({
       <td className={styles.name}>{bootcamp.name}</td>
 
       <td className={styles.schedule}>
-        {bootcamp.startedAt} - {bootcamp.endedAt}
+        {/* <div className={styles.scheduleWrap}>
+
+        </div> */}
+        {bootcamp.startedAt} ~ {bootcamp.endedAt}
       </td>
 
-      <td className={styles.duration}>{bootcamp.classDates.length} 일</td>
+      <td className={styles.duration}>{bootcamp.classDates.length}일</td>
 
       <td className={styles.kdt}>
         {bootcamp.isKdt ? <span className={styles.kdtBadge}>KDT</span> : "-"}

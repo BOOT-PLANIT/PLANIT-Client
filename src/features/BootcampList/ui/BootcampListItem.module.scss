@@ -6,8 +6,10 @@
   color: var(--foreground);
   transition: all 0.3s ease;
 
-  &:hover {
-    background: var(--color-cloud-normal);
+  @media (width >= 450px) {
+    &:hover {
+      background: var(--color-cloud-normal);
+    }
   }
 }
 
