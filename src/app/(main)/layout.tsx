@@ -1,4 +1,4 @@
-import { Header, NavItem } from "@/widgets/ui/Header";
+import { Header, NavItem } from "@/widgets/ui";
 
 import styles from "./layout.module.scss";
 

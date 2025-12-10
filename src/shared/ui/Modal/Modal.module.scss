@@ -13,12 +13,19 @@
 
 .modal {
   position: relative;
-  width: 100%;
+  width: fit-content;
   max-width: 1000px;
-  padding: var(--spacing-20);
+  padding: var(--spacing-28) var(--spacing-20) var(--spacing-20)
+    var(--spacing-20);
   background: var(--color-white);
   border-radius: 8px;
   box-shadow: var(--shadow-raised);
+
+  @media (width <= 400px) {
+    width: calc(100vw - var(--spacing-32));
+    max-width: calc(100vw - var(--spacing-32));
+    padding: var(--spacing-16);
+  }
 }
 
 .closeButton {
@@ -29,6 +36,7 @@
   height: 32px;
   border: none;
   background: transparent;
+  color: var(--foreground-tertiary);
   cursor: pointer;
   padding: 0;
   display: flex;
