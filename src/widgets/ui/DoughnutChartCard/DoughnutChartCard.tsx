@@ -1,21 +1,20 @@
 "use client";
 
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { Card } from "@/shared/ui/Card";
 import { DoughnutChart } from "@/shared/ui/Chart";
-import type { ChartItem } from "@/shared/ui/Chart/DoughnutChart";
+import type { DoughnutChartItem } from "@/shared/ui/Chart";
 
 import styles from "./DoughnutChartCard.module.scss";
 
 interface DoughnutChartCardProps {
   title: string;
-  data: ChartItem[];
+  data: DoughnutChartItem[];
 }
 
-const DoughnutChartCard = ({ title, data }: DoughnutChartCardProps) => {
+const DoughnutChartCardBase = ({ title, data }: DoughnutChartCardProps) => {
   const total = data.reduce((sum, item) => sum + item.value, 0);
-
   const showChart = data.length > 0 && total !== 0;
 
   const legendData = useMemo(() => {
@@ -56,5 +55,8 @@ const DoughnutChartCard = ({ title, data }: DoughnutChartCardProps) => {
     </Card>
   );
 };
+
+const DoughnutChartCard = React.memo(DoughnutChartCardBase);
+DoughnutChartCard.displayName = "DoughnutChartCard";
 
 export default DoughnutChartCard;

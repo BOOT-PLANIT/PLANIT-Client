@@ -1,12 +1,15 @@
+"use client";
+
+import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
-export interface ChartItem {
+export interface DoughnutChartItem {
   label: string;
   value: number;
   color: string;
 }
 
-function convertToPieData(items: ChartItem[]) {
+function convertToPieData(items: DoughnutChartItem[]) {
   return items.map((item) => ({
     name: item.label,
     value: item.value,
@@ -15,11 +18,11 @@ function convertToPieData(items: ChartItem[]) {
 }
 
 interface DoughnutChartProps {
-  data: ChartItem[];
+  data: DoughnutChartItem[];
   width?: string | number;
 }
 
-const DoughnutChart = ({ data, width = "100%" }: DoughnutChartProps) => {
+const DoughnutChartBase = ({ data, width = "100%" }: DoughnutChartProps) => {
   const pieData = convertToPieData(data);
 
   return (
@@ -50,5 +53,8 @@ const DoughnutChart = ({ data, width = "100%" }: DoughnutChartProps) => {
     </div>
   );
 };
+
+const DoughnutChart = React.memo(DoughnutChartBase);
+DoughnutChart.displayName = "DoughnutChart";
 
 export default DoughnutChart;
