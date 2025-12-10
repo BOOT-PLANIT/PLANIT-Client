@@ -38,7 +38,6 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background: var(--background-secondary);
     border-color: var(--border-primary);
   }
 
@@ -100,8 +99,10 @@
   }
 
   &:hover:not(:disabled) {
-    background: var(--color-blue-light-intense);
-    border-color: var(--border-primary-light);
+    @media (width > 480px) {
+      background: var(--color-blue-light-intense);
+      border-color: var(--border-primary-light);
+    }
   }
 
   &.otherMonth {
@@ -109,7 +110,8 @@
   }
 
   &.selected,
-  &.currentUnit.selected {
+  &.currentUnit.selected,
+  &.otherUnit.selected {
     background: var(--color-blue-light-intense);
     border-color: var(--border-primary);
     box-shadow: 0 0 0 1px var(--color-blue-light);

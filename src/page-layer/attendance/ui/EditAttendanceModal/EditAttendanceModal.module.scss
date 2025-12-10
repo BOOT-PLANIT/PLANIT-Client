@@ -59,11 +59,6 @@
     gap: var(--spacing-8);
   }
 
-  &:hover {
-    border-color: var(--border-primary);
-    background-color: var(--background-secondary);
-  }
-
   &.selected {
     border-color: var(--border-primary);
   }
