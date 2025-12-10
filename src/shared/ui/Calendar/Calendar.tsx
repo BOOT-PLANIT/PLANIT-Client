@@ -158,6 +158,11 @@ const Calendar = ({
       }
 
       const dateKey = getDateKey(date);
+      const dateData = datesMap.get(dateKey);
+      if (!dateData) {
+        return;
+      }
+
       const updateSelectedDates = (newDates: Date[]) => {
         if (externalSelectedDates === undefined) {
           setInternalSelectedDates(newDates);
@@ -172,7 +177,13 @@ const Calendar = ({
         : [...selectedDates, date];
       updateSelectedDates(newSelectedDates);
     },
-    [currentMonth, onDateSelect, externalSelectedDates, selectedDates],
+    [
+      currentMonth,
+      onDateSelect,
+      externalSelectedDates,
+      selectedDates,
+      datesMap,
+    ],
   );
 
   const handlePreviousMonth = useCallback(() => {
