@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, lazy, useMemo } from "react";
+import { useState, Suspense, lazy, useMemo, useEffect } from "react";
 
 import {
   useMyBootcamps,
@@ -10,12 +10,12 @@ import {
 import {
   AbsentIcon,
   AnnualIcon,
-  ErrorIcon,
   LateIcon,
   LeftEarlyIcon,
   LeaveIcon,
   PresentIcon,
 } from "@/shared/assets/icons";
+import { useToast } from "@/shared/lib";
 import { Card, Combobox } from "@/shared/ui";
 import type { AttendanceStatus } from "@/shared/ui/Calendar";
 
@@ -86,6 +86,7 @@ const formatDate = (date: Date): string => {
 const Attendance = () => {
   // TODO: 인증에서 userId 가져오기
   const userId = 1;
+  const toast = useToast();
 
   const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -130,7 +131,6 @@ const Attendance = () => {
 
   const isLoading = isLoadingBootcamps || isLoadingSessions;
   const hasData = bootcampSummaryData?.data && sessionsData?.data;
-  const isError = isErrorBootcamps || isErrorSessions;
 
   const getErrorMessage = (error: unknown, defaultMessage: string): string => {
     if (!error) return defaultMessage;
@@ -151,16 +151,27 @@ const Attendance = () => {
     return errorMessage || defaultMessage;
   };
 
-  const errorMessage = isErrorBootcamps
-    ? getErrorMessage(
+  useEffect(() => {
+    if (isErrorBootcamps && errorBootcamps) {
+      const message = getErrorMessage(
         errorBootcamps,
         "부트캠프 목록을 불러오는데 실패했습니다.",
-      )
-    : isErrorSessions
-      ? getErrorMessage(errorSessions, "세션 정보를 불러오는데 실패했습니다.")
-      : null;
+      );
+      toast.error(message);
+    }
+  }, [isErrorBootcamps, errorBootcamps]);
 
-  const shouldShowSkeleton = (isLoading || !hasData) && !isError;
+  useEffect(() => {
+    if (isErrorSessions && errorSessions) {
+      const message = getErrorMessage(
+        errorSessions,
+        "세션 정보를 불러오는데 실패했습니다.",
+      );
+      toast.error(message);
+    }
+  }, [isErrorSessions, errorSessions]);
+
+  const shouldShowSkeleton = isLoading || !hasData;
 
   const targetYear = currentMonth.getFullYear();
   const targetMonthIndex = currentMonth.getMonth();
@@ -385,8 +396,24 @@ const Attendance = () => {
           status: apiStatus,
           classDates,
         });
+        toast.success("출결 정보가 저장되었습니다.");
       } catch (error) {
-        console.error("출결 저장 실패:", error);
+        const errorMessage =
+          (error as { message?: string })?.message ||
+          (error as Error)?.message ||
+          "";
+
+        if (
+          errorMessage === "Network Error" ||
+          errorMessage.includes("Network Error") ||
+          errorMessage.includes("network")
+        ) {
+          toast.error(
+            "네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.",
+          );
+        } else {
+          toast.error("출결 저장에 실패했습니다. 다시 시도해주세요.");
+        }
         return;
       }
     }
@@ -417,70 +444,57 @@ const Attendance = () => {
           </div>
         </div>
 
-        {isError ? (
-          <Card variant="solid" width="100%">
-            <div className={styles.errorContainer}>
-              <div className={styles.errorIcon}>
-                <ErrorIcon />
-              </div>
-              <p className={styles.errorMessage}>{errorMessage}</p>
-            </div>
-          </Card>
-        ) : (
-          <>
-            <div className={styles.summaryCards}>
-              {shouldShowSkeleton ? (
-                <>
-                  <AttendanceSummaryCardSkeleton />
-                  <UnitPeriodStatsCardSkeleton />
-                  <PeriodAllowanceCardSkeleton />
-                </>
-              ) : (
-                <>
-                  <Suspense fallback={<AttendanceSummaryCardSkeleton />}>
-                    <AttendanceSummaryCard items={attendanceSummary} />
-                  </Suspense>
-                  <Suspense fallback={<UnitPeriodStatsCardSkeleton />}>
-                    <UnitPeriodStatsCard
-                      totalAttendance={unitStats.totalAttendance}
-                      totalAbsent={unitStats.totalAbsent}
-                      totalUnrecorded={unitStats.totalUnrecorded}
-                    />
-                  </Suspense>
-                  <Suspense fallback={<PeriodAllowanceCardSkeleton />}>
-                    <PeriodAllowanceCard
-                      amount={periodAllowance.amount}
-                      dateRange={periodAllowance.dateRange}
-                    />
-                  </Suspense>
-                </>
-              )}
-            </div>
+        <div className={styles.summaryCards}>
+          {shouldShowSkeleton ? (
+            <>
+              <AttendanceSummaryCardSkeleton />
+              <UnitPeriodStatsCardSkeleton />
+              <PeriodAllowanceCardSkeleton />
+            </>
+          ) : (
+            <>
+              <Suspense fallback={<AttendanceSummaryCardSkeleton />}>
+                <AttendanceSummaryCard items={attendanceSummary} />
+              </Suspense>
+              <Suspense fallback={<UnitPeriodStatsCardSkeleton />}>
+                <UnitPeriodStatsCard
+                  totalAttendance={unitStats.totalAttendance}
+                  totalAbsent={unitStats.totalAbsent}
+                  totalUnrecorded={unitStats.totalUnrecorded}
+                />
+              </Suspense>
+              <Suspense fallback={<PeriodAllowanceCardSkeleton />}>
+                <PeriodAllowanceCard
+                  amount={periodAllowance.amount}
+                  dateRange={periodAllowance.dateRange}
+                />
+              </Suspense>
+            </>
+          )}
+        </div>
 
-            {shouldShowSkeleton ? (
-              <CalendarSkeleton />
-            ) : (
-              <Card variant="solid" width="100%">
-                <Suspense fallback={<CalendarSkeleton />}>
-                  <CalendarComponent
-                    dates={calendarDates}
-                    selectedDates={selectedDates}
-                    onDateSelect={handleDateSelect}
-                    initialMonth={currentMonth}
-                    onEdit={handleEdit}
-                    onMonthChange={handleMonthChange}
-                    unitColors={{
-                      currentUnit: UNIT_COLORS.CURRENT_UNIT,
-                      otherUnit: UNIT_COLORS.OTHER_UNIT,
-                    }}
-                  />
-                  <Suspense fallback={null}>
-                    <IconGuide items={iconGuideItems} />
-                  </Suspense>
-                </Suspense>
-              </Card>
-            )}
-          </>
+        {shouldShowSkeleton ? (
+          <CalendarSkeleton />
+        ) : (
+          <Card variant="solid" width="100%">
+            <Suspense fallback={<CalendarSkeleton />}>
+              <CalendarComponent
+                dates={calendarDates}
+                selectedDates={selectedDates}
+                onDateSelect={handleDateSelect}
+                initialMonth={currentMonth}
+                onEdit={handleEdit}
+                onMonthChange={handleMonthChange}
+                unitColors={{
+                  currentUnit: UNIT_COLORS.CURRENT_UNIT,
+                  otherUnit: UNIT_COLORS.OTHER_UNIT,
+                }}
+              />
+              <Suspense fallback={null}>
+                <IconGuide items={iconGuideItems} />
+              </Suspense>
+            </Suspense>
+          </Card>
         )}
       </div>
 
