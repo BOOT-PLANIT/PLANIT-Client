@@ -164,8 +164,7 @@ const Attendance = () => {
       );
       toast.error(message);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isErrorBootcamps, errorBootcamps]);
+  }, [isErrorBootcamps, errorBootcamps, toast]);
 
   useEffect(() => {
     if (isErrorSessions && errorSessions && !isNetworkError(errorSessions)) {
@@ -176,8 +175,7 @@ const Attendance = () => {
       );
       toast.error(message);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isErrorSessions, errorSessions]);
+  }, [isErrorSessions, errorSessions, toast]);
 
   const shouldShowSkeleton = isLoading || !hasData;
 
