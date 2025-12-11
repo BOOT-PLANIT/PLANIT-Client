@@ -74,9 +74,7 @@ knowledge_base:
   web_search:
     enabled: true
   code_guidelines:
-    enabled: true
-    filePatterns:
-      - 'docs/code-convention.md'
+    enabled: false
   learnings:
     scope: 'local'
   issues:
