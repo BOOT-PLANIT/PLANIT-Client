@@ -10,14 +10,7 @@ export const CARD_TITLES = {
 } as const;
 
 // 출석 상태 라벨
-export const ATTENDANCE_STATUS_LABELS = {
-  present: "출석",
-  late: "지각",
-  leftEarly: "조퇴",
-  leave: "공가",
-  annual: "월차",
-  absent: "결석",
-} as const;
+import { ATTENDANCE_STATUS_LABELS } from "@/entities/attendance/model";
 
 // 통계 라벨
 export const STATS_LABELS = {

@@ -8,10 +8,5 @@ export { Calendar } from "./Calendar";
 export { Modal } from "./Modal";
 export { Skeleton } from "./Skeleton";
 export { OptionButton } from "./OptionButton";
-export {
-  AttendanceSummaryCard,
-  AttendanceSummaryCardSkeleton,
-} from "./AttendanceSummaryCard";
-export type { AttendanceSummaryItem } from "./AttendanceSummaryCard";
 export { DoughnutChart } from "./Chart";
 export { HorizontalPercentageBarChart } from "./Chart";

@@ -1,13 +1,5 @@
 import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
 
-import { ATTENDANCE_STATUS_LABELS } from "../constants";
-
-interface AttendanceSummaryItem {
-  status: AttendanceStatus;
-  label: string;
-  count: number;
-}
-
 interface UnitStats {
   totalAttendance: number;
   totalAbsent: number;
@@ -40,46 +32,6 @@ export const calculateStatusCounts = (
     },
     {} as Record<AttendanceStatus, number>,
   );
-};
-
-/**
- * 출석 요약 데이터 생성
- */
-export const calculateAttendanceSummary = (
-  statusCounts: Record<AttendanceStatus, number>,
-): AttendanceSummaryItem[] => {
-  return [
-    {
-      status: "present" as AttendanceStatus,
-      label: ATTENDANCE_STATUS_LABELS.present,
-      count: statusCounts.present || 0,
-    },
-    {
-      status: "late" as AttendanceStatus,
-      label: ATTENDANCE_STATUS_LABELS.late,
-      count: statusCounts.late || 0,
-    },
-    {
-      status: "leftEarly" as AttendanceStatus,
-      label: ATTENDANCE_STATUS_LABELS.leftEarly,
-      count: statusCounts.leftEarly || 0,
-    },
-    {
-      status: "leave" as AttendanceStatus,
-      label: ATTENDANCE_STATUS_LABELS.leave,
-      count: statusCounts.leave || 0,
-    },
-    {
-      status: "annual" as AttendanceStatus,
-      label: ATTENDANCE_STATUS_LABELS.annual,
-      count: statusCounts.annual || 0,
-    },
-    {
-      status: "absent" as AttendanceStatus,
-      label: ATTENDANCE_STATUS_LABELS.absent,
-      count: statusCounts.absent || 0,
-    },
-  ];
 };
 
 /**

@@ -3,15 +3,15 @@
 import { useState, Suspense, lazy, useMemo, useEffect } from "react";
 
 import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
+import { AttendanceSummaryCardSkeleton } from "@/entities/attendance/ui/AttendanceSummaryCard";
 import {
   useMyBootcamps,
   useSessionsWithAttendance,
   useUpdateAttendance,
 } from "@/feature/attendance/api";
-import { AbsentIcon, AnnualIcon, LeaveIcon } from "@/shared/assets/icons";
+import { LeaveIcon } from "@/shared/assets/icons";
 import { useToast } from "@/shared/lib";
 import { Card, Combobox } from "@/shared/ui";
-import { AttendanceSummaryCardSkeleton } from "@/shared/ui";
 import type { AttendanceStatus } from "@/shared/ui/Calendar";
 
 import CalendarSkeleton from "../../shared/ui/Calendar/CalendarSkeleton";
@@ -29,14 +29,13 @@ import {
   transformSessionsToDateData,
 } from "./utils/apiTransform";
 import {
-  calculateAttendanceSummary,
   calculatePeriodAllowance,
   calculateStatusCounts,
   calculateUnitStats,
 } from "./utils/calculator";
 
 const AttendanceSummaryCard = lazy(() =>
-  import("@/shared/ui").then((module) => ({
+  import("@/entities/attendance/ui/AttendanceSummaryCard").then((module) => ({
     default: module.AttendanceSummaryCard,
   })),
 );
@@ -330,12 +329,14 @@ const Attendance = () => {
 
   const statusCounts = calculateStatusCounts(periodDates);
 
-  const attendanceSummary = calculateAttendanceSummary(statusCounts).map(
-    (item) => ({
-      ...item,
-      icon: ATTENDANCE_ICON_MAP[item.status],
-    }),
-  );
+  const attendanceSummaryValues = {
+    present: statusCounts.present || 0,
+    late: statusCounts.late || 0,
+    leftEarly: statusCounts.leftEarly || 0,
+    leave: statusCounts.leave || 0,
+    annual: statusCounts.annual || 0,
+    absent: statusCounts.absent || 0,
+  };
 
   const unitStats = calculateUnitStats(periodDates, statusCounts);
 
@@ -364,11 +365,11 @@ const Attendance = () => {
       label: ICON_GUIDE_LABELS.leave,
     },
     {
-      icon: <AnnualIcon width={20} height={20} />,
+      icon: ATTENDANCE_ICON_MAP.annual,
       label: ICON_GUIDE_LABELS.annual,
     },
     {
-      icon: <AbsentIcon width={20} height={20} />,
+      icon: ATTENDANCE_ICON_MAP.absent,
       label: ICON_GUIDE_LABELS.absent,
     },
     {
@@ -481,7 +482,7 @@ const Attendance = () => {
               >
                 <AttendanceSummaryCard
                   title={CARD_TITLES.ATTENDANCE_SUMMARY}
-                  items={attendanceSummary}
+                  values={attendanceSummaryValues}
                 />
               </Suspense>
               <Suspense fallback={<UnitPeriodStatsCardSkeleton />}>
