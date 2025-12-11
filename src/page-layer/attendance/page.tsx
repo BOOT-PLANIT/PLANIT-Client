@@ -86,13 +86,20 @@ const Attendance = () => {
     error: errorBootcamps,
   } = useMyBootcamps();
 
-  // 네트워크 에러 발생 시 목업 데이터 사용
+  const shouldUseMocks =
+    process.env.NEXT_PUBLIC_USE_ATTENDANCE_MOCKS === "true";
+
   const finalBootcampData = useMemo(() => {
-    if (isErrorBootcamps && errorBootcamps && isNetworkError(errorBootcamps)) {
+    if (
+      shouldUseMocks &&
+      isErrorBootcamps &&
+      errorBootcamps &&
+      isNetworkError(errorBootcamps)
+    ) {
       return generateMockBootcamps();
     }
     return bootcampSummaryData;
-  }, [isErrorBootcamps, errorBootcamps, bootcampSummaryData]);
+  }, [shouldUseMocks, isErrorBootcamps, errorBootcamps, bootcampSummaryData]);
 
   const bootcampOptions = useMemo(() => {
     if (!finalBootcampData?.data) return [];
@@ -113,12 +120,24 @@ const Attendance = () => {
   } = useSessionsWithAttendance(selectedBootcampId, userId);
 
   const finalSessionsData = useMemo(() => {
-    if (isErrorSessions && errorSessions && isNetworkError(errorSessions)) {
+    if (
+      shouldUseMocks &&
+      isErrorSessions &&
+      errorSessions &&
+      isNetworkError(errorSessions)
+    ) {
       const mockBootcampId = finalBootcampData?.data?.[0]?.id || 1;
       return generateMockSessions(mockBootcampId, userId);
     }
     return sessionsData;
-  }, [isErrorSessions, errorSessions, sessionsData, finalBootcampData, userId]);
+  }, [
+    shouldUseMocks,
+    isErrorSessions,
+    errorSessions,
+    sessionsData,
+    finalBootcampData,
+    userId,
+  ]);
 
   const allCalendarDates = useMemo(() => {
     if (!finalSessionsData?.data) return [];
