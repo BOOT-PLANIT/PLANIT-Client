@@ -2,13 +2,17 @@
 
 import { Card, Skeleton } from "@/shared/ui";
 
-import { CARD_TITLES } from "../../constants";
-
 import styles from "./AttendanceSummaryCard.module.scss";
 
-const AttendanceSummaryCardSkeleton = () => {
+interface AttendanceSummaryCardSkeletonProps {
+  title: string;
+}
+
+const AttendanceSummaryCardSkeleton = ({
+  title,
+}: AttendanceSummaryCardSkeletonProps) => {
   return (
-    <Card variant="solid" title={CARD_TITLES.ATTENDANCE_SUMMARY}>
+    <Card variant="solid" title={title}>
       <div className={styles.list}>
         {Array.from({ length: 6 }).map((_, index) => (
           <div key={index} className={styles.item}>

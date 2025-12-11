@@ -3,11 +3,9 @@
 import { Card } from "@/shared/ui";
 import type { AttendanceStatus } from "@/shared/ui/Calendar";
 
-import { CARD_TITLES } from "../../constants";
-
 import styles from "./AttendanceSummaryCard.module.scss";
 
-interface AttendanceSummaryItem {
+export interface AttendanceSummaryItem {
   status: AttendanceStatus;
   label: string;
   count: number;
@@ -15,12 +13,16 @@ interface AttendanceSummaryItem {
 }
 
 interface AttendanceSummaryCardProps {
+  title: string;
   items: AttendanceSummaryItem[];
 }
 
-const AttendanceSummaryCard = ({ items }: AttendanceSummaryCardProps) => {
+const AttendanceSummaryCard = ({
+  title,
+  items,
+}: AttendanceSummaryCardProps) => {
   return (
-    <Card variant="solid" title={CARD_TITLES.ATTENDANCE_SUMMARY}>
+    <Card variant="solid" title={title}>
       <div className={styles.list}>
         {items.map((item) => (
           <div key={item.status} className={styles.item}>

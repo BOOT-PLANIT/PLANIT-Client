@@ -2,28 +2,23 @@
 
 import { useState, Suspense, lazy, useMemo, useEffect } from "react";
 
+import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
 import {
   useMyBootcamps,
   useSessionsWithAttendance,
   useUpdateAttendance,
 } from "@/feature/attendance/api";
-import {
-  AbsentIcon,
-  AnnualIcon,
-  LateIcon,
-  LeftEarlyIcon,
-  LeaveIcon,
-  PresentIcon,
-} from "@/shared/assets/icons";
+import { AbsentIcon, AnnualIcon, LeaveIcon } from "@/shared/assets/icons";
 import { useToast } from "@/shared/lib";
 import { Card, Combobox } from "@/shared/ui";
+import { AttendanceSummaryCardSkeleton } from "@/shared/ui";
 import type { AttendanceStatus } from "@/shared/ui/Calendar";
 
 import CalendarSkeleton from "../../shared/ui/Calendar/CalendarSkeleton";
 
 import styles from "./Attendance.module.scss";
-import { ICON_GUIDE_LABELS, UNIT_COLORS } from "./constants";
-import AttendanceSummaryCardSkeleton from "./ui/AttendanceSummaryCard/AttendanceSummaryCardSkeleton";
+import { CARD_TITLES, ICON_GUIDE_LABELS, UNIT_COLORS } from "./constants";
+import { generateMockBootcamps, generateMockSessions } from "./model/mockData";
 import PeriodAllowanceCardSkeleton from "./ui/PeriodAllowanceCard/PeriodAllowanceCardSkeleton";
 import { UnitIcon } from "./ui/UnitIcon";
 import UnitPeriodStatsCardSkeleton from "./ui/UnitPeriodStatsCard/UnitPeriodStatsCardSkeleton";
@@ -41,7 +36,7 @@ import {
 } from "./utils/calculator";
 
 const AttendanceSummaryCard = lazy(() =>
-  import("@/page-layer/attendance/ui").then((module) => ({
+  import("@/shared/ui").then((module) => ({
     default: module.AttendanceSummaryCard,
   })),
 );
@@ -100,10 +95,34 @@ const Attendance = () => {
     isError: isErrorBootcamps,
     error: errorBootcamps,
   } = useMyBootcamps();
+
+  const isNetworkError = (error: unknown): boolean => {
+    if (!error) return false;
+
+    const errorMessage =
+      (error as { message?: string })?.message ||
+      (error as Error)?.message ||
+      "";
+
+    return (
+      errorMessage === "Network Error" ||
+      errorMessage.includes("Network Error") ||
+      errorMessage.includes("network")
+    );
+  };
+
+  // 네트워크 에러 발생 시 목업 데이터 사용
+  const finalBootcampData = useMemo(() => {
+    if (isErrorBootcamps && errorBootcamps && isNetworkError(errorBootcamps)) {
+      return generateMockBootcamps();
+    }
+    return bootcampSummaryData;
+  }, [isErrorBootcamps, errorBootcamps, bootcampSummaryData]);
+
   const bootcampOptions = useMemo(() => {
-    if (!bootcampSummaryData?.data) return [];
-    return transformBootcampsToOptions(bootcampSummaryData.data);
-  }, [bootcampSummaryData]);
+    if (!finalBootcampData?.data) return [];
+    return transformBootcampsToOptions(finalBootcampData.data);
+  }, [finalBootcampData]);
 
   const selectedBootcampId = useMemo(() => {
     if (bootcampOptions.length === 0 || selectedBootcampIndex < 0) return null;
@@ -118,20 +137,28 @@ const Attendance = () => {
     error: errorSessions,
   } = useSessionsWithAttendance(selectedBootcampId, userId);
 
+  const finalSessionsData = useMemo(() => {
+    if (isErrorSessions && errorSessions && isNetworkError(errorSessions)) {
+      const mockBootcampId = finalBootcampData?.data?.[0]?.id || 1;
+      return generateMockSessions(mockBootcampId, userId);
+    }
+    return sessionsData;
+  }, [isErrorSessions, errorSessions, sessionsData, finalBootcampData, userId]);
+
   const allCalendarDates = useMemo(() => {
-    if (!sessionsData?.data) return [];
-    return transformSessionsToDateData(sessionsData.data);
-  }, [sessionsData]);
+    if (!finalSessionsData?.data) return [];
+    return transformSessionsToDateData(finalSessionsData.data);
+  }, [finalSessionsData]);
 
   const unitPeriods = useMemo(() => {
-    if (!sessionsData?.data) return [];
-    return extractUnitPeriods(sessionsData.data);
-  }, [sessionsData]);
+    if (!finalSessionsData?.data) return [];
+    return extractUnitPeriods(finalSessionsData.data);
+  }, [finalSessionsData]);
 
   const updateAttendanceMutation = useUpdateAttendance();
 
   const isLoading = isLoadingBootcamps || isLoadingSessions;
-  const hasData = bootcampSummaryData?.data && sessionsData?.data;
+  const hasData = finalBootcampData?.data && finalSessionsData?.data;
 
   const getErrorMessage = (error: unknown, defaultMessage: string): string => {
     if (!error) return defaultMessage;
@@ -141,35 +168,33 @@ const Attendance = () => {
       (error as Error)?.message ||
       "";
 
-    if (
-      errorMessage === "Network Error" ||
-      errorMessage.includes("Network Error") ||
-      errorMessage.includes("network")
-    ) {
-      return "네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.";
+    if (isNetworkError(error)) {
+      return "네트워크 연결에 실패했습니다.";
     }
 
     return errorMessage || defaultMessage;
   };
 
   useEffect(() => {
-    if (isErrorBootcamps && errorBootcamps) {
+    if (isErrorBootcamps && errorBootcamps && !isNetworkError(errorBootcamps)) {
       const message = getErrorMessage(
         errorBootcamps,
         "부트캠프 목록을 불러오는데 실패했습니다.",
       );
       toast.error(message);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isErrorBootcamps, errorBootcamps]);
 
   useEffect(() => {
-    if (isErrorSessions && errorSessions) {
+    if (isErrorSessions && errorSessions && !isNetworkError(errorSessions)) {
       const message = getErrorMessage(
         errorSessions,
         "세션 정보를 불러오는데 실패했습니다.",
       );
       toast.error(message);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isErrorSessions, errorSessions]);
 
   const shouldShowSkeleton = isLoading || !hasData;
@@ -305,19 +330,10 @@ const Attendance = () => {
 
   const statusCounts = calculateStatusCounts(periodDates);
 
-  const iconMap = {
-    present: <PresentIcon width={20} height={20} />,
-    late: <LateIcon width={20} height={20} />,
-    leftEarly: <LeftEarlyIcon width={20} height={20} />,
-    leave: <LeaveIcon width={20} height={20} />,
-    annual: <AnnualIcon width={20} height={20} />,
-    absent: <AbsentIcon width={20} height={20} />,
-  };
-
   const attendanceSummary = calculateAttendanceSummary(statusCounts).map(
     (item) => ({
       ...item,
-      icon: iconMap[item.status],
+      icon: ATTENDANCE_ICON_MAP[item.status],
     }),
   );
 
@@ -332,19 +348,19 @@ const Attendance = () => {
 
   const iconGuideItems = [
     {
-      icon: <PresentIcon width={20} height={20} />,
+      icon: ATTENDANCE_ICON_MAP.present,
       label: ICON_GUIDE_LABELS.present,
     },
     {
-      icon: <LateIcon width={20} height={20} />,
+      icon: ATTENDANCE_ICON_MAP.late,
       label: ICON_GUIDE_LABELS.late,
     },
     {
-      icon: <LeftEarlyIcon width={20} height={20} />,
+      icon: ATTENDANCE_ICON_MAP.leftEarly,
       label: ICON_GUIDE_LABELS.leftEarly,
     },
     {
-      icon: <LeaveIcon width={20} height={20} />,
+      icon: ATTENDANCE_ICON_MAP.leave,
       label: ICON_GUIDE_LABELS.leave,
     },
     {
@@ -448,14 +464,25 @@ const Attendance = () => {
         <div className={styles.summaryCards}>
           {shouldShowSkeleton ? (
             <>
-              <AttendanceSummaryCardSkeleton />
+              <AttendanceSummaryCardSkeleton
+                title={CARD_TITLES.ATTENDANCE_SUMMARY}
+              />
               <UnitPeriodStatsCardSkeleton />
               <PeriodAllowanceCardSkeleton />
             </>
           ) : (
             <>
-              <Suspense fallback={<AttendanceSummaryCardSkeleton />}>
-                <AttendanceSummaryCard items={attendanceSummary} />
+              <Suspense
+                fallback={
+                  <AttendanceSummaryCardSkeleton
+                    title={CARD_TITLES.ATTENDANCE_SUMMARY}
+                  />
+                }
+              >
+                <AttendanceSummaryCard
+                  title={CARD_TITLES.ATTENDANCE_SUMMARY}
+                  items={attendanceSummary}
+                />
               </Suspense>
               <Suspense fallback={<UnitPeriodStatsCardSkeleton />}>
                 <UnitPeriodStatsCard
