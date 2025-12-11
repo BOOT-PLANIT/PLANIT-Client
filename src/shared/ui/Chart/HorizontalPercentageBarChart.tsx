@@ -28,7 +28,7 @@ function createSingleBarData(item: BarChartItem) {
     {
       name: SINGLE_BAR_KEY,
       [item.label]: percentage, // 실제 데이터 Bar
-      [BACKGROUND_LABEL]: 100, // 배경 Bar
+      [BACKGROUND_LABEL]: 100 - percentage, // 배경 Bar
     },
   ];
 }
