@@ -1,7 +1,12 @@
 "use client";
 
-import { useState, Suspense, lazy } from "react";
+import { useState, Suspense, lazy, useMemo } from "react";
 
+import {
+  useBootcampSummary,
+  useSessionsWithAttendance,
+  useUpdateAttendance,
+} from "@/feature/attendance/api";
 import {
   AbsentIcon,
   AnnualIcon,
@@ -11,20 +16,21 @@ import {
   PresentIcon,
 } from "@/shared/assets/icons";
 import { Card, Combobox } from "@/shared/ui";
-import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
+import type { AttendanceStatus } from "@/shared/ui/Calendar";
 
 import styles from "./Attendance.module.scss";
 import { ICON_GUIDE_LABELS, UNIT_COLORS } from "./constants";
-import {
-  generateBootcampOptions,
-  generateCalendarDates,
-  generateUnitPeriods,
-} from "./model/mockData";
 import AttendanceSummaryCardSkeleton from "./ui/AttendanceSummaryCard/AttendanceSummaryCardSkeleton";
 import CalendarSkeleton from "./ui/CalendarSkeleton";
 import PeriodAllowanceCardSkeleton from "./ui/PeriodAllowanceCard/PeriodAllowanceCardSkeleton";
 import { UnitIcon } from "./ui/UnitIcon";
 import UnitPeriodStatsCardSkeleton from "./ui/UnitPeriodStatsCard/UnitPeriodStatsCardSkeleton";
+import {
+  extractUnitPeriods,
+  mapCalendarStatusToApiStatus,
+  transformBootcampsToOptions,
+  transformSessionsToDateData,
+} from "./utils/apiTransform";
 import {
   calculateAttendanceSummary,
   calculatePeriodAllowance,
@@ -77,18 +83,45 @@ const formatDate = (date: Date): string => {
 };
 
 const Attendance = () => {
+  // TODO: 인증에서 userId 가져오기
+  const userId = 1; // 임시로 하드코딩
+
   const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
-  const [isLoading] = useState(false);
-  const [allCalendarDates, setAllCalendarDates] = useState<DateData[]>(
-    generateCalendarDates(),
-  );
 
-  const bootcampOptions = generateBootcampOptions();
-  const unitPeriods = generateUnitPeriods();
+  // API 호출
+  const { data: bootcampSummaryData, isLoading: isLoadingBootcamps } =
+    useBootcampSummary();
+  const bootcampOptions = useMemo(() => {
+    if (!bootcampSummaryData?.data) return [];
+    return transformBootcampsToOptions(bootcampSummaryData.data);
+  }, [bootcampSummaryData]);
+
+  const selectedBootcampId = useMemo(() => {
+    if (bootcampOptions.length === 0 || selectedBootcampIndex < 0) return null;
+    const selectedOption = bootcampOptions[selectedBootcampIndex];
+    return selectedOption ? Number(selectedOption.value) : null;
+  }, [bootcampOptions, selectedBootcampIndex]);
+
+  const { data: sessionsData, isLoading: isLoadingSessions } =
+    useSessionsWithAttendance(selectedBootcampId, userId);
+
+  const allCalendarDates = useMemo(() => {
+    if (!sessionsData?.data) return [];
+    return transformSessionsToDateData(sessionsData.data);
+  }, [sessionsData]);
+
+  const unitPeriods = useMemo(() => {
+    if (!sessionsData?.data) return [];
+    return extractUnitPeriods(sessionsData.data);
+  }, [sessionsData]);
+
+  const updateAttendanceMutation = useUpdateAttendance();
+
+  const isLoading = isLoadingBootcamps || isLoadingSessions;
 
   const targetYear = currentMonth.getFullYear();
   const targetMonthIndex = currentMonth.getMonth();
@@ -290,37 +323,36 @@ const Attendance = () => {
     setSelectedDates(dates);
   };
 
-  const handleSaveEdit = (
+  const handleSaveEdit = async (
     dates: Date[],
     status: AttendanceStatus | undefined,
   ) => {
-    setAllCalendarDates((prevDates: DateData[]) => {
-      const datesMap = new Map<string, DateData>(
-        prevDates.map((dateData) => [
-          `${dateData.date.getFullYear()}-${dateData.date.getMonth()}-${dateData.date.getDate()}`,
-          dateData,
-        ]),
-      );
+    if (!selectedBootcampId) return;
 
-      dates.forEach((date) => {
-        const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-        const existing = datesMap.get(key);
-        if (status === undefined) {
-          if (existing) {
-            const { status: _, ...rest } = existing;
-            datesMap.set(key, { ...rest, status: undefined });
-          }
-        } else {
-          if (existing) {
-            datesMap.set(key, { ...existing, status });
-          } else {
-            datesMap.set(key, { date, status });
-          }
-        }
+    const apiStatus = mapCalendarStatusToApiStatus(status);
+
+    if (apiStatus) {
+      // 출결 등록/수정
+      const classDates = dates.map((date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
       });
 
-      return Array.from(datesMap.values());
-    });
+      try {
+        await updateAttendanceMutation.mutateAsync({
+          userId,
+          bootcampId: selectedBootcampId,
+          status: apiStatus,
+          classDates,
+        });
+      } catch (error) {
+        console.error("출결 저장 실패:", error);
+        return;
+      }
+    }
+
     setSelectedDates([]);
     setIsEditModalOpen(false);
   };
