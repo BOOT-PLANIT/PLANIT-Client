@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 
-import type { ChartItem } from "@/shared/ui/Chart/DoughnutChart";
+import type { DoughnutChartItem } from "@/shared/ui/Chart";
 import { DoughnutChartCard } from "@/widgets/ui";
 
 interface UnitPeriodStatsCardProps {
@@ -22,7 +22,7 @@ const UnitPeriodStatsCard = ({
   totalAbsent,
   totalUnrecorded,
 }: UnitPeriodStatsCardProps) => {
-  const chartData = useMemo<ChartItem[]>(() => {
+  const chartData = useMemo<DoughnutChartItem[]>(() => {
     return [
       {
         label: "총출석",
