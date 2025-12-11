@@ -76,6 +76,24 @@
   grid-column: span 1;
 }
 
+.dayNumber {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+  position: absolute;
+  font-size: var(--font-size-sm);
+  top: 2px;
+  left: 2px;
+  padding: var(--spacing-1) var(--spacing-2);
+
+  @media (width > 480px) {
+    top: var(--spacing-8);
+    left: var(--spacing-8);
+    font-size: var(--font-size-base);
+    padding: var(--spacing-2) var(--spacing-4);
+  }
+}
+
 .day {
   position: relative;
   display: flex;
@@ -127,29 +145,16 @@
     background: var(--background-tertiary-darker);
   }
 
-  &.dayNumber {
-    font-family: var(--font-family);
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-medium);
-    color: var(--foreground);
-    position: absolute;
-    top: var(--spacing-8);
-    left: var(--spacing-8);
-
-    @media (width <= 480px) {
-      font-size: var(--font-size-sm);
-      top: 2px;
-      left: 2px;
-    }
-  }
-
   &.today {
     .dayNumber {
       color: var(--color-white);
-      background-color: var(--color-purple-normal);
-      border-radius: var(--radius-full);
-      padding: var(--spacing-2) var(--spacing-4);
       font-weight: var(--font-weight-bold);
+      background-color: var(--color-purple-normal);
+      border-radius: var(--radius-4);
+
+      @media (width > 480px) {
+        border-radius: var(--radius-full);
+      }
     }
   }
 
