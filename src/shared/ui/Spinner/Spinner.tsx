@@ -11,7 +11,7 @@ const sizeMap: Record<SpinnerSize, string> = {
   lg: "80px",
 };
 
-const boderSizeMap: Record<SpinnerSize, string> = {
+const borderSizeMap: Record<SpinnerSize, string> = {
   sm: "3px solid var(--color-grey-light-strong)",
   md: "4px solid var(--color-grey-light-strong)",
   lg: "5px solid var(--color-grey-light-strong)",
@@ -19,8 +19,8 @@ const boderSizeMap: Record<SpinnerSize, string> = {
 
 const Spinner = ({ size = "sm" }: SpinnerProps) => {
   const sizeValue = sizeMap[size];
-  const boderSizeValue = boderSizeMap[size];
-  const topBoderColor = "var(--color-blue-normal)";
+  const borderSizeValue = borderSizeMap[size];
+  const topBorderColor = "var(--color-blue-normal)";
 
   return (
     <div className={Styles.loader}>
@@ -29,8 +29,8 @@ const Spinner = ({ size = "sm" }: SpinnerProps) => {
         style={{
           width: sizeValue,
           height: sizeValue,
-          border: boderSizeValue,
-          borderTopColor: topBoderColor,
+          border: borderSizeValue,
+          borderTopColor: topBorderColor,
         }}
       />
     </div>
