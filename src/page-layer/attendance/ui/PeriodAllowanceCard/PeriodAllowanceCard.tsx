@@ -1,6 +1,7 @@
 "use client";
 
 import { Card } from "@/shared/ui";
+import { formatCurrency } from "@/shared/utils";
 
 import { CARD_TITLES } from "../../../../entities/attendance/model/constants";
 
@@ -15,10 +16,7 @@ const PeriodAllowanceCard = ({
   amount,
   dateRange,
 }: PeriodAllowanceCardProps) => {
-  const formattedAmount = new Intl.NumberFormat("ko-KR", {
-    style: "currency",
-    currency: "KRW",
-  }).format(amount);
+  const formattedAmount = formatCurrency(amount);
 
   return (
     <Card variant="solid" title={CARD_TITLES.PERIOD_ALLOWANCE}>
