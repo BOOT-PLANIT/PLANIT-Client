@@ -3,6 +3,11 @@
 import { useState, Suspense, lazy, useMemo, useEffect } from "react";
 
 import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
+import {
+  CARD_TITLES,
+  ICON_GUIDE_LABELS,
+  UNIT_COLORS,
+} from "@/entities/attendance/model";
 import { AttendanceSummaryCardSkeleton } from "@/entities/attendance/ui/AttendanceSummaryCard";
 import {
   useMyBootcamps,
@@ -17,7 +22,6 @@ import type { AttendanceStatus } from "@/shared/ui/Calendar";
 import CalendarSkeleton from "../../shared/ui/Calendar/CalendarSkeleton";
 
 import styles from "./Attendance.module.scss";
-import { CARD_TITLES, ICON_GUIDE_LABELS, UNIT_COLORS } from "./constants";
 import { generateMockBootcamps, generateMockSessions } from "./model/mockData";
 import PeriodAllowanceCardSkeleton from "./ui/PeriodAllowanceCard/PeriodAllowanceCardSkeleton";
 import { UnitIcon } from "./ui/UnitIcon";

@@ -5,7 +5,10 @@ import { useMemo } from "react";
 import type { DoughnutChartItem } from "@/shared/ui/Chart";
 import { DoughnutChartCard } from "@/widgets/ui";
 
-import { CARD_TITLES, STATS_LABELS } from "../../constants";
+import {
+  CARD_TITLES,
+  STATS_LABELS,
+} from "../../../../entities/attendance/model/constants";
 
 interface UnitPeriodStatsCardProps {
   totalAttendance: number;

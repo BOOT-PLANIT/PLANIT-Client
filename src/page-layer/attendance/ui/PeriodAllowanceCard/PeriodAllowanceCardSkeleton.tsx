@@ -2,7 +2,7 @@
 
 import { Card, Skeleton } from "@/shared/ui";
 
-import { CARD_TITLES } from "../../constants";
+import { CARD_TITLES } from "../../../../entities/attendance/model/constants";
 
 import styles from "./PeriodAllowanceCard.module.scss";
 
