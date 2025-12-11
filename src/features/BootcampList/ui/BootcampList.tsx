@@ -4,11 +4,10 @@ import React, { useEffect, useState } from "react";
 
 import SearchIcon from "@/shared/assets/icons/SearchIcon";
 import { dummyFetchBootcamps } from "@/shared/lib";
-import { Input } from "@/shared/ui";
+import { Input, Spinner } from "@/shared/ui";
 
 import styles from "./BootcampList.module.scss";
 import BootcampListItem from "./BootcampListItem";
-import Spinner from "./Spinner/Spinner";
 
 export interface Bootcamp {
   id: number;
@@ -67,6 +66,16 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+
+    // 검색어 바뀌면 선택 초기화
+    if (selectedItem !== null) {
+      setSelectedItem(null);
+      onSelectBootcamp(null);
+    }
+  };
+
   const handleSelect = (bootcamp: Bootcamp) => {
     if (!manage) {
       if (selectedItem?.id === bootcamp.id) {
@@ -99,7 +108,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
         placeholder="검색하실 부트캠프 이름 또는 교육기관을 입력하세요..."
         icon={<SearchIcon />}
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={(e) => handleSearchChange(e.target.value)}
       />
 
       <table className={styles.table}>
@@ -120,7 +129,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
           <tbody>
             {isLoading && (
               <tr>
-                <td colSpan={6}>
+                <td colSpan={manage ? 8 : 6}>
                   <Spinner />
                 </td>
               </tr>
@@ -139,7 +148,9 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
             ))}
             {/* 옵저버 */}
             <tr id="scroll-anchor" className={styles.scrollAnchor}>
-              <td colSpan={6}>{isFetchingNextPage && <Spinner />}</td>
+              <td colSpan={manage ? 8 : 6}>
+                {isFetchingNextPage && <Spinner />}
+              </td>
             </tr>
           </tbody>
         </table>
