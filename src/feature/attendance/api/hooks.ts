@@ -4,69 +4,15 @@ import type { ApiResponse } from "@/shared/api";
 import { apiClient } from "@/shared/api";
 
 import type {
+  AttendanceBalanceResponse,
   AttendanceDeleteRequest,
   AttendanceRequest,
-  Bootcamp,
+  DailyAttendanceResponse,
+  LeaveListResponse,
+  PeriodAttendanceListResponse,
   PeriodAttendanceResponse,
-  Session,
   TotalAttendanceResponse,
 } from "./types";
-
-/**
- * 내 부트캠프 목록 조회
- */
-export const useMyBootcamps = () => {
-  return useQuery<ApiResponse<Bootcamp[]>>({
-    queryKey: ["enrollments"],
-    queryFn: async () => {
-      const response =
-        await apiClient.get<ApiResponse<Bootcamp[]>>("/enrollments");
-      return response.data;
-    },
-  });
-};
-
-/**
- * 부트캠프 단건 조회
- */
-export const useBootcamp = (id: number) => {
-  return useQuery<ApiResponse<Bootcamp>>({
-    queryKey: ["bootcamps", id],
-    queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<Bootcamp>>(
-        `/bootcamps/${id}`,
-      );
-      return response.data;
-    },
-    enabled: !!id,
-  });
-};
-
-/**
- * 세션과 출결 상태 조회
- */
-export const useSessionsWithAttendance = (
-  bootcampId: number | null,
-  userId: number | null,
-) => {
-  return useQuery<ApiResponse<Session[]>>({
-    queryKey: [
-      "sessions",
-      "bootcamp",
-      bootcampId,
-      "user",
-      userId,
-      "attendance",
-    ],
-    queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<Session[]>>(
-        `/sessions/bootcamp/${bootcampId}/user/${userId}/attendance`,
-      );
-      return response.data;
-    },
-    enabled: !!bootcampId && !!userId,
-  });
-};
 
 /**
  * 출결 등록 및 수정
@@ -164,6 +110,31 @@ export const usePeriodAttendance = (
 };
 
 /**
+ * 일단위 출결 조회
+ */
+export const useDailyAttendance = (
+  userId: number | null,
+  date: string | null,
+  bootcampId: number | null,
+) => {
+  return useQuery<ApiResponse<DailyAttendanceResponse>>({
+    queryKey: ["attendance", userId, date, bootcampId],
+    queryFn: async () => {
+      const response = await apiClient.get<
+        ApiResponse<DailyAttendanceResponse>
+      >(`/attendance/${userId}`, {
+        params: {
+          date,
+          bootcampId,
+        },
+      });
+      return response.data;
+    },
+    enabled: !!userId && !!date && !!bootcampId,
+  });
+};
+
+/**
  * 총 출결 조회
  */
 export const useTotalAttendance = (
@@ -180,6 +151,76 @@ export const useTotalAttendance = (
           bootcampId,
         },
       });
+      return response.data;
+    },
+    enabled: !!userId && !!bootcampId,
+  });
+};
+
+/**
+ * 완료된 단위 기간 출결 리스트 조회
+ */
+export const usePeriodAttendanceList = (
+  userId: number | null,
+  bootcampId: number | null,
+) => {
+  return useQuery<ApiResponse<PeriodAttendanceListResponse>>({
+    queryKey: ["attendance", "periodList", userId, bootcampId],
+    queryFn: async () => {
+      const response = await apiClient.get<
+        ApiResponse<PeriodAttendanceListResponse>
+      >(`/attendance/periodList/${userId}`, {
+        params: {
+          bootcampId,
+        },
+      });
+      return response.data;
+    },
+    enabled: !!userId && !!bootcampId,
+  });
+};
+
+/**
+ * 월차 잔여/누적 사용량 조회
+ */
+export const useAttendanceBalance = (
+  userId: number | null,
+  bootcampId: number | null,
+) => {
+  return useQuery<ApiResponse<AttendanceBalanceResponse>>({
+    queryKey: ["attendance", "balance", userId, bootcampId],
+    queryFn: async () => {
+      const response = await apiClient.get<
+        ApiResponse<AttendanceBalanceResponse>
+      >(`/attendance/balance/${userId}`, {
+        params: {
+          bootcampId,
+        },
+      });
+      return response.data;
+    },
+    enabled: !!userId && !!bootcampId,
+  });
+};
+
+/**
+ * 휴가 목록 조회
+ */
+export const useLeaveList = (
+  userId: number | null,
+  bootcampId: number | null,
+) => {
+  return useQuery<ApiResponse<LeaveListResponse[]>>({
+    queryKey: ["attendance", "leave", userId, bootcampId],
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<LeaveListResponse[]>>(
+        `/attendance/leave/${userId}`,
+        {
+          params: {
+            bootcampId,
+          },
+        },
+      );
       return response.data;
     },
     enabled: !!userId && !!bootcampId,
