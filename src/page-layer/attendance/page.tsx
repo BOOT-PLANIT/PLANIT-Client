@@ -19,10 +19,11 @@ import { useToast } from "@/shared/lib";
 import { Card, Combobox } from "@/shared/ui";
 import type { AttendanceStatus } from "@/shared/ui/Calendar";
 
+import CalendarSkeleton from "../../shared/ui/Calendar/CalendarSkeleton";
+
 import styles from "./Attendance.module.scss";
 import { ICON_GUIDE_LABELS, UNIT_COLORS } from "./constants";
 import AttendanceSummaryCardSkeleton from "./ui/AttendanceSummaryCard/AttendanceSummaryCardSkeleton";
-import CalendarSkeleton from "./ui/CalendarSkeleton";
 import PeriodAllowanceCardSkeleton from "./ui/PeriodAllowanceCard/PeriodAllowanceCardSkeleton";
 import { UnitIcon } from "./ui/UnitIcon";
 import UnitPeriodStatsCardSkeleton from "./ui/UnitPeriodStatsCard/UnitPeriodStatsCardSkeleton";
