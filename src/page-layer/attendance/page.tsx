@@ -11,19 +11,17 @@ import {
   UNIT_COLORS,
 } from "@/entities/attendance/model";
 import { AttendanceSummaryCardSkeleton } from "@/entities/attendance/ui/AttendanceSummaryCard";
+import { BootcampInfo } from "@/entities/bootcamp/ui/BootcampInfo";
 import {
   useMyBootcamps,
   useSessionsWithAttendance,
   useUpdateAttendance,
   useDeleteAttendance,
 } from "@/feature/attendance/api";
-import { LeaveIcon } from "@/shared/assets/icons";
 import { useToast } from "@/shared/lib";
-import { Card, Combobox } from "@/shared/ui";
-import type { AttendanceStatus } from "@/shared/ui/Calendar";
+import { Card } from "@/shared/ui";
+import { CalendarSkeleton, type AttendanceStatus } from "@/shared/ui/Calendar";
 import { getErrorMessage, isNetworkError } from "@/shared/utils";
-
-import CalendarSkeleton from "../../shared/ui/Calendar/CalendarSkeleton";
 
 import styles from "./Attendance.module.scss";
 import { generateMockBootcamps, generateMockSessions } from "./model/mockData";
@@ -60,14 +58,6 @@ const EditAttendanceModalLazy = lazy(() =>
     default: module.EditAttendanceModal,
   })),
 );
-
-const formatDate = (date: Date): string => {
-  return date.toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
 
 const Attendance = () => {
   // TODO: 인증에서 userId 가져오기
@@ -222,22 +212,19 @@ const Attendance = () => {
         ).period
       : null;
 
-  const currentUnit = selectedPeriod
-    ? (() => {
-        const startStr = formatDate(selectedPeriod.startDate);
-        const endStr = formatDate(selectedPeriod.endDate);
-
-        const sessionCount = allCalendarDates.filter((dateData) => {
+  const dateRange = selectedPeriod
+    ? {
+        startDate: selectedPeriod.startDate,
+        endDate: selectedPeriod.endDate,
+        sessionCount: allCalendarDates.filter((dateData) => {
           const date = dateData.date;
           return (
             date.getTime() >= selectedPeriod.startDate.getTime() &&
             date.getTime() <= selectedPeriod.endDate.getTime()
           );
-        }).length;
-
-        return `${startStr} - ${endStr} (${sessionCount}일)`;
-      })()
-    : "단위기간 정보 없음";
+        }).length,
+      }
+    : null;
 
   const today = new Date();
   const currentPeriodForCalendar = unitPeriods.find(
@@ -428,22 +415,12 @@ const Attendance = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.headerSection}>
-          <div className={styles.bootcampInfo}>
-            <Combobox
-              options={bootcampOptions}
-              value={selectedBootcampIndex}
-              onChange={setSelectedBootcampIndex}
-            />
-            <div className={styles.currentUnit}>
-              <LeaveIcon
-                width={16}
-                height={16}
-                color="currentColor"
-                className={styles.calendarIcon}
-              />
-              <span>{currentUnit}</span>
-            </div>
-          </div>
+          <BootcampInfo
+            options={bootcampOptions}
+            selectedIndex={selectedBootcampIndex}
+            onIndexChange={setSelectedBootcampIndex}
+            dateRange={dateRange}
+          />
         </div>
 
         <div className={styles.summaryCards}>

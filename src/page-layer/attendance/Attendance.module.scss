@@ -11,25 +11,6 @@
   margin-bottom: var(--spacing-24);
 }
 
-.bootcampInfo {
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
-}
-
-.currentUnit {
-  display: flex;
-  align-items: center;
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  color: var(--foreground-lighter);
-
-  .calendarIcon {
-    margin-right: var(--spacing-8);
-  }
-}
-
 .summaryCards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
