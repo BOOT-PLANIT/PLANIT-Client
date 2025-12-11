@@ -462,7 +462,7 @@ const Attendance = () => {
         {shouldShowSkeleton ? (
           <CalendarSkeleton />
         ) : (
-          <Card variant="solid" width="100%">
+          <Card width="100%">
             <Suspense fallback={<CalendarSkeleton />}>
               <CalendarComponent
                 dates={calendarDates}
