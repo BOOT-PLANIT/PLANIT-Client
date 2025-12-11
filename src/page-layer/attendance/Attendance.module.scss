@@ -42,3 +42,29 @@
     grid-template-columns: 1fr;
   }
 }
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-16);
+  padding: var(--spacing-32);
+  min-height: 200px;
+}
+
+.errorIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-system-error);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorMessage {
+  font-size: var(--font-size-base);
+  color: var(--color-system-error);
+  text-align: center;
+  font-weight: var(--font-weight-semibold);
+}

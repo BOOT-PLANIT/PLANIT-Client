@@ -8,6 +8,7 @@ export const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 3000,
 });
 
 // 요청 인터셉터: 인증 토큰 추가 (필요시)
