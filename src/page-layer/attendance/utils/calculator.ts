@@ -1,11 +1,5 @@
 import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
 
-interface AttendanceSummaryItem {
-  status: AttendanceStatus;
-  label: string;
-  count: number;
-}
-
 interface UnitStats {
   totalAttendance: number;
   totalAbsent: number;
@@ -38,46 +32,6 @@ export const calculateStatusCounts = (
     },
     {} as Record<AttendanceStatus, number>,
   );
-};
-
-/**
- * 출석 요약 데이터 생성
- */
-export const calculateAttendanceSummary = (
-  statusCounts: Record<AttendanceStatus, number>,
-): AttendanceSummaryItem[] => {
-  return [
-    {
-      status: "present" as AttendanceStatus,
-      label: "출석",
-      count: statusCounts.present || 0,
-    },
-    {
-      status: "late" as AttendanceStatus,
-      label: "지각",
-      count: statusCounts.late || 0,
-    },
-    {
-      status: "leftEarly" as AttendanceStatus,
-      label: "조퇴",
-      count: statusCounts.leftEarly || 0,
-    },
-    {
-      status: "leave" as AttendanceStatus,
-      label: "공가",
-      count: statusCounts.leave || 0,
-    },
-    {
-      status: "annual" as AttendanceStatus,
-      label: "월차",
-      count: statusCounts.annual || 0,
-    },
-    {
-      status: "absent" as AttendanceStatus,
-      label: "결석",
-      count: statusCounts.absent || 0,
-    },
-  ];
 };
 
 /**

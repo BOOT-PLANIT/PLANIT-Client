@@ -36,6 +36,10 @@ interface CalendarProps {
   onEdit?: (dates: Date[]) => void;
   initialMonth?: Date;
   onMonthChange?: (month: Date) => void;
+  unitColors?: {
+    currentUnit?: string;
+    otherUnit?: string;
+  };
 }
 
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
@@ -64,6 +68,7 @@ const Calendar = ({
   onEdit,
   initialMonth = new Date(),
   onMonthChange,
+  unitColors,
 }: CalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(
     new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1),
@@ -541,6 +546,7 @@ const Calendar = ({
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
                 getStatusClassName={getStatusClassName}
+                unitColors={unitColors}
               />
             );
           })}

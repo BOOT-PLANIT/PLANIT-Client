@@ -1,28 +1,22 @@
 import styles from "./Card.module.scss";
 
-type CardVariant = "solid" | "gradient";
-
 interface CardProps {
-  variant?: CardVariant;
   title?: string;
   titleIcon?: React.ReactNode;
   children: React.ReactNode;
   width?: string;
-  isClickable?: boolean;
+  onClick?: () => void;
 }
 
 const Card = ({
-  variant = "solid",
   title,
   titleIcon,
   children,
   width = "100%",
-  isClickable = false,
+  onClick,
 }: CardProps) => {
-  const Wrapper = isClickable ? "button" : "div";
-
   return (
-    <Wrapper className={`${styles.card} ${styles[variant]}`} style={{ width }}>
+    <button className={`${styles.card}`} style={{ width }} onClick={onClick}>
       {title && (
         <div className={styles.header}>
           {titleIcon && <span className={styles.titleIcon}>{titleIcon}</span>}
@@ -30,7 +24,7 @@ const Card = ({
         </div>
       )}
       <div className={styles.content}>{children}</div>
-    </Wrapper>
+    </button>
   );
 };
 

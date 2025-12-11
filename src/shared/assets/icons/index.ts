@@ -12,3 +12,5 @@ export { default as LeftEarlyIcon } from "./LeftEarlyIcon";
 export { default as LeaveIcon } from "./LeaveIcon";
 export { default as AnnualIcon } from "./AnnualIcon";
 export { default as AbsentIcon } from "./AbsentIcon";
+export { default as MoneyIcon } from "./MoneyIcon";
+export { default as ClockIcon } from "./ClockIcon";
