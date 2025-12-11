@@ -3,10 +3,10 @@
 import { useState, Suspense, lazy, useMemo } from "react";
 
 import {
-  useBootcampSummary,
+  useMyBootcamps,
   useSessionsWithAttendance,
   useUpdateAttendance,
-} from "@/feature/attendance/api";
+} from "@/feature/api/attendance";
 import {
   AbsentIcon,
   AnnualIcon,
@@ -94,7 +94,7 @@ const Attendance = () => {
 
   // API 호출
   const { data: bootcampSummaryData, isLoading: isLoadingBootcamps } =
-    useBootcampSummary();
+    useMyBootcamps();
   const bootcampOptions = useMemo(() => {
     if (!bootcampSummaryData?.data) return [];
     return transformBootcampsToOptions(bootcampSummaryData.data);

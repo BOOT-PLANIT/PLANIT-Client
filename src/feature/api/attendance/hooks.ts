@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { apiClient } from "./client";
+import { apiClient } from "../client";
+
 import type {
   ApiResponse,
   AttendanceRequest,
@@ -11,9 +12,9 @@ import type {
 } from "./types";
 
 /**
- * 부트캠프 목록 조회 (enrollments 사용)
+ * 내 부트캠프 목록 조회 (enrollments 사용)
  */
-export const useBootcampSummary = () => {
+export const useMyBootcamps = () => {
   return useQuery<ApiResponse<Bootcamp[]>>({
     queryKey: ["enrollments"],
     queryFn: async () => {
