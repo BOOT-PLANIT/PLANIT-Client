@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 
-import type { ChartItem } from "@/shared/ui/Chart/DoughnutChart";
+import type { DoughnutChartItem } from "@/shared/ui/Chart";
 import { DoughnutChartCard } from "@/widgets/ui";
 
 import { CARD_TITLES, STATS_LABELS } from "../../constants";
@@ -24,7 +24,7 @@ const UnitPeriodStatsCard = ({
   totalAbsent,
   totalUnrecorded,
 }: UnitPeriodStatsCardProps) => {
-  const chartData = useMemo<ChartItem[]>(() => {
+  const chartData = useMemo<DoughnutChartItem[]>(() => {
     return [
       {
         label: STATS_LABELS.TOTAL_ATTENDANCE,

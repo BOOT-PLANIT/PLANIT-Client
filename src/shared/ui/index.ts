@@ -7,3 +7,5 @@ export { Input } from "./Input";
 export { Calendar } from "./Calendar";
 export { Modal } from "./Modal";
 export { Skeleton } from "./Skeleton";
+export { DoughnutChart } from "./Chart";
+export { HorizontalPercentageBarChart } from "./Chart";
