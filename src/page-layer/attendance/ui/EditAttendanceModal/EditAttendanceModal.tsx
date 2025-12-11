@@ -2,15 +2,8 @@
 
 import { useState } from "react";
 
-import {
-  AbsentIcon,
-  AnnualIcon,
-  LateIcon,
-  LeftEarlyIcon,
-  LeaveIcon,
-  PresentIcon,
-} from "@/shared/assets/icons";
-import { Button, Modal } from "@/shared/ui";
+import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
+import { Button, Modal, OptionButton } from "@/shared/ui";
 import type { AttendanceStatus } from "@/shared/ui/Calendar";
 
 import styles from "./EditAttendanceModal.module.scss";
@@ -29,32 +22,32 @@ const attendanceOptions: {
   {
     value: "present",
     label: "출석",
-    icon: <PresentIcon width={20} height={20} />,
+    icon: ATTENDANCE_ICON_MAP.present,
   },
   {
     value: "late",
     label: "지각",
-    icon: <LateIcon width={20} height={20} />,
+    icon: ATTENDANCE_ICON_MAP.late,
   },
   {
     value: "leftEarly",
     label: "조퇴",
-    icon: <LeftEarlyIcon width={20} height={20} />,
+    icon: ATTENDANCE_ICON_MAP.leftEarly,
   },
   {
     value: "leave",
     label: "공가",
-    icon: <LeaveIcon width={20} height={20} />,
+    icon: ATTENDANCE_ICON_MAP.leave,
   },
   {
     value: "annual",
     label: "월차",
-    icon: <AnnualIcon width={20} height={20} />,
+    icon: ATTENDANCE_ICON_MAP.annual,
   },
   {
     value: "absent",
     label: "결석",
-    icon: <AbsentIcon width={20} height={20} />,
+    icon: ATTENDANCE_ICON_MAP.absent,
   },
 ];
 
@@ -86,38 +79,22 @@ const EditAttendanceModal = ({
           </h3>
           <div className={styles.options}>
             {attendanceOptions.map((option) => (
-              <label
+              <OptionButton
                 key={option.value}
-                className={`${styles.option} ${
-                  selectedStatus === option.value ? styles.selected : ""
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="attendanceStatus"
-                  value={option.value}
-                  checked={selectedStatus === option.value}
-                  onChange={() => setSelectedStatus(option.value)}
-                  className={styles.radio}
-                />
-                <div className={styles.icon}>{option.icon}</div>
-                <span className={styles.label}>{option.label}</span>
-              </label>
-            ))}
-            <label
-              className={`${styles.option} ${
-                selectedStatus === "clear" ? styles.selected : ""
-              }`}
-            >
-              <input
-                type="radio"
+                value={option.value}
+                label={option.label}
+                icon={option.icon}
+                checked={selectedStatus === option.value}
+                onChange={(value) =>
+                  setSelectedStatus(value as AttendanceStatus | "clear")
+                }
                 name="attendanceStatus"
-                value="clear"
-                checked={selectedStatus === "clear"}
-                onChange={() => setSelectedStatus("clear")}
-                className={styles.radio}
               />
-              <div className={styles.icon}>
+            ))}
+            <OptionButton
+              value="clear"
+              label="초기화"
+              icon={
                 <svg
                   width="20"
                   height="20"
@@ -133,9 +110,13 @@ const EditAttendanceModal = ({
                     strokeLinejoin="round"
                   />
                 </svg>
-              </div>
-              <span className={styles.label}>초기화</span>
-            </label>
+              }
+              checked={selectedStatus === "clear"}
+              onChange={(value) =>
+                setSelectedStatus(value as AttendanceStatus | "clear")
+              }
+              name="attendanceStatus"
+            />
           </div>
         </div>
 

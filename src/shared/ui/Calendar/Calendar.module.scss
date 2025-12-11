@@ -76,6 +76,24 @@
   grid-column: span 1;
 }
 
+.dayNumber {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+  position: absolute;
+  font-size: var(--font-size-sm);
+  top: 2px;
+  left: 2px;
+  padding: var(--spacing-1) var(--spacing-2);
+
+  @media (width > 480px) {
+    top: var(--spacing-8);
+    left: var(--spacing-8);
+    font-size: var(--font-size-base);
+    padding: var(--spacing-2) var(--spacing-4);
+  }
+}
+
 .day {
   position: relative;
   display: flex;
@@ -123,23 +141,21 @@
     border-color: var(--border-primary-light);
   }
 
-  &.currentUnit {
-    position: relative;
-    background: var(--color-purple-lightest);
-  }
-
-  &.otherUnit {
-    position: relative;
-    background: var(--color-yellow-lightest);
-  }
-
   &.weekend {
     background: var(--background-tertiary-darker);
   }
 
   &.today {
-    border: 2px solid var(--border-primary);
-    font-weight: var(--font-weight-bold);
+    .dayNumber {
+      color: var(--color-white);
+      font-weight: var(--font-weight-bold);
+      background-color: var(--color-purple-normal);
+      border-radius: var(--radius-4);
+
+      @media (width > 480px) {
+        border-radius: var(--radius-full);
+      }
+    }
   }
 
   &[class*="status"]::after {
@@ -180,21 +196,5 @@
 
   &.statusAbsent::after {
     background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 4L4 12M4 4L12 12' stroke='%23d21c1c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  }
-}
-
-.dayNumber {
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
-  color: var(--foreground);
-  position: absolute;
-  top: var(--spacing-8);
-  left: var(--spacing-8);
-
-  @media (width <= 480px) {
-    font-size: var(--font-size-sm);
-    top: 2px;
-    left: 2px;
   }
 }

@@ -1,3 +1,5 @@
+import type { Bootcamp, Session } from "@/feature/attendance/api";
+import type { ApiResponse } from "@/shared/api/types";
 import type { DateData } from "@/shared/ui/Calendar";
 
 export const generateBootcampOptions = () => [
@@ -5,6 +7,82 @@ export const generateBootcampOptions = () => [
   { value: "frontend", label: "프론트엔드 개발 부트캠프", isKdt: false },
   { value: "backend", label: "백엔드 개발 부트캠프", isKdt: false },
 ];
+
+// API 응답 형식의 부트캠프 목업 데이터 생성
+export const generateMockBootcamps = (): ApiResponse<Bootcamp[]> => {
+  const today = new Date();
+  const startDate = new Date(today.getFullYear(), today.getMonth(), 25);
+  const endDate = new Date(today.getFullYear() + 1, today.getMonth() + 6, 24);
+
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  return {
+    code: 200,
+    message: "부트캠프 목록 조회 성공",
+    data: [
+      {
+        id: 1,
+        name: "풀스택 웹 개발 부트캠프",
+        organizer: "K-Digital Training",
+        isKdt: true,
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate),
+      },
+    ],
+  };
+};
+
+// API 응답 형식의 세션 목업 데이터 생성
+export const generateMockSessions = (
+  bootcampId: number,
+  _userId: number,
+): ApiResponse<Session[]> => {
+  const unitPeriods = generateUnitPeriods();
+  const sessions: Session[] = [];
+  let sessionId = 1;
+
+  for (const period of unitPeriods) {
+    const startDate = new Date(period.startDate);
+    const endDate = new Date(period.endDate);
+    const currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      const dayOfWeek = currentDate.getDay();
+
+      // 주말 제외
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+        const formatDate = (date: Date): string => {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        };
+
+        sessions.push({
+          id: sessionId++,
+          bootcampId,
+          classDate: formatDate(currentDate),
+          unitNo: period.unitNumber,
+          periodStartDate: formatDate(period.startDate),
+          periodEndDate: formatDate(period.endDate),
+        });
+      }
+
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  }
+
+  return {
+    code: 200,
+    message: "세션 목록 조회 성공",
+    data: sessions,
+  };
+};
 
 // 단위기간 생성: 2025년 8월 25일부터 2026년 3월 24일까지 1달 단위
 export const generateUnitPeriods = (): Array<{
