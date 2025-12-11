@@ -24,6 +24,10 @@
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   color: var(--foreground-lighter);
+
+  .calendarIcon {
+    margin-right: var(--spacing-8);
+  }
 }
 
 .summaryCards {

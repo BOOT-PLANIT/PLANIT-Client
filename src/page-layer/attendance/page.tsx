@@ -1,14 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense, lazy } from "react";
 
-import {
-  AttendanceSummaryCard,
-  EditAttendanceModal,
-  IconGuide,
-  PeriodAllowanceCard,
-  UnitPeriodStatsCard,
-} from "@/page-layer/attendance/ui";
 import {
   AbsentIcon,
   AnnualIcon,
@@ -17,15 +10,21 @@ import {
   LeaveIcon,
   PresentIcon,
 } from "@/shared/assets/icons";
-import { Calendar, Card, Combobox } from "@/shared/ui";
+import { Card, Combobox } from "@/shared/ui";
 import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
 
 import styles from "./Attendance.module.scss";
+import { ICON_GUIDE_LABELS, UNIT_COLORS } from "./constants";
 import {
   generateBootcampOptions,
   generateCalendarDates,
   generateUnitPeriods,
 } from "./model/mockData";
+import AttendanceSummaryCardSkeleton from "./ui/AttendanceSummaryCard/AttendanceSummaryCardSkeleton";
+import CalendarSkeleton from "./ui/CalendarSkeleton";
+import PeriodAllowanceCardSkeleton from "./ui/PeriodAllowanceCard/PeriodAllowanceCardSkeleton";
+import { UnitIcon } from "./ui/UnitIcon";
+import UnitPeriodStatsCardSkeleton from "./ui/UnitPeriodStatsCard/UnitPeriodStatsCardSkeleton";
 import {
   calculateAttendanceSummary,
   calculatePeriodAllowance,
@@ -33,27 +32,49 @@ import {
   calculateUnitStats,
 } from "./utils/calculator";
 
-const CurrentUnitIcon = () => (
-  <div
-    style={{
-      width: "16px",
-      height: "16px",
-      backgroundColor: "var(--color-purple-lightest)",
-      borderRadius: "var(--radius-4)",
-    }}
-  />
+const AttendanceSummaryCard = lazy(() =>
+  import("@/page-layer/attendance/ui").then((module) => ({
+    default: module.AttendanceSummaryCard,
+  })),
 );
 
-const OtherUnitIcon = () => (
-  <div
-    style={{
-      width: "16px",
-      height: "16px",
-      backgroundColor: "var(--color-yellow-lightest)",
-      borderRadius: "var(--radius-4)",
-    }}
-  />
+const UnitPeriodStatsCard = lazy(() =>
+  import("@/page-layer/attendance/ui").then((module) => ({
+    default: module.UnitPeriodStatsCard,
+  })),
 );
+
+const PeriodAllowanceCard = lazy(() =>
+  import("@/page-layer/attendance/ui").then((module) => ({
+    default: module.PeriodAllowanceCard,
+  })),
+);
+
+const CalendarComponent = lazy(() =>
+  import("@/shared/ui").then((module) => ({
+    default: module.Calendar,
+  })),
+);
+
+const IconGuide = lazy(() =>
+  import("@/page-layer/attendance/ui").then((module) => ({
+    default: module.IconGuide,
+  })),
+);
+
+const EditAttendanceModal = lazy(() =>
+  import("@/page-layer/attendance/ui").then((module) => ({
+    default: module.EditAttendanceModal,
+  })),
+);
+
+const formatDate = (date: Date): string => {
+  return date.toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 
 const Attendance = () => {
   const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
@@ -61,6 +82,7 @@ const Attendance = () => {
   const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+  const [isLoading] = useState(false);
   const [allCalendarDates, setAllCalendarDates] = useState<DateData[]>(
     generateCalendarDates(),
   );
@@ -113,16 +135,8 @@ const Attendance = () => {
 
   const currentUnit = selectedPeriod
     ? (() => {
-        const startStr = selectedPeriod.startDate.toLocaleDateString("ko-KR", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-        const endStr = selectedPeriod.endDate.toLocaleDateString("ko-KR", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
+        const startStr = formatDate(selectedPeriod.startDate);
+        const endStr = formatDate(selectedPeriod.endDate);
 
         const sessionCount = allCalendarDates.filter((dateData) => {
           const date = dateData.date;
@@ -233,14 +247,38 @@ const Attendance = () => {
   );
 
   const iconGuideItems = [
-    { icon: <PresentIcon width={20} height={20} />, label: "출석" },
-    { icon: <LateIcon width={20} height={20} />, label: "지각" },
-    { icon: <LeftEarlyIcon width={20} height={20} />, label: "조퇴" },
-    { icon: <LeaveIcon width={20} height={20} />, label: "공가" },
-    { icon: <AnnualIcon width={20} height={20} />, label: "월차" },
-    { icon: <AbsentIcon width={20} height={20} />, label: "결석" },
-    { icon: <CurrentUnitIcon />, label: "현재 단위 기간" },
-    { icon: <OtherUnitIcon />, label: "다른 단위 기간" },
+    {
+      icon: <PresentIcon width={20} height={20} />,
+      label: ICON_GUIDE_LABELS.present,
+    },
+    {
+      icon: <LateIcon width={20} height={20} />,
+      label: ICON_GUIDE_LABELS.late,
+    },
+    {
+      icon: <LeftEarlyIcon width={20} height={20} />,
+      label: ICON_GUIDE_LABELS.leftEarly,
+    },
+    {
+      icon: <LeaveIcon width={20} height={20} />,
+      label: ICON_GUIDE_LABELS.leave,
+    },
+    {
+      icon: <AnnualIcon width={20} height={20} />,
+      label: ICON_GUIDE_LABELS.annual,
+    },
+    {
+      icon: <AbsentIcon width={20} height={20} />,
+      label: ICON_GUIDE_LABELS.absent,
+    },
+    {
+      icon: <UnitIcon color={UNIT_COLORS.CURRENT_UNIT} size={20} />,
+      label: ICON_GUIDE_LABELS.CURRENT_UNIT,
+    },
+    {
+      icon: <UnitIcon color={UNIT_COLORS.OTHER_UNIT} size={20} />,
+      label: ICON_GUIDE_LABELS.OTHER_UNIT,
+    },
   ];
 
   const handleEdit = (dates: Date[]) => {
@@ -298,67 +336,79 @@ const Attendance = () => {
               onChange={setSelectedBootcampIndex}
             />
             <div className={styles.currentUnit}>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                style={{ marginRight: "8px" }}
-              >
-                <rect
-                  x="3"
-                  y="4"
-                  width="10"
-                  height="9"
-                  rx="1"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-                <path d="M3 6H13" stroke="currentColor" strokeWidth="2" />
-                <path
-                  d="M6 2V4M10 2V4"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <LeaveIcon
+                width={16}
+                height={16}
+                color="currentColor"
+                className={styles.calendarIcon}
+              />
               <span>{currentUnit}</span>
             </div>
           </div>
         </div>
 
         <div className={styles.summaryCards}>
-          <AttendanceSummaryCard items={attendanceSummary} />
-          <UnitPeriodStatsCard
-            totalAttendance={unitStats.totalAttendance}
-            totalAbsent={unitStats.totalAbsent}
-            totalUnrecorded={unitStats.totalUnrecorded}
-          />
-          <PeriodAllowanceCard
-            amount={periodAllowance.amount}
-            dateRange={periodAllowance.dateRange}
-          />
+          {isLoading ? (
+            <>
+              <AttendanceSummaryCardSkeleton />
+              <UnitPeriodStatsCardSkeleton />
+              <PeriodAllowanceCardSkeleton />
+            </>
+          ) : (
+            <>
+              <Suspense fallback={<AttendanceSummaryCardSkeleton />}>
+                <AttendanceSummaryCard items={attendanceSummary} />
+              </Suspense>
+              <Suspense fallback={<UnitPeriodStatsCardSkeleton />}>
+                <UnitPeriodStatsCard
+                  totalAttendance={unitStats.totalAttendance}
+                  totalAbsent={unitStats.totalAbsent}
+                  totalUnrecorded={unitStats.totalUnrecorded}
+                />
+              </Suspense>
+              <Suspense fallback={<PeriodAllowanceCardSkeleton />}>
+                <PeriodAllowanceCard
+                  amount={periodAllowance.amount}
+                  dateRange={periodAllowance.dateRange}
+                />
+              </Suspense>
+            </>
+          )}
         </div>
 
-        <Card variant="solid" width="100%">
-          <Calendar
-            dates={calendarDates}
-            selectedDates={selectedDates}
-            onDateSelect={handleDateSelect}
-            initialMonth={currentMonth}
-            onEdit={handleEdit}
-            onMonthChange={handleMonthChange}
-          />
-          <IconGuide items={iconGuideItems} />
-        </Card>
+        {isLoading ? (
+          <CalendarSkeleton />
+        ) : (
+          <Card variant="solid" width="100%">
+            <Suspense fallback={<CalendarSkeleton />}>
+              <CalendarComponent
+                dates={calendarDates}
+                selectedDates={selectedDates}
+                onDateSelect={handleDateSelect}
+                initialMonth={currentMonth}
+                onEdit={handleEdit}
+                onMonthChange={handleMonthChange}
+                unitColors={{
+                  currentUnit: UNIT_COLORS.CURRENT_UNIT,
+                  otherUnit: UNIT_COLORS.OTHER_UNIT,
+                }}
+              />
+              <Suspense fallback={null}>
+                <IconGuide items={iconGuideItems} />
+              </Suspense>
+            </Suspense>
+          </Card>
+        )}
       </div>
 
       {isEditModalOpen && (
-        <EditAttendanceModal
-          selectedDates={selectedDatesForEdit}
-          onClose={() => setIsEditModalOpen(false)}
-          onSave={handleSaveEdit}
-        />
+        <Suspense fallback={null}>
+          <EditAttendanceModal
+            selectedDates={selectedDatesForEdit}
+            onClose={() => setIsEditModalOpen(false)}
+            onSave={handleSaveEdit}
+          />
+        </Suspense>
       )}
     </div>
   );

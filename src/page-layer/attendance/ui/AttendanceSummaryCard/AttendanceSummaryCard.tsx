@@ -3,6 +3,8 @@
 import { Card } from "@/shared/ui";
 import type { AttendanceStatus } from "@/shared/ui/Calendar";
 
+import { CARD_TITLES } from "../../constants";
+
 import styles from "./AttendanceSummaryCard.module.scss";
 
 interface AttendanceSummaryItem {
@@ -18,7 +20,7 @@ interface AttendanceSummaryCardProps {
 
 const AttendanceSummaryCard = ({ items }: AttendanceSummaryCardProps) => {
   return (
-    <Card variant="solid" title="출석 요약">
+    <Card variant="solid" title={CARD_TITLES.ATTENDANCE_SUMMARY}>
       <div className={styles.list}>
         {items.map((item) => (
           <div key={item.status} className={styles.item}>

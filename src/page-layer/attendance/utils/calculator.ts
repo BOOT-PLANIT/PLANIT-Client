@@ -1,5 +1,7 @@
 import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
 
+import { ATTENDANCE_STATUS_LABELS } from "../constants";
+
 interface AttendanceSummaryItem {
   status: AttendanceStatus;
   label: string;
@@ -49,32 +51,32 @@ export const calculateAttendanceSummary = (
   return [
     {
       status: "present" as AttendanceStatus,
-      label: "출석",
+      label: ATTENDANCE_STATUS_LABELS.present,
       count: statusCounts.present || 0,
     },
     {
       status: "late" as AttendanceStatus,
-      label: "지각",
+      label: ATTENDANCE_STATUS_LABELS.late,
       count: statusCounts.late || 0,
     },
     {
       status: "leftEarly" as AttendanceStatus,
-      label: "조퇴",
+      label: ATTENDANCE_STATUS_LABELS.leftEarly,
       count: statusCounts.leftEarly || 0,
     },
     {
       status: "leave" as AttendanceStatus,
-      label: "공가",
+      label: ATTENDANCE_STATUS_LABELS.leave,
       count: statusCounts.leave || 0,
     },
     {
       status: "annual" as AttendanceStatus,
-      label: "월차",
+      label: ATTENDANCE_STATUS_LABELS.annual,
       count: statusCounts.annual || 0,
     },
     {
       status: "absent" as AttendanceStatus,
-      label: "결석",
+      label: ATTENDANCE_STATUS_LABELS.absent,
       count: statusCounts.absent || 0,
     },
   ];

@@ -20,6 +20,10 @@ interface CalendarDayProps {
   onTouchMove: (e: React.TouchEvent) => void;
   onTouchEnd: (e: React.TouchEvent) => void;
   getStatusClassName: (status?: AttendanceStatus) => string;
+  unitColors?: {
+    currentUnit?: string;
+    otherUnit?: string;
+  };
 }
 
 const CalendarDay = memo(
@@ -40,24 +44,31 @@ const CalendarDay = memo(
     onTouchMove,
     onTouchEnd,
     getStatusClassName,
+    unitColors,
   }: CalendarDayProps) => {
     const dayClasses = [
       styles.day,
       !currentMonthDay && styles.otherMonth,
       selected && styles.selected,
       today && styles.today,
-      isCurrentUnit && styles.currentUnit,
-      isOtherUnit && styles.otherUnit,
       inDragRange && styles.dragRange,
       getStatusClassName(dateData?.status),
     ]
       .filter(Boolean)
       .join(" ");
 
+    const backgroundColor =
+      isCurrentUnit && unitColors?.currentUnit
+        ? unitColors.currentUnit
+        : isOtherUnit && unitColors?.otherUnit
+          ? unitColors.otherUnit
+          : undefined;
+
     return (
       <button
         type="button"
         className={dayClasses}
+        style={backgroundColor ? { backgroundColor } : undefined}
         onClick={() => onDateClick(date)}
         onMouseDown={() => onMouseDown(date)}
         onMouseEnter={() => onMouseEnter(date)}
@@ -81,7 +92,9 @@ const CalendarDay = memo(
       prevProps.isCurrentUnit === nextProps.isCurrentUnit &&
       prevProps.isOtherUnit === nextProps.isOtherUnit &&
       prevProps.inDragRange === nextProps.inDragRange &&
-      prevProps.dateData?.status === nextProps.dateData?.status;
+      prevProps.dateData?.status === nextProps.dateData?.status &&
+      prevProps.unitColors?.currentUnit === nextProps.unitColors?.currentUnit &&
+      prevProps.unitColors?.otherUnit === nextProps.unitColors?.otherUnit;
 
     const handlersEqual =
       prevProps.onDateClick === nextProps.onDateClick &&

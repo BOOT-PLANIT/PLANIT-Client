@@ -5,6 +5,8 @@ import { useMemo } from "react";
 import type { ChartItem } from "@/shared/ui/Chart/DoughnutChart";
 import { DoughnutChartCard } from "@/widgets/ui";
 
+import { CARD_TITLES, STATS_LABELS } from "../../constants";
+
 interface UnitPeriodStatsCardProps {
   totalAttendance: number;
   totalAbsent: number;
@@ -25,24 +27,26 @@ const UnitPeriodStatsCard = ({
   const chartData = useMemo<ChartItem[]>(() => {
     return [
       {
-        label: "총출석",
+        label: STATS_LABELS.TOTAL_ATTENDANCE,
         value: totalAttendance,
         color: ATTENDANCE_COLORS.attendance,
       },
       {
-        label: "총결석",
+        label: STATS_LABELS.TOTAL_ABSENT,
         value: totalAbsent,
         color: ATTENDANCE_COLORS.absent,
       },
       {
-        label: "미출결",
+        label: STATS_LABELS.UNRECORDED,
         value: totalUnrecorded,
         color: ATTENDANCE_COLORS.unrecorded,
       },
     ];
   }, [totalAttendance, totalAbsent, totalUnrecorded]);
 
-  return <DoughnutChartCard title="기간 통계" data={chartData} />;
+  return (
+    <DoughnutChartCard title={CARD_TITLES.PERIOD_STATS} data={chartData} />
+  );
 };
 
 export default UnitPeriodStatsCard;

@@ -2,6 +2,8 @@
 
 import { Card } from "@/shared/ui";
 
+import { CARD_TITLES } from "../../constants";
+
 import styles from "./PeriodAllowanceCard.module.scss";
 
 interface PeriodAllowanceCardProps {
@@ -19,7 +21,7 @@ const PeriodAllowanceCard = ({
   }).format(amount);
 
   return (
-    <Card variant="solid" title="기간 수당">
+    <Card variant="solid" title={CARD_TITLES.PERIOD_ALLOWANCE}>
       <div className={styles.container}>
         <div className={styles.amount}>{formattedAmount}</div>
         <div className={styles.dateRange}>~ {dateRange}</div>
