@@ -9,6 +9,16 @@ export interface Bootcamp {
   startDate: string;
   endDate: string;
 }
+export interface BootcampTest {
+  id: number;
+  name: string;
+  organizer: string;
+  isKdt: boolean;
+  startedAt: string;
+  endedAt: string;
+  isEnded: boolean;
+  classDates: string[];
+}
 
 /**
  * 부트캠프 목록 응답

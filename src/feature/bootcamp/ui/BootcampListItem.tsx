@@ -1,8 +1,8 @@
 import React from "react";
 
+import { BootcampTest as Bootcamp } from "@/feature/bootcamp";
 import { EditIcon, DeleteIcon } from "@/shared/assets";
 
-import type { Bootcamp } from "./BootcampList";
 import styles from "./BootcampListItem.module.scss";
 
 interface BootcampListItemProps {

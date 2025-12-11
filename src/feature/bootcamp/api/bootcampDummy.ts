@@ -1,4 +1,4 @@
-import { Bootcamp } from "@/features/BootcampList/ui/BootcampList";
+import { BootcampTest as Bootcamp } from "./types";
 
 // 랜덤 날짜 생성 도우미
 function randomDate(start: Date, end: Date) {

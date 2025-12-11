@@ -1,24 +1,16 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
+import {
+  BootcampTest as Bootcamp,
+  BootcampListItem,
+  dummyFetchBootcamps,
+} from "@/feature/bootcamp";
 import SearchIcon from "@/shared/assets/icons/SearchIcon";
-import { dummyFetchBootcamps } from "@/shared/lib";
 import { Input, Spinner } from "@/shared/ui";
 
 import styles from "./BootcampList.module.scss";
-import BootcampListItem from "./BootcampListItem";
-
-export interface Bootcamp {
-  id: number;
-  name: string;
-  organizer: string;
-  isKdt: boolean;
-  startedAt: string;
-  endedAt: string;
-  isEnded: boolean;
-  classDates: string[];
-}
 
 interface BootcampListProps {
   onSelectBootcamp: (bootcamp: Bootcamp | null) => void;
