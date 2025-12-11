@@ -55,8 +55,7 @@ const campNames = [
   "SQL·DB 전문가 과정",
   "클라우드(AWS) 엔지니어 준비반",
 ];
-
-// 50개 생성
+//더미생성
 export const bootcampDummy: Bootcamp[] = Array.from({ length: 100 }).map(
   (_, i) => {
     const name = campNames[Math.floor(Math.random() * campNames.length)];

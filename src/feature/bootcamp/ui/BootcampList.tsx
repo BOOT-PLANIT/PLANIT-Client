@@ -1,6 +1,6 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   BootcampTest as Bootcamp,
@@ -23,6 +23,9 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
   const [search, setSearch] = useState("");
   const [debounced, setDebounced] = useState("");
 
+  const scrollBoxRef = useRef<HTMLDivElement>(null);
+  const anchorRef = useRef<HTMLTableRowElement>(null);
+
   //0.5초 검색할시간 유예
   useEffect(() => {
     const timer = setTimeout(() => setDebounced(search), 500);
@@ -41,8 +44,8 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
 
   //옵저버
   useEffect(() => {
-    const target = document.getElementById("scroll-anchor");
-    const scrollBox = document.getElementById("scroll-box");
+    const target = anchorRef.current;
+    const scrollBox = scrollBoxRef.current;
     if (!target || !scrollBox) return;
 
     const observer = new IntersectionObserver(
@@ -118,7 +121,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
             </tr>
           </thead>
         </table>
-        <div className={styles.tableLayout} id="scroll-box">
+        <div className={styles.tableLayout} ref={scrollBoxRef}>
           <table className={styles.table}>
             <tbody>
               {isLoading && (
@@ -149,7 +152,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
               )}
 
               {/* 옵저버 */}
-              <tr id="scroll-anchor">
+              <tr ref={anchorRef}>
                 <td className={styles.spinner} colSpan={manage ? 8 : 6}></td>
               </tr>
             </tbody>

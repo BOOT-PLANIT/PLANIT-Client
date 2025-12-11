@@ -2,6 +2,7 @@ import React from "react";
 
 import { BootcampTest as Bootcamp } from "@/feature/bootcamp";
 import { EditIcon, DeleteIcon } from "@/shared/assets";
+import { Badge } from "@/shared/ui/Badge";
 
 import styles from "./BootcampListItem.module.scss";
 
@@ -41,15 +42,15 @@ const BootcampListItem = ({
       <td className={styles.duration}>{bootcamp.classDates.length}일</td>
 
       <td className={styles.kdt}>
-        {bootcamp.isKdt ? <span className={styles.kdtBadge}>KDT</span> : "-"}
+        {bootcamp.isKdt ? <Badge variant="kdt">KDT</Badge> : "-"}
       </td>
 
       <td className={styles.status}>
-        <span
-          className={bootcamp.isEnded ? styles.endedBadge : styles.activeBadge}
-        >
-          {bootcamp.isEnded ? "Ended" : "Active"}
-        </span>
+        {bootcamp.isEnded ? (
+          <Badge variant="ended">Ended</Badge>
+        ) : (
+          <Badge variant="active">Active</Badge>
+        )}
       </td>
 
       {manage && (
