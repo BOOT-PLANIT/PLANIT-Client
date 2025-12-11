@@ -45,7 +45,7 @@ export const BootcampInfo = ({
 
         return `${startStr} - ${endStr}${sessionCount}`;
       })()
-    : "단위기간 정보 없음";
+    : "기간 정보 없음";
 
   return (
     <div className={styles.bootcampInfo}>
