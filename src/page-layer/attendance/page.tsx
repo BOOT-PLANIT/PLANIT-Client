@@ -21,11 +21,13 @@ import { LeaveIcon } from "@/shared/assets/icons";
 import { useToast } from "@/shared/lib";
 import { Card, Combobox } from "@/shared/ui";
 import type { AttendanceStatus } from "@/shared/ui/Calendar";
+import { getErrorMessage, isNetworkError } from "@/shared/utils";
 
 import CalendarSkeleton from "../../shared/ui/Calendar/CalendarSkeleton";
 
 import styles from "./Attendance.module.scss";
 import { generateMockBootcamps, generateMockSessions } from "./model/mockData";
+import { IconGuide, PeriodAllowanceCard, UnitPeriodStatsCard } from "./ui";
 import PeriodAllowanceCardSkeleton from "./ui/PeriodAllowanceCard/PeriodAllowanceCardSkeleton";
 import { UnitIcon } from "./ui/UnitIcon";
 import UnitPeriodStatsCardSkeleton from "./ui/UnitPeriodStatsCard/UnitPeriodStatsCardSkeleton";
@@ -47,31 +49,13 @@ const AttendanceSummaryCard = lazy(() =>
   })),
 );
 
-const UnitPeriodStatsCard = lazy(() =>
-  import("@/page-layer/attendance/ui").then((module) => ({
-    default: module.UnitPeriodStatsCard,
-  })),
-);
-
-const PeriodAllowanceCard = lazy(() =>
-  import("@/page-layer/attendance/ui").then((module) => ({
-    default: module.PeriodAllowanceCard,
-  })),
-);
-
 const CalendarComponent = lazy(() =>
   import("@/shared/ui").then((module) => ({
     default: module.Calendar,
   })),
 );
 
-const IconGuide = lazy(() =>
-  import("@/page-layer/attendance/ui").then((module) => ({
-    default: module.IconGuide,
-  })),
-);
-
-const EditAttendanceModal = lazy(() =>
+const EditAttendanceModalLazy = lazy(() =>
   import("@/page-layer/attendance/ui").then((module) => ({
     default: module.EditAttendanceModal,
   })),
@@ -101,21 +85,6 @@ const Attendance = () => {
     isError: isErrorBootcamps,
     error: errorBootcamps,
   } = useMyBootcamps();
-
-  const isNetworkError = (error: unknown): boolean => {
-    if (!error) return false;
-
-    const errorMessage =
-      (error as { message?: string })?.message ||
-      (error as Error)?.message ||
-      "";
-
-    return (
-      errorMessage === "Network Error" ||
-      errorMessage.includes("Network Error") ||
-      errorMessage.includes("network")
-    );
-  };
 
   // 네트워크 에러 발생 시 목업 데이터 사용
   const finalBootcampData = useMemo(() => {
@@ -167,26 +136,12 @@ const Attendance = () => {
   const isLoading = isLoadingBootcamps || isLoadingSessions;
   const hasData = finalBootcampData?.data && finalSessionsData?.data;
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (!error) return defaultMessage;
-
-    const errorMessage =
-      (error as { message?: string })?.message ||
-      (error as Error)?.message ||
-      "";
-
-    if (isNetworkError(error)) {
-      return ERROR_MESSAGES.NETWORK_ERROR;
-    }
-
-    return errorMessage || defaultMessage;
-  };
-
   useEffect(() => {
     if (isErrorBootcamps && errorBootcamps && !isNetworkError(errorBootcamps)) {
       const message = getErrorMessage(
         errorBootcamps,
         ERROR_MESSAGES.FETCH_BOOTCAMPS_FAILED,
+        ERROR_MESSAGES.NETWORK_ERROR,
       );
       toast.error(message);
     }
@@ -198,6 +153,7 @@ const Attendance = () => {
       const message = getErrorMessage(
         errorSessions,
         ERROR_MESSAGES.FETCH_SESSIONS_FAILED,
+        ERROR_MESSAGES.NETWORK_ERROR,
       );
       toast.error(message);
     }
@@ -433,24 +389,17 @@ const Attendance = () => {
         }
       }
     } catch (error) {
-      const errorMessage =
-        (error as { message?: string })?.message ||
-        (error as Error)?.message ||
-        "";
+      const defaultMessage =
+        status === undefined
+          ? ERROR_MESSAGES.DELETE_ATTENDANCE_FAILED
+          : ERROR_MESSAGES.SAVE_ATTENDANCE_FAILED;
 
-      if (
-        errorMessage === "Network Error" ||
-        errorMessage.includes("Network Error") ||
-        errorMessage.includes("network")
-      ) {
-        toast.error(ERROR_MESSAGES.NETWORK_ERROR);
-      } else {
-        toast.error(
-          status === undefined
-            ? ERROR_MESSAGES.DELETE_ATTENDANCE_FAILED
-            : ERROR_MESSAGES.SAVE_ATTENDANCE_FAILED,
-        );
-      }
+      const message = getErrorMessage(
+        error,
+        defaultMessage,
+        ERROR_MESSAGES.NETWORK_ERROR,
+      );
+      toast.error(message);
       return;
     }
 
@@ -503,19 +452,15 @@ const Attendance = () => {
                   values={attendanceSummaryValues}
                 />
               </Suspense>
-              <Suspense fallback={<UnitPeriodStatsCardSkeleton />}>
-                <UnitPeriodStatsCard
-                  totalAttendance={unitStats.totalAttendance}
-                  totalAbsent={unitStats.totalAbsent}
-                  totalUnrecorded={unitStats.totalUnrecorded}
-                />
-              </Suspense>
-              <Suspense fallback={<PeriodAllowanceCardSkeleton />}>
-                <PeriodAllowanceCard
-                  amount={periodAllowance.amount}
-                  dateRange={periodAllowance.dateRange}
-                />
-              </Suspense>
+              <UnitPeriodStatsCard
+                totalAttendance={unitStats.totalAttendance}
+                totalAbsent={unitStats.totalAbsent}
+                totalUnrecorded={unitStats.totalUnrecorded}
+              />
+              <PeriodAllowanceCard
+                amount={periodAllowance.amount}
+                dateRange={periodAllowance.dateRange}
+              />
             </>
           )}
         </div>
@@ -537,9 +482,7 @@ const Attendance = () => {
                   otherUnit: UNIT_COLORS.OTHER_UNIT,
                 }}
               />
-              <Suspense fallback={null}>
-                <IconGuide items={iconGuideItems} />
-              </Suspense>
+              <IconGuide items={iconGuideItems} />
             </Suspense>
           </Card>
         )}
@@ -547,7 +490,7 @@ const Attendance = () => {
 
       {isEditModalOpen && (
         <Suspense fallback={null}>
-          <EditAttendanceModal
+          <EditAttendanceModalLazy
             selectedDates={selectedDatesForEdit}
             onClose={() => setIsEditModalOpen(false)}
             onSave={handleSaveEdit}
