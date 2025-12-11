@@ -2,7 +2,7 @@ import type {
   AttendanceStatus as ApiAttendanceStatus,
   Bootcamp,
   Session,
-} from "@/feature/api/attendance";
+} from "@/feature/attendance/api";
 import type { DateData } from "@/shared/ui/Calendar";
 import type { AttendanceStatus as CalendarAttendanceStatus } from "@/shared/ui/Calendar";
 

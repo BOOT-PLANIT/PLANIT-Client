@@ -6,7 +6,7 @@ import {
   useMyBootcamps,
   useSessionsWithAttendance,
   useUpdateAttendance,
-} from "@/feature/api/attendance";
+} from "@/feature/attendance/api";
 import {
   AbsentIcon,
   AnnualIcon,

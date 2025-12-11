@@ -1,13 +1,4 @@
 /**
- * API 공통 응답 형식
- */
-export interface ApiResponse<T> {
-  code: number;
-  message: string;
-  data: T;
-}
-
-/**
  * 부트캠프 정보
  */
 export interface Bootcamp {

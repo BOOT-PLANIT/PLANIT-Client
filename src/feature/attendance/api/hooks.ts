@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { apiClient } from "../client";
+import type { ApiResponse } from "@/shared/api";
+import { apiClient } from "@/shared/api";
 
 import type {
-  ApiResponse,
   AttendanceRequest,
   Bootcamp,
   PeriodAttendanceResponse,
