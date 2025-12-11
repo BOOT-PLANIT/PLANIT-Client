@@ -5,7 +5,9 @@ import { useState, Suspense, lazy, useMemo, useEffect } from "react";
 import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
 import {
   CARD_TITLES,
+  ERROR_MESSAGES,
   ICON_GUIDE_LABELS,
+  SUCCESS_MESSAGES,
   UNIT_COLORS,
 } from "@/entities/attendance/model";
 import { AttendanceSummaryCardSkeleton } from "@/entities/attendance/ui/AttendanceSummaryCard";
@@ -174,7 +176,7 @@ const Attendance = () => {
       "";
 
     if (isNetworkError(error)) {
-      return "네트워크 연결에 실패했습니다.";
+      return ERROR_MESSAGES.NETWORK_ERROR;
     }
 
     return errorMessage || defaultMessage;
@@ -184,7 +186,7 @@ const Attendance = () => {
     if (isErrorBootcamps && errorBootcamps && !isNetworkError(errorBootcamps)) {
       const message = getErrorMessage(
         errorBootcamps,
-        "부트캠프 목록을 불러오는데 실패했습니다.",
+        ERROR_MESSAGES.FETCH_BOOTCAMPS_FAILED,
       );
       toast.error(message);
     }
@@ -195,7 +197,7 @@ const Attendance = () => {
     if (isErrorSessions && errorSessions && !isNetworkError(errorSessions)) {
       const message = getErrorMessage(
         errorSessions,
-        "세션 정보를 불러오는데 실패했습니다.",
+        ERROR_MESSAGES.FETCH_SESSIONS_FAILED,
       );
       toast.error(message);
     }
@@ -417,7 +419,7 @@ const Attendance = () => {
           bootcampId: selectedBootcampId,
           classDates,
         });
-        toast.success("출결 정보가 초기화되었습니다.");
+        toast.success(SUCCESS_MESSAGES.ATTENDANCE_DELETED);
       } else {
         const apiStatus = mapCalendarStatusToApiStatus(status);
         if (apiStatus) {
@@ -427,7 +429,7 @@ const Attendance = () => {
             status: apiStatus,
             classDates,
           });
-          toast.success("출결 정보가 저장되었습니다.");
+          toast.success(SUCCESS_MESSAGES.ATTENDANCE_SAVED);
         }
       }
     } catch (error) {
@@ -441,14 +443,12 @@ const Attendance = () => {
         errorMessage.includes("Network Error") ||
         errorMessage.includes("network")
       ) {
-        toast.error(
-          "네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.",
-        );
+        toast.error(ERROR_MESSAGES.NETWORK_ERROR);
       } else {
         toast.error(
           status === undefined
-            ? "출결 초기화에 실패했습니다. 다시 시도해주세요."
-            : "출결 저장에 실패했습니다. 다시 시도해주세요.",
+            ? ERROR_MESSAGES.DELETE_ATTENDANCE_FAILED
+            : ERROR_MESSAGES.SAVE_ATTENDANCE_FAILED,
         );
       }
       return;

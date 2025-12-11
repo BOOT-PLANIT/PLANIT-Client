@@ -9,6 +9,21 @@ export const CARD_TITLES = {
   PERIOD_ALLOWANCE: "기간 수당",
 } as const;
 
+// 에러 메시지
+export const ERROR_MESSAGES = {
+  NETWORK_ERROR: "네트워크 연결에 실패했습니다.",
+  FETCH_BOOTCAMPS_FAILED: "부트캠프 목록을 불러오는데 실패했습니다.",
+  FETCH_SESSIONS_FAILED: "세션 정보를 불러오는데 실패했습니다.",
+  SAVE_ATTENDANCE_FAILED: "출결 저장에 실패했습니다. 다시 시도해주세요.",
+  DELETE_ATTENDANCE_FAILED: "출결 초기화에 실패했습니다. 다시 시도해주세요.",
+} as const;
+
+// 성공 메시지
+export const SUCCESS_MESSAGES = {
+  ATTENDANCE_SAVED: "출결 정보가 저장되었습니다.",
+  ATTENDANCE_DELETED: "출결 정보가 초기화되었습니다.",
+} as const;
+
 // 출석 상태 라벨
 export const ATTENDANCE_STATUS_LABELS = {
   present: "출석",
