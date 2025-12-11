@@ -12,7 +12,7 @@ import type {
 } from "./types";
 
 /**
- * 내 부트캠프 목록 조회 (enrollments 사용)
+ * 내 부트캠프 목록 조회
  */
 export const useMyBootcamps = () => {
   return useQuery<ApiResponse<Bootcamp[]>>({
