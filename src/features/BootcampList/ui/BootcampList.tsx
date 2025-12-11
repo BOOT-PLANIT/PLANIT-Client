@@ -111,7 +111,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
         onChange={(e) => handleSearchChange(e.target.value)}
       />
 
-      <table className={styles.table}>
+      <table className={`${styles.table} ${styles.headerTable}`}>
         <thead>
           <tr>
             <th>훈련기관</th>
@@ -129,7 +129,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
           <tbody>
             {isLoading && (
               <tr>
-                <td colSpan={manage ? 8 : 6}>
+                <td className={styles.spinner} colSpan={manage ? 8 : 6}>
                   <Spinner />
                 </td>
               </tr>
@@ -147,7 +147,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
               />
             ))}
             {/* 옵저버 */}
-            <tr id="scroll-anchor" className={styles.scrollAnchor}>
+            <tr id="scroll-anchor" className={styles.spinner}>
               <td colSpan={manage ? 8 : 6}>
                 {isFetchingNextPage && <Spinner />}
               </td>

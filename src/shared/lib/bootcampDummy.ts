@@ -42,6 +42,8 @@ const organizers = [
 
 // 랜덤 부트캠프 이름
 const campNames = [
+  "『ITQ 쪽집게 강의』 ITQ OA Master(한글+파워포인트+엑셀) 자격증 취득 과정",
+  "ChatGPT 마스터 클래스 : 남들보다 100배 더 잘 쓰기 위한 활용법 A to Z",
   "웹 개발 기초 부트캠프",
   "KDT 프론트엔드 심화 과정",
   "백엔드 스프링 부트 실전",
