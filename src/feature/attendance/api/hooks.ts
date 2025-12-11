@@ -6,67 +6,9 @@ import { apiClient } from "@/shared/api";
 import type {
   AttendanceDeleteRequest,
   AttendanceRequest,
-  Bootcamp,
   PeriodAttendanceResponse,
-  Session,
   TotalAttendanceResponse,
 } from "./types";
-
-/**
- * 내 부트캠프 목록 조회
- */
-export const useMyBootcamps = () => {
-  return useQuery<ApiResponse<Bootcamp[]>>({
-    queryKey: ["enrollments"],
-    queryFn: async () => {
-      const response =
-        await apiClient.get<ApiResponse<Bootcamp[]>>("/enrollments");
-      return response.data;
-    },
-  });
-};
-
-/**
- * 부트캠프 단건 조회
- */
-export const useBootcamp = (id: number) => {
-  return useQuery<ApiResponse<Bootcamp>>({
-    queryKey: ["bootcamps", id],
-    queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<Bootcamp>>(
-        `/bootcamps/${id}`,
-      );
-      return response.data;
-    },
-    enabled: !!id,
-  });
-};
-
-/**
- * 세션과 출결 상태 조회
- */
-export const useSessionsWithAttendance = (
-  bootcampId: number | null,
-  userId: number | null,
-) => {
-  return useQuery<ApiResponse<Session[]>>({
-    queryKey: [
-      "sessions",
-      "bootcamp",
-      bootcampId,
-      "user",
-      userId,
-      "attendance",
-    ],
-    queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<Session[]>>(
-        `/sessions/bootcamp/${bootcampId}/user/${userId}/attendance`,
-      );
-      return response.data;
-    },
-    enabled: !!bootcampId && !!userId,
-  });
-};
 
 /**
  * 출결 등록 및 수정

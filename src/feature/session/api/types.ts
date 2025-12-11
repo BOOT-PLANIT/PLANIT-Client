@@ -1,0 +1,28 @@
+/**
+ * 출결 상태
+ */
+export type AttendanceStatus =
+  | "present"
+  | "absent"
+  | "late"
+  | "left_early"
+  | "annual"
+  | "leave"
+  | "no_session"
+  | "no_attendance";
+
+/**
+ * 세션 정보
+ */
+export interface Session {
+  id: number;
+  bootcampId: number;
+  classDate: string;
+  unitNo: number;
+  periodStartDate: string;
+  periodEndDate: string;
+  attendance?: {
+    status: AttendanceStatus;
+    userId: number;
+  };
+}
