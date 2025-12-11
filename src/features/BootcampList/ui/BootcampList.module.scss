@@ -1,8 +1,13 @@
 .container {
   max-width: 1000px;
-  width: fit-content;
+  width: 100%;
   margin: 0 auto;
-  margin-top: 24px;
+  margin-top: var(--spacing-8);
+  overflow-x: auto;
+}
+
+.inputLayout {
+  margin-top: var(--spacing-10);
 }
 
 .tableLayout {
@@ -16,10 +21,6 @@
   display: none;
 }
 
-.headerTable {
-  margin-top: 5px;
-}
-
 .table {
   width: 100%;
   table-layout: fixed;
@@ -31,7 +32,7 @@
 .table thead th {
   text-align: left;
   font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   padding: var(--spacing-16) var(--spacing-0) var(--spacing-16) var(--spacing-4);
   color: var(--foreground);
   position: sticky;
