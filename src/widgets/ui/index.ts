@@ -1,2 +1,4 @@
+export { BarChartCard } from "./BarChartCard";
 export { DoughnutChartCard } from "./DoughnutChartCard";
-export { Header, NavItem } from "./Header";
+export { Header } from "./Header";
+export { NavItem } from "./Header";
