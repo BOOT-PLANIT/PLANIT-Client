@@ -13,6 +13,7 @@ import {
   useMyBootcamps,
   useSessionsWithAttendance,
   useUpdateAttendance,
+  useDeleteAttendance,
 } from "@/feature/attendance/api";
 import { LeaveIcon } from "@/shared/assets/icons";
 import { useToast } from "@/shared/lib";
@@ -159,6 +160,7 @@ const Attendance = () => {
   }, [finalSessionsData]);
 
   const updateAttendanceMutation = useUpdateAttendance();
+  const deleteAttendanceMutation = useDeleteAttendance();
 
   const isLoading = isLoadingBootcamps || isLoadingSessions;
   const hasData = finalBootcampData?.data && finalSessionsData?.data;
@@ -401,43 +403,55 @@ const Attendance = () => {
   ) => {
     if (!selectedBootcampId) return;
 
-    const apiStatus = mapCalendarStatusToApiStatus(status);
+    const classDates = dates.map((date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    });
 
-    if (apiStatus) {
-      const classDates = dates.map((date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-      });
-
-      try {
-        await updateAttendanceMutation.mutateAsync({
+    try {
+      if (status === undefined) {
+        await deleteAttendanceMutation.mutateAsync({
           userId,
           bootcampId: selectedBootcampId,
-          status: apiStatus,
           classDates,
         });
-        toast.success("출결 정보가 저장되었습니다.");
-      } catch (error) {
-        const errorMessage =
-          (error as { message?: string })?.message ||
-          (error as Error)?.message ||
-          "";
-
-        if (
-          errorMessage === "Network Error" ||
-          errorMessage.includes("Network Error") ||
-          errorMessage.includes("network")
-        ) {
-          toast.error(
-            "네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.",
-          );
-        } else {
-          toast.error("출결 저장에 실패했습니다. 다시 시도해주세요.");
+        toast.success("출결 정보가 초기화되었습니다.");
+      } else {
+        const apiStatus = mapCalendarStatusToApiStatus(status);
+        if (apiStatus) {
+          await updateAttendanceMutation.mutateAsync({
+            userId,
+            bootcampId: selectedBootcampId,
+            status: apiStatus,
+            classDates,
+          });
+          toast.success("출결 정보가 저장되었습니다.");
         }
-        return;
       }
+    } catch (error) {
+      const errorMessage =
+        (error as { message?: string })?.message ||
+        (error as Error)?.message ||
+        "";
+
+      if (
+        errorMessage === "Network Error" ||
+        errorMessage.includes("Network Error") ||
+        errorMessage.includes("network")
+      ) {
+        toast.error(
+          "네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.",
+        );
+      } else {
+        toast.error(
+          status === undefined
+            ? "출결 초기화에 실패했습니다. 다시 시도해주세요."
+            : "출결 저장에 실패했습니다. 다시 시도해주세요.",
+        );
+      }
+      return;
     }
 
     setSelectedDates([]);

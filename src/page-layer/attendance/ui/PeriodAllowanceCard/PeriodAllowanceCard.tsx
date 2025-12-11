@@ -22,7 +22,7 @@ const PeriodAllowanceCard = ({
     <Card variant="solid" title={CARD_TITLES.PERIOD_ALLOWANCE}>
       <div className={styles.container}>
         <div className={styles.amount}>{formattedAmount}</div>
-        <div className={styles.dateRange}>~ {dateRange}</div>
+        <div className={styles.dateRange}>{dateRange}</div>
       </div>
     </Card>
   );

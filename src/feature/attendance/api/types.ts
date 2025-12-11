@@ -69,6 +69,15 @@ export interface AttendanceRequest {
 }
 
 /**
+ * 출결 삭제 요청
+ */
+export interface AttendanceDeleteRequest {
+  userId: number;
+  bootcampId: number;
+  classDates: string[];
+}
+
+/**
  * 단위 기간 출결 조회 응답
  */
 export interface PeriodAttendanceResponse {

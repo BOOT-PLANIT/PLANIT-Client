@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/shared/api";
 import { apiClient } from "@/shared/api";
 
 import type {
+  AttendanceDeleteRequest,
   AttendanceRequest,
   Bootcamp,
   PeriodAttendanceResponse,
@@ -78,6 +79,41 @@ export const useUpdateAttendance = () => {
       const response = await apiClient.post<ApiResponse<string>>(
         "/attendance",
         data,
+      );
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      // 관련 쿼리 무효화
+      queryClient.invalidateQueries({
+        queryKey: [
+          "sessions",
+          "bootcamp",
+          variables.bootcampId,
+          "user",
+          variables.userId,
+        ],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["attendance", "total", variables.userId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["attendance", "period", variables.userId],
+      });
+    },
+  });
+};
+
+/**
+ * 출결 삭제
+ */
+export const useDeleteAttendance = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: AttendanceDeleteRequest) => {
+      const response = await apiClient.delete<ApiResponse<string>>(
+        "/attendance",
+        { data },
       );
       return response.data;
     },
