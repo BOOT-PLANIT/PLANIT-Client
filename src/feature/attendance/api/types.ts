@@ -61,3 +61,38 @@ export interface TotalAttendanceResponse {
   totalNoAttendance: number;
   attendanceRate: number;
 }
+
+/**
+ * 일단위 출결 조회 응답
+ */
+export interface DailyAttendanceResponse {
+  userId: number;
+  bootcampId: number;
+  date: string;
+  status: AttendanceStatus;
+}
+
+/**
+ * 완료된 단위 기간 출결 리스트 조회 응답
+ */
+export type PeriodAttendanceListResponse = PeriodAttendanceResponse[];
+
+/**
+ * 월차 잔여/누적 사용량 조회 응답
+ */
+export interface AttendanceBalanceResponse {
+  userId: number;
+  bootcampId: number;
+  usedLeave: number;
+  receivedLeave: number;
+  remainingLeave: number;
+}
+
+/**
+ * 휴가 목록 조회 응답
+ */
+export interface LeaveListResponse {
+  date: string;
+  status: AttendanceStatus;
+  userId: number;
+}

@@ -16,7 +16,7 @@ import {
   useUpdateAttendance,
   useDeleteAttendance,
 } from "@/feature/attendance/api";
-import { useMyBootcamps } from "@/feature/bootcamp/api";
+import { useMyBootcamps } from "@/feature/enrollment/api";
 import { useSessionsWithAttendance } from "@/feature/session/api";
 import { useToast } from "@/shared/lib";
 import { Card } from "@/shared/ui";
