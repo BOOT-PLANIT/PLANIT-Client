@@ -69,10 +69,8 @@ const EditAttendanceModal = ({
   };
 
   return (
-    <Modal onClose={onClose}>
+    <Modal onClose={onClose} title="출결 수정">
       <div className={styles.content}>
-        <h2 className={styles.title}>출결 수정</h2>
-
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>
             {selectedDates.length}개의 날짜 선택됨

@@ -23,7 +23,7 @@ export const Default: Story = {
           <button onClick={() => setOpen(true)}>Open Modal</button>
 
           {open && (
-            <Modal onClose={() => setOpen(false)}>
+            <Modal onClose={() => setOpen(false)} title="타이틀입니다">
               <div>
                 <h2>모달 내용</h2>
                 <p>Storybook에서도 정상적으로 동작합니다.</p>
