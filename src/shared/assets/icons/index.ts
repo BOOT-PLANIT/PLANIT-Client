@@ -18,3 +18,4 @@ export { default as EditIcon } from "./EditIcon";
 export { default as StudyIcon } from "./StudyIcon";
 export { default as CalenderIcon } from "./CalenderIcon";
 export { default as AddIcon } from "./AddIcon";
+export { default as InstituteIcon } from "./InstituteIcon";

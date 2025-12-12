@@ -44,7 +44,7 @@ const dummyBootcamps: Bootcamp[] = [
     isKdt: false,
     startedAt: "2026-01-20",
     endedAt: "2026-01-25",
-    isEnded: true,
+    isEnded: false,
     classDates: [
       "2026-01-20",
       "2026-01-21",

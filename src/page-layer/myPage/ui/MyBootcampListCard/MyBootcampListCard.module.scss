@@ -1,26 +1,16 @@
 .container {
   width: 100%;
-  min-height: 250px;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  gap: var(--spacing-40);
+  gap: var(--spacing-10);
 }
 
-.topRow {
+.bottomRow {
   display: flex;
   width: 100%;
-  justify-content: space-between;
-  align-items: start;
-
-  .title {
-    font-family: var(--font-family);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-    color: var(--foreground);
-    margin: 0;
-  }
+  justify-content: end;
 
   .registButton {
     max-width: 170px;
@@ -33,6 +23,7 @@
   flex-direction: column;
   justify-content: start;
   align-items: center;
+  gap: var(--spacing-12);
 }
 
 /////// 아이템 시작
@@ -43,6 +34,31 @@
   padding: var(--spacing-16);
   gap: var(--spacing-12);
   display: flex;
+  justify-content: center;
+}
+
+.noneBootcamp {
+  width: 100%;
+  border-radius: var(--radius-8);
+  background-color: var(--background-tertiary-darker);
+  padding: var(--spacing-16);
+  gap: var(--spacing-8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .noneTitle {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--foreground);
+  }
+
+  .noneDescription {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    color: var(--foreground-lighter);
+  }
 }
 
 .icon {
@@ -56,6 +72,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (width <= 450px) {
+    display: none;
+  }
 }
 
 .infoLayout {
@@ -69,6 +89,7 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
+  gap: var(--spacing-8);
 
   .topRowLeft {
     .name {
@@ -102,22 +123,26 @@
       }
     }
   }
+}
 
-  .organizer {
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-medium);
-    color: var(--foreground);
-    margin: 0;
-  }
+.organizer {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+  display: flex;
+  height: 18px;
+  justify-content: start;
+  align-items: center;
+  gap: var(--spacing-5);
+}
 
-  .date {
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-medium);
-    color: var(--foreground);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 18px;
-    line-height: 1;
-  }
+.date {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+  display: flex;
+  height: 18px;
+  justify-content: start;
+  align-items: center;
+  gap: var(--spacing-5);
 }
