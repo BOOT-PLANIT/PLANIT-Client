@@ -9,13 +9,19 @@ import { useSessionsWithAttendance } from "@/feature/session/api";
 import type { DateData } from "@/shared/ui/Calendar";
 import { isNetworkError } from "@/shared/utils";
 
-import { generateMockBootcamps, generateMockSessions } from "../model/mockData";
-import type { BootcampOption, UnitPeriod } from "../types";
+import {
+  generateMockBootcamps,
+  generateMockSessions,
+} from "../../../page-layer/attendance/model/mockData";
+import type {
+  BootcampOption,
+  UnitPeriod,
+} from "../../../page-layer/attendance/types";
 import {
   extractUnitPeriods,
   transformBootcampsToOptions,
   transformSessionsToDateData,
-} from "../utils/apiTransform";
+} from "../../../page-layer/attendance/utils/apiTransform";
 
 interface UseAttendanceDataOptions {
   userId: number;
