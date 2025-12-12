@@ -20,6 +20,10 @@
   grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-24);
   margin-bottom: var(--spacing-32);
+
+  &[data-columns="2"] {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (width <= 1024px) {

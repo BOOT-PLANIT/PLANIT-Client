@@ -333,7 +333,10 @@ const Attendance = () => {
           </div>
         ) : (
           <>
-            <div className={styles.summaryCards}>
+            <div
+              className={styles.summaryCards}
+              data-columns={statsMode === "unit" ? 3 : 2}
+            >
               <Suspense
                 fallback={
                   <AttendanceSummaryCardSkeleton
