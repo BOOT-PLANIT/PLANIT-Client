@@ -27,7 +27,7 @@ const Onboarding = () => {
         </span>
       </div>
       <div className={styles.card}>
-        <Card variant="solid" title="교육과정 선택">
+        <Card title="교육과정 선택">
           <span className={styles.description}>
             등록하고 싶은 부트캠프 프로그램을 선택하세요!
           </span>
