@@ -19,24 +19,28 @@ export const useAttendanceErrors = (
   const toast = useToast();
 
   useEffect(() => {
-    if (isErrorBootcamps && errorBootcamps) {
-      const message = getErrorMessage(
-        errorBootcamps,
-        ERROR_MESSAGES.FETCH_BOOTCAMPS_FAILED,
-        ERROR_MESSAGES.NETWORK_ERROR,
-      );
-      toast.error(message);
-    }
-  }, [isErrorBootcamps, errorBootcamps, toast]);
+    const errorConfigs = [
+      {
+        isError: isErrorBootcamps,
+        error: errorBootcamps,
+        defaultMessage: ERROR_MESSAGES.FETCH_BOOTCAMPS_FAILED,
+      },
+      {
+        isError: isErrorSessions,
+        error: errorSessions,
+        defaultMessage: ERROR_MESSAGES.FETCH_SESSIONS_FAILED,
+      },
+    ];
 
-  useEffect(() => {
-    if (isErrorSessions && errorSessions) {
-      const message = getErrorMessage(
-        errorSessions,
-        ERROR_MESSAGES.FETCH_SESSIONS_FAILED,
-        ERROR_MESSAGES.NETWORK_ERROR,
-      );
-      toast.error(message);
-    }
-  }, [isErrorSessions, errorSessions, toast]);
+    errorConfigs.forEach(({ isError, error, defaultMessage }) => {
+      if (isError && error) {
+        const message = getErrorMessage(
+          error,
+          defaultMessage,
+          ERROR_MESSAGES.NETWORK_ERROR,
+        );
+        toast.error(message);
+      }
+    });
+  }, [isErrorBootcamps, errorBootcamps, isErrorSessions, errorSessions, toast]);
 };
