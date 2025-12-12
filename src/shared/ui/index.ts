@@ -8,5 +8,7 @@ export { Calendar } from "./Calendar";
 export { Modal } from "./Modal";
 export { Skeleton } from "./Skeleton";
 export { OptionButton } from "./OptionButton";
+export { Toggle } from "./Toggle";
+export type { ToggleOption } from "./Toggle";
 export { DoughnutChart } from "./Chart";
 export { HorizontalPercentageBarChart } from "./Chart";

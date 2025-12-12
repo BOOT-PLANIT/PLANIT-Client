@@ -21,6 +21,8 @@ import { AttendanceSummaryCardSkeleton } from "@/entities/attendance/ui/Attendan
 import { BootcampInfo } from "@/entities/bootcamp/ui/BootcampInfo";
 import { useToast } from "@/shared/lib";
 import { Card } from "@/shared/ui";
+import { Toggle } from "@/shared/ui";
+import type { ToggleOption } from "@/shared/ui";
 import { CalendarSkeleton, type AttendanceStatus } from "@/shared/ui/Calendar";
 import { getErrorMessage } from "@/shared/utils";
 
@@ -94,8 +96,6 @@ const ICON_GUIDE_ITEMS: Array<{
   },
 ];
 
-type StatsMode = "unit" | "custom";
-
 const Attendance = () => {
   // TODO: 인증에서 userId 가져오기
   const userId = 1;
@@ -106,11 +106,19 @@ const Attendance = () => {
   const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
-  const [statsMode, setStatsMode] = useState<StatsMode>("unit");
+  const [statsMode, setStatsMode] = useState<"unit" | "custom">("unit");
   const [customDateRange, setCustomDateRange] = useState<{
     startDate: Date;
     endDate: Date;
   } | null>(null);
+
+  const statsModeOptions: ToggleOption<"unit" | "custom">[] = useMemo(
+    () => [
+      { value: "unit", label: "단위 기간" },
+      { value: "custom", label: "기간 선택" },
+    ],
+    [],
+  );
 
   const {
     bootcampOptions,
@@ -184,8 +192,8 @@ const Attendance = () => {
     setIsEditModalOpen(false);
   }, []);
 
-  const handleStatsModeChange = useCallback((mode: string) => {
-    setStatsMode(mode as StatsMode);
+  const handleStatsModeChange = useCallback((mode: "unit" | "custom") => {
+    setStatsMode(mode);
     if (mode === "unit") {
       setSelectedDates([]);
       setCustomDateRange(null);
@@ -283,26 +291,11 @@ const Attendance = () => {
             dateRange={displayDateRange}
           />
           {!shouldShowSkeleton && (
-            <div className={styles.statsModeToggle}>
-              <button
-                type="button"
-                className={`${styles.statsModeButton} ${
-                  statsMode === "unit" ? styles.active : ""
-                }`}
-                onClick={() => handleStatsModeChange("unit")}
-              >
-                단위 기간
-              </button>
-              <button
-                type="button"
-                className={`${styles.statsModeButton} ${
-                  statsMode === "custom" ? styles.active : ""
-                }`}
-                onClick={() => handleStatsModeChange("custom")}
-              >
-                기간 선택
-              </button>
-            </div>
+            <Toggle
+              options={statsModeOptions}
+              value={statsMode}
+              onChange={handleStatsModeChange}
+            />
           )}
         </div>
 
