@@ -9,11 +9,11 @@ import type { User } from "./types";
  * 내 정보 조회
  */
 export const useMe = () => {
-  return useQuery<ApiResponse<User>>({
+  return useQuery<User>({
     queryKey: ["users", "me"],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<User>>("/users/me");
-      return response.data;
+      return (response as unknown as ApiResponse<User>).data;
     },
   });
 };
@@ -27,7 +27,7 @@ export const useDeleteMe = () => {
   return useMutation({
     mutationFn: async () => {
       const response = await apiClient.delete<ApiResponse<null>>("/users/me");
-      return response.data;
+      return (response as unknown as ApiResponse<null>).data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

@@ -33,6 +33,7 @@ export const generateMockBootcamps = (): ApiResponse<Bootcamp[]> => {
         isKdt: true,
         startDate: formatDate(startDate),
         endDate: formatDate(endDate),
+        isEnded: false,
       },
     ],
   };

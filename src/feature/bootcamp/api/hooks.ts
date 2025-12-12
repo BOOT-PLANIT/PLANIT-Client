@@ -17,14 +17,14 @@ import type {
  * 부트캠프 전체 목록 조회 (요약)
  */
 export const useBootcampSummary = () => {
-  return useQuery<ApiResponse<BootcampSummaryResponse>>({
+  return useQuery<BootcampSummaryResponse>({
     queryKey: ["bootcamps", "summary"],
     queryFn: async () => {
       const response =
         await apiClient.get<ApiResponse<BootcampSummaryResponse>>(
           "/bootcamps/summary",
         );
-      return response.data;
+      return (response as unknown as ApiResponse<BootcampSummaryResponse>).data;
     },
   });
 };
@@ -33,14 +33,14 @@ export const useBootcampSummary = () => {
  * 부트캠프 목록 조회 (페이지네이션)
  */
 export const useBootcamps = (params?: BootcampListParams) => {
-  return useQuery<ApiResponse<Bootcamp[]>>({
+  return useQuery<Bootcamp[]>({
     queryKey: ["bootcamps", params],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<Bootcamp[]>>(
         "/bootcamps",
         { params },
       );
-      return response.data;
+      return (response as unknown as ApiResponse<Bootcamp[]>).data;
     },
   });
 };
@@ -49,14 +49,14 @@ export const useBootcamps = (params?: BootcampListParams) => {
  * 부트캠프 검색
  */
 export const useSearchBootcamps = (params: BootcampSearchParams) => {
-  return useQuery<ApiResponse<Bootcamp[]>>({
+  return useQuery<Bootcamp[]>({
     queryKey: ["bootcamps", "search", params],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<Bootcamp[]>>(
         "/bootcamps/search",
         { params },
       );
-      return response.data;
+      return (response as unknown as ApiResponse<Bootcamp[]>).data;
     },
     enabled: !!params.keyword,
   });
@@ -66,13 +66,13 @@ export const useSearchBootcamps = (params: BootcampSearchParams) => {
  * 부트캠프 단건 조회
  */
 export const useBootcamp = (id: number) => {
-  return useQuery<ApiResponse<Bootcamp>>({
+  return useQuery<Bootcamp>({
     queryKey: ["bootcamps", id],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<Bootcamp>>(
         `/bootcamps/${id}`,
       );
-      return response.data;
+      return (response as unknown as ApiResponse<Bootcamp>).data;
     },
     enabled: !!id,
   });
@@ -88,7 +88,7 @@ export const useParseBootcampText = () => {
         "/bootcamps/parse",
         data,
       );
-      return response.data;
+      return (response as unknown as ApiResponse<BootcampParseResponse>).data;
     },
   });
 };
@@ -105,7 +105,7 @@ export const useCreateBootcamp = () => {
         "/bootcamps",
         data,
       );
-      return response.data;
+      return (response as unknown as ApiResponse<Bootcamp>).data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -127,7 +127,7 @@ export const useUpdateBootcamp = () => {
         `/bootcamps/${id}`,
         data,
       );
-      return response.data;
+      return (response as unknown as ApiResponse<Bootcamp>).data;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
@@ -151,7 +151,7 @@ export const useDeleteBootcamp = () => {
       const response = await apiClient.delete<ApiResponse<null>>(
         `/bootcamps/${id}`,
       );
-      return response.data;
+      return (response as unknown as ApiResponse<null>).data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

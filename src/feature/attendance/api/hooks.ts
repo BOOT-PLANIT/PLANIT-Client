@@ -27,7 +27,7 @@ export const useUpdateAttendance = () => {
         "/attendance",
         data,
       );
-      return response.data;
+      return (response as unknown as ApiResponse<string>).data;
     },
     onMutate: async (variables) => {
       const queryKey = [
@@ -41,28 +41,24 @@ export const useUpdateAttendance = () => {
 
       await queryClient.cancelQueries({ queryKey });
 
-      const previousData =
-        queryClient.getQueryData<ApiResponse<Session[]>>(queryKey);
+      const previousData = queryClient.getQueryData<Session[]>(queryKey);
 
-      if (previousData?.data) {
-        queryClient.setQueryData<ApiResponse<Session[]>>(queryKey, (old) => {
-          if (!old?.data) return old;
+      if (previousData) {
+        queryClient.setQueryData<Session[]>(queryKey, (old) => {
+          if (!old) return old;
 
-          return {
-            ...old,
-            data: old.data.map((session) => {
-              if (variables.classDates.includes(session.classDate)) {
-                return {
-                  ...session,
-                  attendance: {
-                    status: variables.status,
-                    userId: variables.userId,
-                  },
-                };
-              }
-              return session;
-            }),
-          };
+          return old.map((session) => {
+            if (variables.classDates.includes(session.classDate)) {
+              return {
+                ...session,
+                attendance: {
+                  status: variables.status,
+                  userId: variables.userId,
+                },
+              };
+            }
+            return session;
+          });
         });
       }
 
@@ -78,7 +74,7 @@ export const useUpdateAttendance = () => {
           variables.userId,
           "attendance",
         ];
-        queryClient.setQueryData(queryKey, context.previousData);
+        queryClient.setQueryData<Session[]>(queryKey, context.previousData);
       }
     },
     onSettled: (_, __, variables) => {
@@ -104,7 +100,7 @@ export const useDeleteAttendance = () => {
         "/attendance",
         { data },
       );
-      return response.data;
+      return (response as unknown as ApiResponse<string>).data;
     },
     onMutate: async (variables) => {
       const queryKey = [
@@ -118,24 +114,20 @@ export const useDeleteAttendance = () => {
 
       await queryClient.cancelQueries({ queryKey });
 
-      const previousData =
-        queryClient.getQueryData<ApiResponse<Session[]>>(queryKey);
+      const previousData = queryClient.getQueryData<Session[]>(queryKey);
 
-      if (previousData?.data) {
-        queryClient.setQueryData<ApiResponse<Session[]>>(queryKey, (old) => {
-          if (!old?.data) return old;
+      if (previousData) {
+        queryClient.setQueryData<Session[]>(queryKey, (old) => {
+          if (!old) return old;
 
-          return {
-            ...old,
-            data: old.data.map((session) => {
-              if (variables.classDates.includes(session.classDate)) {
-                const { attendance: _attendance, ...sessionWithoutAttendance } =
-                  session;
-                return sessionWithoutAttendance;
-              }
-              return session;
-            }),
-          };
+          return old.map((session) => {
+            if (variables.classDates.includes(session.classDate)) {
+              const { attendance: _attendance, ...sessionWithoutAttendance } =
+                session;
+              return sessionWithoutAttendance;
+            }
+            return session;
+          });
         });
       }
 
@@ -151,7 +143,7 @@ export const useDeleteAttendance = () => {
           variables.userId,
           "attendance",
         ];
-        queryClient.setQueryData(queryKey, context.previousData);
+        queryClient.setQueryData<Session[]>(queryKey, context.previousData);
       }
     },
     onSettled: (_, __, variables) => {
@@ -173,7 +165,7 @@ export const usePeriodAttendance = (
   bootcampId: number | null,
   unitNo: number | null,
 ) => {
-  return useQuery<ApiResponse<PeriodAttendanceResponse>>({
+  return useQuery<PeriodAttendanceResponse>({
     queryKey: ["attendance", "period", userId, bootcampId, unitNo],
     queryFn: async () => {
       const response = await apiClient.get<
@@ -184,7 +176,8 @@ export const usePeriodAttendance = (
           unitNo,
         },
       });
-      return response.data;
+      return (response as unknown as ApiResponse<PeriodAttendanceResponse>)
+        .data;
     },
     enabled: !!userId && !!bootcampId && !!unitNo,
   });
@@ -198,7 +191,7 @@ export const useDailyAttendance = (
   date: string | null,
   bootcampId: number | null,
 ) => {
-  return useQuery<ApiResponse<DailyAttendanceResponse>>({
+  return useQuery<DailyAttendanceResponse>({
     queryKey: ["attendance", userId, date, bootcampId],
     queryFn: async () => {
       const response = await apiClient.get<
@@ -209,7 +202,7 @@ export const useDailyAttendance = (
           bootcampId,
         },
       });
-      return response.data;
+      return (response as unknown as ApiResponse<DailyAttendanceResponse>).data;
     },
     enabled: !!userId && !!date && !!bootcampId,
   });
@@ -222,7 +215,7 @@ export const useTotalAttendance = (
   userId: number | null,
   bootcampId: number | null,
 ) => {
-  return useQuery<ApiResponse<TotalAttendanceResponse>>({
+  return useQuery<TotalAttendanceResponse>({
     queryKey: ["attendance", "total", userId, bootcampId],
     queryFn: async () => {
       const response = await apiClient.get<
@@ -232,7 +225,7 @@ export const useTotalAttendance = (
           bootcampId,
         },
       });
-      return response.data;
+      return (response as unknown as ApiResponse<TotalAttendanceResponse>).data;
     },
     enabled: !!userId && !!bootcampId,
   });
@@ -245,7 +238,7 @@ export const usePeriodAttendanceList = (
   userId: number | null,
   bootcampId: number | null,
 ) => {
-  return useQuery<ApiResponse<PeriodAttendanceListResponse>>({
+  return useQuery<PeriodAttendanceListResponse>({
     queryKey: ["attendance", "periodList", userId, bootcampId],
     queryFn: async () => {
       const response = await apiClient.get<
@@ -255,7 +248,8 @@ export const usePeriodAttendanceList = (
           bootcampId,
         },
       });
-      return response.data;
+      return (response as unknown as ApiResponse<PeriodAttendanceListResponse>)
+        .data;
     },
     enabled: !!userId && !!bootcampId,
   });
@@ -268,7 +262,7 @@ export const useAttendanceBalance = (
   userId: number | null,
   bootcampId: number | null,
 ) => {
-  return useQuery<ApiResponse<AttendanceBalanceResponse>>({
+  return useQuery<AttendanceBalanceResponse>({
     queryKey: ["attendance", "balance", userId, bootcampId],
     queryFn: async () => {
       const response = await apiClient.get<
@@ -278,7 +272,8 @@ export const useAttendanceBalance = (
           bootcampId,
         },
       });
-      return response.data;
+      return (response as unknown as ApiResponse<AttendanceBalanceResponse>)
+        .data;
     },
     enabled: !!userId && !!bootcampId,
   });
@@ -291,7 +286,7 @@ export const useLeaveList = (
   userId: number | null,
   bootcampId: number | null,
 ) => {
-  return useQuery<ApiResponse<LeaveListResponse[]>>({
+  return useQuery<LeaveListResponse[]>({
     queryKey: ["attendance", "leave", userId, bootcampId],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<LeaveListResponse[]>>(
@@ -302,7 +297,7 @@ export const useLeaveList = (
           },
         },
       );
-      return response.data;
+      return (response as unknown as ApiResponse<LeaveListResponse[]>).data;
     },
     enabled: !!userId && !!bootcampId,
   });

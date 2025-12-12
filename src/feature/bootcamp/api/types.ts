@@ -8,6 +8,7 @@ export interface Bootcamp {
   isKdt: boolean;
   startDate: string;
   endDate: string;
+  isEnded: boolean;
 }
 
 /**

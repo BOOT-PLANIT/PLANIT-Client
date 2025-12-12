@@ -13,11 +13,11 @@ import type {
  * 세션 전체 목록 조회
  */
 export const useSessions = () => {
-  return useQuery<ApiResponse<Session[]>>({
+  return useQuery<Session[]>({
     queryKey: ["sessions"],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<Session[]>>("/sessions");
-      return response.data;
+      return (response as unknown as ApiResponse<Session[]>).data;
     },
   });
 };
@@ -26,13 +26,13 @@ export const useSessions = () => {
  * 부트캠프별 세션 목록 조회
  */
 export const useSessionsByBootcamp = (bootcampId: number | null) => {
-  return useQuery<ApiResponse<Session[]>>({
+  return useQuery<Session[]>({
     queryKey: ["sessions", "bootcamp", bootcampId],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<Session[]>>(
         `/sessions/bootcamp/${bootcampId}`,
       );
-      return response.data;
+      return (response as unknown as ApiResponse<Session[]>).data;
     },
     enabled: !!bootcampId,
   });
@@ -42,13 +42,13 @@ export const useSessionsByBootcamp = (bootcampId: number | null) => {
  * 세션 단건 조회
  */
 export const useSession = (id: number | null) => {
-  return useQuery<ApiResponse<Session>>({
+  return useQuery<Session>({
     queryKey: ["sessions", id],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<Session>>(
         `/sessions/${id}`,
       );
-      return response.data;
+      return (response as unknown as ApiResponse<Session>).data;
     },
     enabled: !!id,
   });
@@ -66,7 +66,7 @@ export const useCreateSessions = () => {
         "/sessions",
         data,
       );
-      return response.data;
+      return (response as unknown as ApiResponse<Session[]>).data;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
@@ -90,7 +90,7 @@ export const useDeleteSessions = () => {
       const response = await apiClient.delete<ApiResponse<null>>("/sessions", {
         data,
       });
-      return response.data;
+      return (response as unknown as ApiResponse<null>).data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -107,7 +107,7 @@ export const useSessionsWithAttendance = (
   bootcampId: number | null,
   userId: number | null,
 ) => {
-  return useQuery<ApiResponse<Session[]>>({
+  return useQuery<Session[]>({
     queryKey: [
       "sessions",
       "bootcamp",
@@ -120,7 +120,7 @@ export const useSessionsWithAttendance = (
       const response = await apiClient.get<ApiResponse<Session[]>>(
         `/sessions/bootcamp/${bootcampId}/user/${userId}/attendance`,
       );
-      return response.data;
+      return (response as unknown as ApiResponse<Session[]>).data;
     },
     enabled: !!bootcampId && !!userId,
   });

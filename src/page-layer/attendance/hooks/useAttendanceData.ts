@@ -59,14 +59,16 @@ export const useAttendanceData = (
       errorBootcamps &&
       isNetworkError(errorBootcamps)
     ) {
-      return generateMockBootcamps();
+      const mockResponse = generateMockBootcamps();
+      return mockResponse.data;
     }
     return bootcampSummaryData;
   }, [shouldUseMocks, isErrorBootcamps, errorBootcamps, bootcampSummaryData]);
 
   const bootcampOptions = useMemo(() => {
-    if (!finalBootcampData?.data) return [];
-    return transformBootcampsToOptions(finalBootcampData.data);
+    if (!finalBootcampData) return [];
+    if (!Array.isArray(finalBootcampData)) return [];
+    return transformBootcampsToOptions(finalBootcampData);
   }, [finalBootcampData]);
 
   const selectedBootcampId = useMemo(() => {
@@ -89,8 +91,10 @@ export const useAttendanceData = (
       errorSessions &&
       isNetworkError(errorSessions)
     ) {
-      const mockBootcampId = finalBootcampData?.data?.[0]?.id || 1;
-      return generateMockSessions(mockBootcampId, userId);
+      const mockBootcampId =
+        (Array.isArray(finalBootcampData) && finalBootcampData[0]?.id) || 1;
+      const mockResponse = generateMockSessions(mockBootcampId, userId);
+      return mockResponse.data;
     }
     return sessionsData;
   }, [
@@ -103,20 +107,27 @@ export const useAttendanceData = (
   ]);
 
   const allCalendarDates = useMemo(() => {
-    if (!finalSessionsData?.data) return [];
-    return transformSessionsToDateData(finalSessionsData.data);
+    if (!finalSessionsData) return [];
+    if (!Array.isArray(finalSessionsData)) return [];
+    return transformSessionsToDateData(finalSessionsData);
   }, [finalSessionsData]);
 
   const unitPeriods = useMemo(() => {
-    if (!finalSessionsData?.data) return [];
-    return extractUnitPeriods(finalSessionsData.data);
+    if (!finalSessionsData) return [];
+    if (!Array.isArray(finalSessionsData)) return [];
+    return extractUnitPeriods(finalSessionsData);
   }, [finalSessionsData]);
 
   const updateAttendanceMutation = useUpdateAttendance();
   const deleteAttendanceMutation = useDeleteAttendance();
 
   const isLoading = isLoadingBootcamps || isLoadingSessions;
-  const hasData = !!finalBootcampData?.data && !!finalSessionsData?.data;
+  const hasData =
+    bootcampOptions.length > 0 &&
+    !!finalBootcampData &&
+    !!finalSessionsData &&
+    Array.isArray(finalSessionsData) &&
+    finalSessionsData.length > 0;
   const selectedBootcamp = bootcampOptions[selectedBootcampIndex];
 
   return {
