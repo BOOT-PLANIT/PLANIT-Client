@@ -18,6 +18,10 @@ interface UseAttendanceStatsOptions {
   allCalendarDates: DateData[];
   selectedPeriod: UnitPeriod | null;
   isKdt?: boolean;
+  customDateRange?: {
+    startDate: Date;
+    endDate: Date;
+  } | null;
 }
 
 interface UseAttendanceStatsReturn {
@@ -29,15 +33,21 @@ interface UseAttendanceStatsReturn {
 export const useAttendanceStats = (
   options: UseAttendanceStatsOptions,
 ): UseAttendanceStatsReturn => {
-  const { allCalendarDates, selectedPeriod, isKdt } = options;
+  const { allCalendarDates, selectedPeriod, isKdt, customDateRange } = options;
 
   const periodTimeRange = useMemo(() => {
+    if (customDateRange) {
+      return {
+        startTime: customDateRange.startDate.getTime(),
+        endTime: customDateRange.endDate.getTime(),
+      };
+    }
     if (!selectedPeriod) return null;
     return {
       startTime: selectedPeriod.startDate.getTime(),
       endTime: selectedPeriod.endDate.getTime(),
     };
-  }, [selectedPeriod]);
+  }, [selectedPeriod, customDateRange]);
 
   const periodDates = useMemo(() => {
     if (!periodTimeRange) return [];
@@ -71,7 +81,7 @@ export const useAttendanceStats = (
   }, [periodDates, statusCounts]);
 
   const periodAllowance = useMemo(() => {
-    if (!selectedPeriod) {
+    if (customDateRange || !selectedPeriod) {
       return { amount: 0, dateRange: "" };
     }
     return calculatePeriodAllowance(
@@ -79,7 +89,7 @@ export const useAttendanceStats = (
       unitStats.totalAttendance,
       isKdt ?? false,
     );
-  }, [selectedPeriod, unitStats.totalAttendance, isKdt]);
+  }, [selectedPeriod, unitStats.totalAttendance, isKdt, customDateRange]);
 
   return {
     attendanceSummaryValues,

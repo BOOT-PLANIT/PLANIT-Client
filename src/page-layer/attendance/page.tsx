@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, Suspense, lazy, useCallback, type ReactNode } from "react";
+import {
+  useState,
+  Suspense,
+  lazy,
+  useCallback,
+  useMemo,
+  type ReactNode,
+} from "react";
 
 import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
 import {
@@ -87,6 +94,8 @@ const ICON_GUIDE_ITEMS: Array<{
   },
 ];
 
+type StatsMode = "unit" | "custom";
+
 const Attendance = () => {
   // TODO: 인증에서 userId 가져오기
   const userId = 1;
@@ -97,6 +106,11 @@ const Attendance = () => {
   const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+  const [statsMode, setStatsMode] = useState<StatsMode>("unit");
+  const [customDateRange, setCustomDateRange] = useState<{
+    startDate: Date;
+    endDate: Date;
+  } | null>(null);
 
   const {
     bootcampOptions,
@@ -132,6 +146,7 @@ const Attendance = () => {
       allCalendarDates,
       selectedPeriod,
       isKdt: selectedBootcamp?.isKdt,
+      customDateRange: statsMode === "custom" ? customDateRange : null,
     });
 
   const shouldShowSkeleton = isLoading || !hasData;
@@ -145,13 +160,64 @@ const Attendance = () => {
     setIsEditModalOpen(true);
   }, []);
 
-  const handleDateSelect = useCallback((dates: Date[]) => {
-    setSelectedDates(dates);
-  }, []);
+  const handleDateSelect = useCallback(
+    (dates: Date[]) => {
+      setSelectedDates(dates);
+      if (statsMode === "custom") {
+        if (dates.length >= 2) {
+          const sortedDates = [...dates].sort(
+            (a, b) => a.getTime() - b.getTime(),
+          );
+          setCustomDateRange({
+            startDate: sortedDates[0],
+            endDate: sortedDates[sortedDates.length - 1],
+          });
+        } else if (dates.length === 0) {
+          setCustomDateRange(null);
+        }
+      }
+    },
+    [statsMode],
+  );
 
   const handleCloseModal = useCallback(() => {
     setIsEditModalOpen(false);
   }, []);
+
+  const handleStatsModeChange = useCallback((mode: string) => {
+    setStatsMode(mode as StatsMode);
+    if (mode === "unit") {
+      setSelectedDates([]);
+      setCustomDateRange(null);
+    }
+  }, []);
+
+  const displayDateRange = useMemo(() => {
+    if (statsMode === "custom" && customDateRange) {
+      const normalizeDate = (date: Date) => {
+        return new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+        ).getTime();
+      };
+
+      const startTime = normalizeDate(customDateRange.startDate);
+      const endTime = normalizeDate(customDateRange.endDate);
+
+      const sessionCount = allCalendarDates.filter((dateData) => {
+        const dateTime = normalizeDate(dateData.date);
+        return dateTime >= startTime && dateTime <= endTime;
+      }).length;
+
+      return {
+        startDate: customDateRange.startDate,
+        endDate: customDateRange.endDate,
+        sessionCount,
+      };
+    }
+    return dateRange;
+  }, [statsMode, customDateRange, dateRange, allCalendarDates]);
 
   const handleSaveEdit = useCallback(
     async (dates: Date[], status: AttendanceStatus | undefined) => {
@@ -214,8 +280,30 @@ const Attendance = () => {
             options={bootcampOptions}
             selectedIndex={selectedBootcampIndex}
             onIndexChange={setSelectedBootcampIndex}
-            dateRange={dateRange}
+            dateRange={displayDateRange}
           />
+          {!shouldShowSkeleton && (
+            <div className={styles.statsModeToggle}>
+              <button
+                type="button"
+                className={`${styles.statsModeButton} ${
+                  statsMode === "unit" ? styles.active : ""
+                }`}
+                onClick={() => handleStatsModeChange("unit")}
+              >
+                단위 기간
+              </button>
+              <button
+                type="button"
+                className={`${styles.statsModeButton} ${
+                  statsMode === "custom" ? styles.active : ""
+                }`}
+                onClick={() => handleStatsModeChange("custom")}
+              >
+                기간 선택
+              </button>
+            </div>
+          )}
         </div>
 
         <div className={styles.summaryCards}>
@@ -246,10 +334,12 @@ const Attendance = () => {
                 totalAbsent={unitStats.totalAbsent}
                 totalUnrecorded={unitStats.totalUnrecorded}
               />
-              <PeriodAllowanceCard
-                amount={periodAllowance.amount}
-                dateRange={periodAllowance.dateRange}
-              />
+              {statsMode === "unit" && (
+                <PeriodAllowanceCard
+                  amount={periodAllowance.amount}
+                  dateRange={periodAllowance.dateRange}
+                />
+              )}
             </>
           )}
         </div>
@@ -264,7 +354,7 @@ const Attendance = () => {
                 selectedDates={selectedDates}
                 onDateSelect={handleDateSelect}
                 initialMonth={currentMonth}
-                onEdit={handleEdit}
+                onEdit={statsMode === "custom" ? undefined : handleEdit}
                 onMonthChange={handleMonthChange}
                 unitColors={{
                   currentUnit: UNIT_COLORS.CURRENT_UNIT,

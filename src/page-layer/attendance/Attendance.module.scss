@@ -9,6 +9,42 @@
 
 .headerSection {
   margin-bottom: var(--spacing-24);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-16);
+}
+
+.statsModeToggle {
+  display: flex;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  background-color: var(--color-cloud-normal);
+  border-radius: var(--radius-8);
+  align-items: center;
+}
+
+.statsModeButton {
+  padding: var(--spacing-8) var(--spacing-16);
+  border: none;
+  border-radius: var(--radius-6);
+  background-color: transparent;
+  color: var(--foreground-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &.active {
+    background-color: var(--color-white);
+    color: var(--foreground);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+  }
+
+  &:hover:not(.active) {
+    color: var(--foreground);
+  }
 }
 
 .summaryCards {
@@ -21,6 +57,15 @@
 @media (width <= 1024px) {
   .summaryCards {
     grid-template-columns: 1fr;
+  }
+
+  .headerSection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .statsModeToggle {
+    align-self: flex-start;
   }
 }
 
