@@ -13,11 +13,11 @@ import {
 import { AttendanceSummaryCardSkeleton } from "@/entities/attendance/ui/AttendanceSummaryCard";
 import { BootcampInfo } from "@/entities/bootcamp/ui/BootcampInfo";
 import {
-  useMyBootcamps,
-  useSessionsWithAttendance,
   useUpdateAttendance,
   useDeleteAttendance,
 } from "@/feature/attendance/api";
+import { useMyBootcamps } from "@/feature/enrollment/api";
+import { useSessionsWithAttendance } from "@/feature/session/api";
 import { useToast } from "@/shared/lib";
 import { Card } from "@/shared/ui";
 import { CalendarSkeleton, type AttendanceStatus } from "@/shared/ui/Calendar";

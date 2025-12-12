@@ -6,6 +6,7 @@
   --color-black: #000;
 
   /* Blue (Primary) */
+  --color-blue-lighter: #c7d5ff;
   --color-blue-light: #7fa2ff;
   --color-blue-light-strong: #6e97ff;
   --color-blue-light-intense: #8bb0ff;
@@ -85,6 +86,14 @@
   --color-attendance-leave: #8b5cf6;
   --color-attendance-annual: #00aff0;
   --color-attendance-absent: #d21c1c;
+
+  /* Bootcamp Badge */
+  --color-badge-kdt-bg: #dbeafe;
+  --color-badge-kdt-f: #1d4ed8;
+  --color-badge-active-bg: #dcfce7;
+  --color-badge-active-f: #15803d;
+  --color-badge-ended-bg: #e5e7eb;
+  --color-badge-ended-f: #374151;
 
   /* ==================== Semantic Colors ==================== */
 
@@ -224,7 +233,7 @@ body {
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: var(--background-tertiary-darker);
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);

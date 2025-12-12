@@ -13,8 +13,8 @@ import { TodaysAttendanceCard } from "./ui/TodaysAttendanceCard";
 import { TotalAllowanceCard } from "./ui/TotalAllowanceCard";
 
 const doughnutData = [
-  { label: "총 출석", value: 12, color: "var(--foreground-success)" },
-  { label: "총 결석", value: 19, color: "var(--foreground-error)" },
+  { label: "총출석", value: 12, color: "var(--foreground-success)" },
+  { label: "총결석", value: 19, color: "var(--foreground-error)" },
   { label: "미출결", value: 3, color: "var(--foreground-disable)" },
 ];
 

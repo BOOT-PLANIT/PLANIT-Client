@@ -1,4 +1,5 @@
-import type { Bootcamp, Session } from "@/feature/attendance/api";
+import type { Bootcamp } from "@/feature/bootcamp/api";
+import type { Session } from "@/feature/session/api";
 import type { ApiResponse } from "@/shared/api/types";
 import type { DateData } from "@/shared/ui/Calendar";
 

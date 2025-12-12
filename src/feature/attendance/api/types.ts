@@ -1,51 +1,4 @@
-/**
- * 부트캠프 정보
- */
-export interface Bootcamp {
-  id: number;
-  name: string;
-  organizer: string;
-  isKdt: boolean;
-  startDate: string;
-  endDate: string;
-}
-
-/**
- * 부트캠프 목록 응답
- */
-export interface BootcampSummaryResponse {
-  totalCount: number;
-  bootcamps: Bootcamp[];
-}
-
-/**
- * 세션 정보
- */
-export interface Session {
-  id: number;
-  bootcampId: number;
-  classDate: string;
-  unitNo: number;
-  periodStartDate: string;
-  periodEndDate: string;
-  attendance?: {
-    status: AttendanceStatus;
-    userId: number;
-  };
-}
-
-/**
- * 출결 상태
- */
-export type AttendanceStatus =
-  | "present"
-  | "absent"
-  | "late"
-  | "left_early"
-  | "annual"
-  | "leave"
-  | "no_session"
-  | "no_attendance";
+import type { AttendanceStatus } from "@/feature/session/api";
 
 /**
  * Calendar 컴포넌트에서 사용하는 출결 상태
@@ -107,4 +60,39 @@ export interface TotalAttendanceResponse {
   totalNoSession: number;
   totalNoAttendance: number;
   attendanceRate: number;
+}
+
+/**
+ * 일단위 출결 조회 응답
+ */
+export interface DailyAttendanceResponse {
+  userId: number;
+  bootcampId: number;
+  date: string;
+  status: AttendanceStatus;
+}
+
+/**
+ * 완료된 단위 기간 출결 리스트 조회 응답
+ */
+export type PeriodAttendanceListResponse = PeriodAttendanceResponse[];
+
+/**
+ * 월차 잔여/누적 사용량 조회 응답
+ */
+export interface AttendanceBalanceResponse {
+  userId: number;
+  bootcampId: number;
+  usedLeave: number;
+  receivedLeave: number;
+  remainingLeave: number;
+}
+
+/**
+ * 휴가 목록 조회 응답
+ */
+export interface LeaveListResponse {
+  date: string;
+  status: AttendanceStatus;
+  userId: number;
 }

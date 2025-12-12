@@ -14,3 +14,6 @@ export { default as AnnualIcon } from "./AnnualIcon";
 export { default as AbsentIcon } from "./AbsentIcon";
 export { default as MoneyIcon } from "./MoneyIcon";
 export { default as ClockIcon } from "./ClockIcon";
+export { default as SearchIcon } from "./SearchIcon";
+export { default as DeleteIcon } from "./DeleteIcon";
+export { default as EditIcon } from "./EditIcon";

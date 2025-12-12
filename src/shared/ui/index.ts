@@ -10,3 +10,4 @@ export { Skeleton } from "./Skeleton";
 export { OptionButton } from "./OptionButton";
 export { DoughnutChart } from "./Chart";
 export { HorizontalPercentageBarChart } from "./Chart";
+export { Spinner } from "./Spinner";
