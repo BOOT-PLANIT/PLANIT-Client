@@ -230,12 +230,15 @@ const Attendance = () => {
   }, []);
 
   const displayDateRange = useMemo(() => {
-    if (statsMode === "custom" && customDateRange) {
-      return {
-        startDate: customDateRange.startDate,
-        endDate: customDateRange.endDate,
-        sessionCount: unitStats.totalDays,
-      };
+    if (statsMode === "custom") {
+      if (customDateRange) {
+        return {
+          startDate: customDateRange.startDate,
+          endDate: customDateRange.endDate,
+          sessionCount: unitStats.totalDays,
+        };
+      }
+      return null;
     }
     return dateRange;
   }, [statsMode, customDateRange, dateRange, unitStats.totalDays]);
