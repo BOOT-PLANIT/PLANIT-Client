@@ -12,6 +12,8 @@
 }
 
 .modal {
+  display: flex;
+  flex-direction: column;
   position: relative;
   width: fit-content;
   max-width: 1000px;
@@ -52,5 +54,17 @@
     outline: 2px solid var(--border-primary);
     outline-offset: 2px;
     border-radius: 4px;
+  }
+}
+
+.title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--foreground);
+  text-align: left;
+
+  @media (width <= 480px) {
+    font-size: var(--font-size-lg);
   }
 }

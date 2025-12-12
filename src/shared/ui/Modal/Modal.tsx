@@ -7,11 +7,12 @@ import { X } from "@/shared/assets";
 import styles from "./Modal.module.scss";
 
 interface ModalProps {
+  title?: string;
   children?: React.ReactNode;
   onClose?: () => void;
 }
 
-const Modal = ({ children, onClose }: ModalProps) => {
+const Modal = ({ title, children, onClose }: ModalProps) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -44,6 +45,7 @@ const Modal = ({ children, onClose }: ModalProps) => {
         >
           <X />
         </button>
+        <h1 className={styles.title}>{title}</h1>
         {children}
       </div>
     </div>
