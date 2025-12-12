@@ -1,5 +1,6 @@
 import styles from "./MyPage.module.scss";
 import { UserInfoCard } from "./ui";
+
 type authorityType = "admin" | "student";
 export interface User {
   userName: string;

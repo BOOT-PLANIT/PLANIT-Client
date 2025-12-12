@@ -1,3 +1,3 @@
-import { MyPage } from "@/page-layer/myPage";
+import { MyPage } from "@/page-layer/mypage";
 
 export default MyPage;
