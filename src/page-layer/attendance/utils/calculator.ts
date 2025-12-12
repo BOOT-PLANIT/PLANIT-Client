@@ -26,7 +26,7 @@ export const calculateStatusCounts = (
   return periodDates.reduce(
     (acc, dateData) => {
       if (dateData.status) {
-        acc[dateData.status] = (acc[dateData.status] || 0) + 1;
+        acc[dateData.status] = (acc[dateData.status] ?? 0) + 1;
       }
       return acc;
     },
@@ -45,25 +45,25 @@ export const calculateUnitStats = (
 ): UnitStats => {
   const totalDays = periodDates.length;
   const lateAndLeftEarlyCount =
-    (statusCounts.late || 0) + (statusCounts.leftEarly || 0);
+    (statusCounts.late ?? 0) + (statusCounts.leftEarly ?? 0);
   const lateAndLeftEarlyAbsentCount = Math.floor(lateAndLeftEarlyCount / 3);
   const lateAndLeftEarlyAttendanceCount =
     lateAndLeftEarlyAbsentCount * 2 + (lateAndLeftEarlyCount % 3);
 
   const totalAttendance =
-    (statusCounts.present || 0) +
+    (statusCounts.present ?? 0) +
     lateAndLeftEarlyAttendanceCount +
-    (statusCounts.leave || 0) +
-    (statusCounts.annual || 0);
-  const totalAbsent = (statusCounts.absent || 0) + lateAndLeftEarlyAbsentCount;
+    (statusCounts.leave ?? 0) +
+    (statusCounts.annual ?? 0);
+  const totalAbsent = (statusCounts.absent ?? 0) + lateAndLeftEarlyAbsentCount;
   const totalUnrecorded =
     totalDays -
-    (statusCounts.present || 0) -
-    (statusCounts.late || 0) -
-    (statusCounts.leftEarly || 0) -
-    (statusCounts.leave || 0) -
-    (statusCounts.annual || 0) -
-    (statusCounts.absent || 0);
+    (statusCounts.present ?? 0) -
+    (statusCounts.late ?? 0) -
+    (statusCounts.leftEarly ?? 0) -
+    (statusCounts.leave ?? 0) -
+    (statusCounts.annual ?? 0) -
+    (statusCounts.absent ?? 0);
 
   return {
     totalAttendance,

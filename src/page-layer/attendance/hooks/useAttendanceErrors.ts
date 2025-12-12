@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { ERROR_MESSAGES } from "@/entities/attendance/model";
 import { useToast } from "@/shared/lib";
-import { getErrorMessage, isNetworkError } from "@/shared/utils";
+import { getErrorMessage } from "@/shared/utils";
 
 interface UseAttendanceErrorsOptions {
   isErrorBootcamps: boolean;
@@ -19,7 +19,7 @@ export const useAttendanceErrors = (
   const toast = useToast();
 
   useEffect(() => {
-    if (isErrorBootcamps && errorBootcamps && !isNetworkError(errorBootcamps)) {
+    if (isErrorBootcamps && errorBootcamps) {
       const message = getErrorMessage(
         errorBootcamps,
         ERROR_MESSAGES.FETCH_BOOTCAMPS_FAILED,
@@ -30,7 +30,7 @@ export const useAttendanceErrors = (
   }, [isErrorBootcamps, errorBootcamps, toast]);
 
   useEffect(() => {
-    if (isErrorSessions && errorSessions && !isNetworkError(errorSessions)) {
+    if (isErrorSessions && errorSessions) {
       const message = getErrorMessage(
         errorSessions,
         ERROR_MESSAGES.FETCH_SESSIONS_FAILED,

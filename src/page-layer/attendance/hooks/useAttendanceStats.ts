@@ -46,12 +46,12 @@ export const useAttendanceStats = (
 
   const attendanceSummaryValues = useMemo(
     () => ({
-      present: statusCounts.present || 0,
-      late: statusCounts.late || 0,
-      leftEarly: statusCounts.leftEarly || 0,
-      leave: statusCounts.leave || 0,
-      annual: statusCounts.annual || 0,
-      absent: statusCounts.absent || 0,
+      present: statusCounts.present ?? 0,
+      late: statusCounts.late ?? 0,
+      leftEarly: statusCounts.leftEarly ?? 0,
+      leave: statusCounts.leave ?? 0,
+      annual: statusCounts.annual ?? 0,
+      absent: statusCounts.absent ?? 0,
     }),
     [statusCounts],
   );
@@ -61,6 +61,9 @@ export const useAttendanceStats = (
   }, [periodDates, statusCounts]);
 
   const periodAllowance = useMemo(() => {
+    if (!selectedPeriod) {
+      return { amount: 0, dateRange: "" };
+    }
     return calculatePeriodAllowance(
       selectedPeriod,
       unitStats.totalAttendance,

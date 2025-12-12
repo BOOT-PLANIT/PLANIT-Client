@@ -33,24 +33,29 @@ export const useCalendarDates = (
     [targetYear, targetMonthIndex],
   );
 
+  const dateTimestampSet = useMemo(() => {
+    return new Set(allCalendarDates.map((dateData) => dateData.date.getTime()));
+  }, [allCalendarDates]);
+
   const overlappingPeriods = useMemo(() => {
+    const monthStartTime = monthStart.getTime();
+    const monthEndTime = monthEnd.getTime();
+
     return unitPeriods
       .map((period) => {
-        const overlapStart = new Date(
-          Math.max(period.startDate.getTime(), monthStart.getTime()),
+        const overlapStartTime = Math.max(
+          period.startDate.getTime(),
+          monthStartTime,
         );
-        const overlapEnd = new Date(
-          Math.min(period.endDate.getTime(), monthEnd.getTime()),
-        );
+        const overlapEndTime = Math.min(period.endDate.getTime(), monthEndTime);
 
-        if (overlapStart <= overlapEnd) {
-          const dayCount = allCalendarDates.filter((dateData) => {
-            const date = dateData.date;
-            return (
-              date.getTime() >= overlapStart.getTime() &&
-              date.getTime() <= overlapEnd.getTime()
-            );
-          }).length;
+        if (overlapStartTime <= overlapEndTime) {
+          let dayCount = 0;
+          for (const timestamp of dateTimestampSet) {
+            if (timestamp >= overlapStartTime && timestamp <= overlapEndTime) {
+              dayCount++;
+            }
+          }
 
           return {
             period,
@@ -63,7 +68,7 @@ export const useCalendarDates = (
         (item): item is { period: UnitPeriod; dayCount: number } =>
           item !== null,
       );
-  }, [unitPeriods, monthStart, monthEnd, allCalendarDates]);
+  }, [unitPeriods, monthStart, monthEnd, dateTimestampSet]);
 
   const selectedPeriod = useMemo(() => {
     if (overlappingPeriods.length === 0) return null;
@@ -75,18 +80,22 @@ export const useCalendarDates = (
   const dateRange = useMemo(() => {
     if (!selectedPeriod) return null;
 
+    const startTime = selectedPeriod.startDate.getTime();
+    const endTime = selectedPeriod.endDate.getTime();
+    let sessionCount = 0;
+
+    for (const timestamp of dateTimestampSet) {
+      if (timestamp >= startTime && timestamp <= endTime) {
+        sessionCount++;
+      }
+    }
+
     return {
       startDate: selectedPeriod.startDate,
       endDate: selectedPeriod.endDate,
-      sessionCount: allCalendarDates.filter((dateData) => {
-        const date = dateData.date;
-        return (
-          date.getTime() >= selectedPeriod.startDate.getTime() &&
-          date.getTime() <= selectedPeriod.endDate.getTime()
-        );
-      }).length,
+      sessionCount,
     };
-  }, [selectedPeriod, allCalendarDates]);
+  }, [selectedPeriod, dateTimestampSet]);
 
   const currentPeriodForCalendar = useMemo(() => {
     const today = new Date();
@@ -130,16 +139,25 @@ export const useCalendarDates = (
       })
       .map((dateData) => {
         const date = dateData.date;
+        const dateTime = date.getTime();
+
+        if (!currentPeriodForCalendar) {
+          return {
+            ...dateData,
+            isCurrentUnit: undefined,
+            isOtherUnit: undefined,
+          };
+        }
+
         const isInCurrentPeriod =
-          currentPeriodForCalendar !== undefined &&
-          date.getTime() >= currentPeriodForCalendar.startDate.getTime() &&
-          date.getTime() <= currentPeriodForCalendar.endDate.getTime();
+          dateTime >= currentPeriodForCalendar.startDate.getTime() &&
+          dateTime <= currentPeriodForCalendar.endDate.getTime();
 
         const isInOtherPeriod = unitPeriods.some(
           (period) =>
             period !== currentPeriodForCalendar &&
-            date.getTime() >= period.startDate.getTime() &&
-            date.getTime() <= period.endDate.getTime(),
+            dateTime >= period.startDate.getTime() &&
+            dateTime <= period.endDate.getTime(),
         );
 
         return {
