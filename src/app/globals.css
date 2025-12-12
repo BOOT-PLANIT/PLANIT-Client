@@ -232,7 +232,7 @@ body {
 }
 
 body {
-  color: var(--color-black);
+  color: var(--foreground);
   background: var(--background-tertiary-darker);
   font-family: var(--font-family);
   font-size: var(--font-size-base);
@@ -258,4 +258,9 @@ textarea,
 select {
   font: inherit;
   color: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--foreground-lighter);
 }
