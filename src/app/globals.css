@@ -232,7 +232,7 @@ body {
 }
 
 body {
-  color: var(--foreground);
+  color: var(--color-black);
   background: var(--background-tertiary-darker);
   font-family: var(--font-family);
   font-size: var(--font-size-base);
@@ -250,4 +250,12 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
 }
