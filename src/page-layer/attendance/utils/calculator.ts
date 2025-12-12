@@ -1,16 +1,12 @@
+import type { PeriodAllowance, UnitStats } from "@/entities/attendance/model";
 import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
 
-interface UnitStats {
-  totalAttendance: number;
-  totalAbsent: number;
-  totalUnrecorded: number;
-  totalDays: number;
-}
-
-interface PeriodAllowance {
-  amount: number;
-  dateRange: string;
-}
+/**
+ * 수당 정책 상수
+ */
+const DAILY_ALLOWANCE_KDT = 15800; // KDT 일일 수당 (원)
+const DAILY_ALLOWANCE_GENERAL = 5800; // 일반 일일 수당 (원)
+const MAX_ATTENDANCE_DAYS = 20; // 최대 출석일 수
 
 interface Period {
   startDate: Date;
@@ -26,7 +22,7 @@ export const calculateStatusCounts = (
   return periodDates.reduce(
     (acc, dateData) => {
       if (dateData.status) {
-        acc[dateData.status] = (acc[dateData.status] || 0) + 1;
+        acc[dateData.status] = (acc[dateData.status] ?? 0) + 1;
       }
       return acc;
     },
@@ -45,25 +41,25 @@ export const calculateUnitStats = (
 ): UnitStats => {
   const totalDays = periodDates.length;
   const lateAndLeftEarlyCount =
-    (statusCounts.late || 0) + (statusCounts.leftEarly || 0);
+    (statusCounts.late ?? 0) + (statusCounts.leftEarly ?? 0);
   const lateAndLeftEarlyAbsentCount = Math.floor(lateAndLeftEarlyCount / 3);
   const lateAndLeftEarlyAttendanceCount =
     lateAndLeftEarlyAbsentCount * 2 + (lateAndLeftEarlyCount % 3);
 
   const totalAttendance =
-    (statusCounts.present || 0) +
+    (statusCounts.present ?? 0) +
     lateAndLeftEarlyAttendanceCount +
-    (statusCounts.leave || 0) +
-    (statusCounts.annual || 0);
-  const totalAbsent = (statusCounts.absent || 0) + lateAndLeftEarlyAbsentCount;
+    (statusCounts.leave ?? 0) +
+    (statusCounts.annual ?? 0);
+  const totalAbsent = (statusCounts.absent ?? 0) + lateAndLeftEarlyAbsentCount;
   const totalUnrecorded =
     totalDays -
-    (statusCounts.present || 0) -
-    (statusCounts.late || 0) -
-    (statusCounts.leftEarly || 0) -
-    (statusCounts.leave || 0) -
-    (statusCounts.annual || 0) -
-    (statusCounts.absent || 0);
+    (statusCounts.present ?? 0) -
+    (statusCounts.late ?? 0) -
+    (statusCounts.leftEarly ?? 0) -
+    (statusCounts.leave ?? 0) -
+    (statusCounts.annual ?? 0) -
+    (statusCounts.absent ?? 0);
 
   return {
     totalAttendance,
@@ -88,8 +84,8 @@ export const calculatePeriodAllowance = (
     return { amount: 0, dateRange: "" };
   }
 
-  const dailyAllowance = isKdt ? 15800 : 5800;
-  const attendanceDays = Math.min(totalAttendance, 20);
+  const dailyAllowance = isKdt ? DAILY_ALLOWANCE_KDT : DAILY_ALLOWANCE_GENERAL;
+  const attendanceDays = Math.min(totalAttendance, MAX_ATTENDANCE_DAYS);
   const amount = attendanceDays * dailyAllowance;
 
   return {

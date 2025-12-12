@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import type { Session } from "@/feature/session/api";
 import type { ApiResponse } from "@/shared/api";
 import { apiClient } from "@/shared/api";
 
@@ -28,17 +29,62 @@ export const useUpdateAttendance = () => {
       );
       return response.data;
     },
-    onSuccess: (_, variables) => {
-      // 관련 쿼리 무효화
-      queryClient.invalidateQueries({
-        queryKey: [
+    onMutate: async (variables) => {
+      const queryKey = [
+        "sessions",
+        "bootcamp",
+        variables.bootcampId,
+        "user",
+        variables.userId,
+        "attendance",
+      ];
+
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousData =
+        queryClient.getQueryData<ApiResponse<Session[]>>(queryKey);
+
+      if (previousData?.data) {
+        queryClient.setQueryData<ApiResponse<Session[]>>(queryKey, (old) => {
+          if (!old?.data) return old;
+
+          return {
+            ...old,
+            data: old.data.map((session) => {
+              if (variables.classDates.includes(session.classDate)) {
+                return {
+                  ...session,
+                  attendance: {
+                    status: variables.status,
+                    userId: variables.userId,
+                  },
+                };
+              }
+              return session;
+            }),
+          };
+        });
+      }
+
+      return { previousData };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousData) {
+        const queryKey = [
           "sessions",
           "bootcamp",
           variables.bootcampId,
           "user",
           variables.userId,
-        ],
-      });
+          "attendance",
+        ];
+        queryClient.setQueryData<ApiResponse<Session[]>>(
+          queryKey,
+          context.previousData,
+        );
+      }
+    },
+    onSettled: (_, __, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["attendance", "total", variables.userId],
       });
@@ -63,17 +109,58 @@ export const useDeleteAttendance = () => {
       );
       return response.data;
     },
-    onSuccess: (_, variables) => {
-      // 관련 쿼리 무효화
-      queryClient.invalidateQueries({
-        queryKey: [
+    onMutate: async (variables) => {
+      const queryKey = [
+        "sessions",
+        "bootcamp",
+        variables.bootcampId,
+        "user",
+        variables.userId,
+        "attendance",
+      ];
+
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousData =
+        queryClient.getQueryData<ApiResponse<Session[]>>(queryKey);
+
+      if (previousData?.data) {
+        queryClient.setQueryData<ApiResponse<Session[]>>(queryKey, (old) => {
+          if (!old?.data) return old;
+
+          return {
+            ...old,
+            data: old.data.map((session) => {
+              if (variables.classDates.includes(session.classDate)) {
+                const { attendance: _attendance, ...sessionWithoutAttendance } =
+                  session;
+                return sessionWithoutAttendance;
+              }
+              return session;
+            }),
+          };
+        });
+      }
+
+      return { previousData };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousData) {
+        const queryKey = [
           "sessions",
           "bootcamp",
           variables.bootcampId,
           "user",
           variables.userId,
-        ],
-      });
+          "attendance",
+        ];
+        queryClient.setQueryData<ApiResponse<Session[]>>(
+          queryKey,
+          context.previousData,
+        );
+      }
+    },
+    onSettled: (_, __, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["attendance", "total", variables.userId],
       });

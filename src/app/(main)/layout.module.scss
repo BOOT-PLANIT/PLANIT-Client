@@ -10,4 +10,8 @@
   flex: 1;
   overflow-y: auto;
   padding: var(--spacing-24);
+
+  @media (width <= 768px) {
+    padding: var(--spacing-16);
+  }
 }
