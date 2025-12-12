@@ -20,7 +20,7 @@ export const useLogin = () => {
           },
         },
       );
-      return (response as unknown as ApiResponse<null>).data;
+      return response.data;
     },
   });
 };

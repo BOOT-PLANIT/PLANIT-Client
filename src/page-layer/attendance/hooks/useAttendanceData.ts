@@ -59,16 +59,15 @@ export const useAttendanceData = (
       errorBootcamps &&
       isNetworkError(errorBootcamps)
     ) {
-      const mockResponse = generateMockBootcamps();
-      return mockResponse.data;
+      return generateMockBootcamps();
     }
     return bootcampSummaryData;
   }, [shouldUseMocks, isErrorBootcamps, errorBootcamps, bootcampSummaryData]);
 
   const bootcampOptions = useMemo(() => {
-    if (!finalBootcampData) return [];
-    if (!Array.isArray(finalBootcampData)) return [];
-    return transformBootcampsToOptions(finalBootcampData);
+    if (!finalBootcampData?.data) return [];
+    if (!Array.isArray(finalBootcampData.data)) return [];
+    return transformBootcampsToOptions(finalBootcampData.data);
   }, [finalBootcampData]);
 
   const selectedBootcampId = useMemo(() => {
@@ -91,10 +90,8 @@ export const useAttendanceData = (
       errorSessions &&
       isNetworkError(errorSessions)
     ) {
-      const mockBootcampId =
-        (Array.isArray(finalBootcampData) && finalBootcampData[0]?.id) || 1;
-      const mockResponse = generateMockSessions(mockBootcampId, userId);
-      return mockResponse.data;
+      const mockBootcampId = finalBootcampData?.data?.[0]?.id || 1;
+      return generateMockSessions(mockBootcampId, userId);
     }
     return sessionsData;
   }, [
@@ -107,15 +104,13 @@ export const useAttendanceData = (
   ]);
 
   const allCalendarDates = useMemo(() => {
-    if (!finalSessionsData) return [];
-    if (!Array.isArray(finalSessionsData)) return [];
-    return transformSessionsToDateData(finalSessionsData);
+    if (!finalSessionsData?.data) return [];
+    return transformSessionsToDateData(finalSessionsData.data);
   }, [finalSessionsData]);
 
   const unitPeriods = useMemo(() => {
-    if (!finalSessionsData) return [];
-    if (!Array.isArray(finalSessionsData)) return [];
-    return extractUnitPeriods(finalSessionsData);
+    if (!finalSessionsData?.data) return [];
+    return extractUnitPeriods(finalSessionsData.data);
   }, [finalSessionsData]);
 
   const updateAttendanceMutation = useUpdateAttendance();
@@ -124,10 +119,10 @@ export const useAttendanceData = (
   const isLoading = isLoadingBootcamps || isLoadingSessions;
   const hasData =
     bootcampOptions.length > 0 &&
-    !!finalBootcampData &&
-    !!finalSessionsData &&
-    Array.isArray(finalSessionsData) &&
-    finalSessionsData.length > 0;
+    !!finalBootcampData?.data &&
+    !!finalSessionsData?.data &&
+    Array.isArray(finalSessionsData.data) &&
+    finalSessionsData.data.length > 0;
   const selectedBootcamp = bootcampOptions[selectedBootcampIndex];
 
   return {
