@@ -1,3 +1,4 @@
+import type { PeriodAllowance, UnitStats } from "@/entities/attendance/model";
 import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
 
 /**
@@ -6,18 +7,6 @@ import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
 const DAILY_ALLOWANCE_KDT = 15800; // KDT 일일 수당 (원)
 const DAILY_ALLOWANCE_GENERAL = 5800; // 일반 일일 수당 (원)
 const MAX_ATTENDANCE_DAYS = 20; // 최대 출석일 수
-
-interface UnitStats {
-  totalAttendance: number;
-  totalAbsent: number;
-  totalUnrecorded: number;
-  totalDays: number;
-}
-
-interface PeriodAllowance {
-  amount: number;
-  dateRange: string;
-}
 
 interface Period {
   startDate: Date;

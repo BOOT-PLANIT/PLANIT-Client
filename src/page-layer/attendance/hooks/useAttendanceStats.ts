@@ -1,13 +1,13 @@
 import { useMemo } from "react";
 
-import type { DateData } from "@/shared/ui/Calendar";
-
 import type {
   AttendanceSummaryValues,
   PeriodAllowance,
   UnitPeriod,
   UnitStats,
-} from "../types";
+} from "@/entities/attendance/model";
+import type { DateData } from "@/shared/ui/Calendar";
+
 import {
   calculatePeriodAllowance,
   calculateStatusCounts,

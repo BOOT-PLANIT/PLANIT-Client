@@ -4,3 +4,12 @@ export const formatCurrency = (amount: number): string => {
     currency: "KRW",
   }).format(amount);
 };
+
+/**
+ * "YYYY-MM-DD" 형식의 문자열을 로컬 타임존으로 파싱
+ * 타임존 문제를 방지하기 위해 명시적으로 로컬 자정으로 생성
+ */
+export const parseDateString = (dateString: string): Date => {
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};

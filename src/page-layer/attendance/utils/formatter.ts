@@ -1,3 +1,5 @@
+import { parseDateString as sharedParseDateString } from "@/shared/utils";
+
 export const formatDateToString = (date: Date): string => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -8,6 +10,11 @@ export const formatDateToString = (date: Date): string => {
 export const formatDatesToStrings = (dates: Date[]): string[] => {
   return dates.map(formatDateToString);
 };
+
+/**
+ * @deprecated Use parseDateString from @/shared/utils instead
+ */
+export const parseDateString = sharedParseDateString;
 
 /**
  * 날짜 정규화 유틸리티 함수들

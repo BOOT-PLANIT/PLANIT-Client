@@ -162,12 +162,12 @@ const Attendance = () => {
   const { attendanceSummaryValues, unitStats, periodAllowance } =
     useAttendanceStats({
       allCalendarDates,
-      selectedPeriod,
+      selectedPeriod: statsMode === "custom" ? null : selectedPeriod,
       isKdt: selectedBootcamp?.isKdt,
       customDateRange: statsMode === "custom" ? customDateRange : null,
     });
 
-  const shouldShowSkeleton = isLoading || !hasData;
+  const isEmpty = !isLoading && !hasData;
 
   const handleMonthChange = useCallback((month: Date) => {
     setCurrentMonth(month);
@@ -303,7 +303,7 @@ const Attendance = () => {
             onIndexChange={setSelectedBootcampIndex}
             dateRange={displayDateRange}
           />
-          {!shouldShowSkeleton && (
+          {!isLoading && !isEmpty && (
             <Toggle
               options={statsModeOptions}
               value={statsMode}
@@ -312,17 +312,28 @@ const Attendance = () => {
           )}
         </div>
 
-        <div className={styles.summaryCards}>
-          {shouldShowSkeleton ? (
-            <>
+        {isLoading ? (
+          <>
+            <div className={styles.summaryCards}>
               <AttendanceSummaryCardSkeleton
                 title={CARD_TITLES.ATTENDANCE_SUMMARY}
               />
               <UnitPeriodStatsCardSkeleton />
               <PeriodAllowanceCardSkeleton />
-            </>
-          ) : (
-            <>
+            </div>
+            <CalendarSkeleton />
+          </>
+        ) : isEmpty ? (
+          <div className={styles.emptyState}>
+            <p className={styles.emptyMessage}>
+              {bootcampOptions.length === 0
+                ? "등록된 부트캠프가 없습니다."
+                : "출결 데이터가 없습니다."}
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className={styles.summaryCards}>
               <Suspense
                 fallback={
                   <AttendanceSummaryCardSkeleton
@@ -346,28 +357,23 @@ const Attendance = () => {
                   dateRange={periodAllowance.dateRange}
                 />
               )}
-            </>
-          )}
-        </div>
-
-        {shouldShowSkeleton ? (
-          <CalendarSkeleton />
-        ) : (
-          <Card variant="solid" width="100%">
-            <Suspense fallback={<CalendarSkeleton />}>
-              <CalendarComponent
-                dates={calendarDates}
-                selectedDates={selectedDates}
-                onDateSelect={handleDateSelect}
-                initialMonth={currentMonth}
-                onEdit={handleEdit}
-                onMonthChange={handleMonthChange}
-                hideFloatingBar={statsMode === "custom"}
-                unitColors={UNIT_COLORS_CONFIG}
-              />
-              <IconGuide items={ICON_GUIDE_ITEMS} />
-            </Suspense>
-          </Card>
+            </div>
+            <Card variant="solid" width="100%">
+              <Suspense fallback={<CalendarSkeleton />}>
+                <CalendarComponent
+                  dates={calendarDates}
+                  selectedDates={selectedDates}
+                  onDateSelect={handleDateSelect}
+                  initialMonth={currentMonth}
+                  onEdit={handleEdit}
+                  onMonthChange={handleMonthChange}
+                  hideFloatingBar={statsMode === "custom"}
+                  unitColors={UNIT_COLORS_CONFIG}
+                />
+                <IconGuide items={ICON_GUIDE_ITEMS} />
+              </Suspense>
+            </Card>
+          </>
         )}
       </div>
 

@@ -1,5 +1,11 @@
 import { useMemo } from "react";
 
+import type { BootcampOption, UnitPeriod } from "@/entities/attendance/model";
+import {
+  extractUnitPeriods,
+  transformBootcampsToOptions,
+  transformSessionsToDateData,
+} from "@/entities/attendance/model";
 import {
   useUpdateAttendance,
   useDeleteAttendance,
@@ -7,16 +13,6 @@ import {
 import { useMyBootcamps } from "@/feature/enrollment/api";
 import { useSessionsWithAttendance } from "@/feature/session/api";
 import type { DateData } from "@/shared/ui/Calendar";
-
-import type {
-  BootcampOption,
-  UnitPeriod,
-} from "../../../page-layer/attendance/types";
-import {
-  extractUnitPeriods,
-  transformBootcampsToOptions,
-  transformSessionsToDateData,
-} from "../../../page-layer/attendance/utils/apiTransform";
 
 interface UseAttendanceDataOptions {
   userId: number;

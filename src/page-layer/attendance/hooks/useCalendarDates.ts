@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 
+import type { UnitPeriod } from "@/entities/attendance/model";
 import type { DateData } from "@/shared/ui/Calendar";
 
-import type { DateRange, ExtendedDateData, UnitPeriod } from "../types";
+import type { DateRange, ExtendedDateData } from "../types";
 
 interface UseCalendarDatesOptions {
   allCalendarDates: DateData[];
