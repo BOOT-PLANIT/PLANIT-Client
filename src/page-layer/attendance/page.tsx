@@ -170,22 +170,48 @@ const Attendance = () => {
 
   const handleDateSelect = useCallback(
     (dates: Date[]) => {
-      setSelectedDates(dates);
       if (statsMode === "custom") {
         if (dates.length >= 2) {
           const sortedDates = [...dates].sort(
             (a, b) => a.getTime() - b.getTime(),
           );
+          const startDate = sortedDates[0];
+          const endDate = sortedDates[sortedDates.length - 1];
+
+          const normalizeDate = (date: Date) => {
+            return new Date(
+              date.getFullYear(),
+              date.getMonth(),
+              date.getDate(),
+            ).getTime();
+          };
+
+          const startTime = normalizeDate(startDate);
+          const endTime = normalizeDate(endDate);
+
+          const datesInRange = allCalendarDates
+            .filter((dateData) => {
+              const dateTime = normalizeDate(dateData.date);
+              return dateTime >= startTime && dateTime <= endTime;
+            })
+            .map((dateData) => new Date(dateData.date));
+
+          setSelectedDates(datesInRange);
           setCustomDateRange({
-            startDate: sortedDates[0],
-            endDate: sortedDates[sortedDates.length - 1],
+            startDate,
+            endDate,
           });
         } else if (dates.length === 0) {
+          setSelectedDates([]);
           setCustomDateRange(null);
+        } else {
+          setSelectedDates(dates);
         }
+      } else {
+        setSelectedDates(dates);
       }
     },
-    [statsMode],
+    [statsMode, allCalendarDates],
   );
 
   const handleCloseModal = useCallback(() => {
@@ -369,6 +395,7 @@ const Attendance = () => {
                 initialMonth={currentMonth}
                 onEdit={handleEdit}
                 onMonthChange={handleMonthChange}
+                hideFloatingBar={statsMode === "custom"}
                 unitColors={{
                   currentUnit: UNIT_COLORS.CURRENT_UNIT,
                   otherUnit: UNIT_COLORS.OTHER_UNIT,
