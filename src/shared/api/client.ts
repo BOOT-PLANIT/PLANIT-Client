@@ -26,14 +26,11 @@ apiClient.interceptors.request.use(
   },
 );
 
-// 응답 인터셉터: 공통 응답 형식 처리
 apiClient.interceptors.response.use(
   (response) => {
-    // API 응답이 { code, message, data } 형식이므로 그대로 반환
-    return response.data;
+    return response;
   },
   (error) => {
-    // 에러 응답 처리
     if (error.response?.data) {
       return Promise.reject(error.response.data);
     }

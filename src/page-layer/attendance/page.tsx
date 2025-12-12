@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, Suspense, lazy, useMemo, useEffect } from "react";
+import {
+  useState,
+  Suspense,
+  lazy,
+  useCallback,
+  useMemo,
+  type ReactNode,
+} from "react";
 
 import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
 import {
@@ -12,34 +19,31 @@ import {
 } from "@/entities/attendance/model";
 import { AttendanceSummaryCardSkeleton } from "@/entities/attendance/ui/AttendanceSummaryCard";
 import { BootcampInfo } from "@/entities/bootcamp/ui/BootcampInfo";
-import {
-  useUpdateAttendance,
-  useDeleteAttendance,
-} from "@/feature/attendance/api";
-import { useMyBootcamps } from "@/feature/enrollment/api";
-import { useSessionsWithAttendance } from "@/feature/session/api";
 import { useToast } from "@/shared/lib";
 import { Card } from "@/shared/ui";
+import { Toggle } from "@/shared/ui";
+import type { ToggleOption } from "@/shared/ui";
 import { CalendarSkeleton, type AttendanceStatus } from "@/shared/ui/Calendar";
-import { getErrorMessage, isNetworkError } from "@/shared/utils";
+import { getErrorMessage } from "@/shared/utils";
 
 import styles from "./Attendance.module.scss";
-import { generateMockBootcamps, generateMockSessions } from "./model/mockData";
+import {
+  useAttendanceData,
+  useAttendanceErrors,
+  useAttendanceStats,
+  useCalendarDates,
+} from "./hooks";
 import { IconGuide, PeriodAllowanceCard, UnitPeriodStatsCard } from "./ui";
 import PeriodAllowanceCardSkeleton from "./ui/PeriodAllowanceCard/PeriodAllowanceCardSkeleton";
 import { UnitIcon } from "./ui/UnitIcon";
 import UnitPeriodStatsCardSkeleton from "./ui/UnitPeriodStatsCard/UnitPeriodStatsCardSkeleton";
+import { mapCalendarStatusToApiStatus } from "./utils/apiTransform";
 import {
-  extractUnitPeriods,
-  mapCalendarStatusToApiStatus,
-  transformBootcampsToOptions,
-  transformSessionsToDateData,
-} from "./utils/apiTransform";
-import {
-  calculatePeriodAllowance,
-  calculateStatusCounts,
-  calculateUnitStats,
-} from "./utils/calculator";
+  formatDatesToStrings,
+  normalizeDate,
+  normalizeEndDate,
+  normalizeStartDate,
+} from "./utils/formatter";
 
 const AttendanceSummaryCard = lazy(() =>
   import("@/entities/attendance/ui/AttendanceSummaryCard").then((module) => ({
@@ -59,6 +63,49 @@ const EditAttendanceModalLazy = lazy(() =>
   })),
 );
 
+const ICON_GUIDE_ITEMS: Array<{
+  icon: ReactNode;
+  label: string;
+}> = [
+  {
+    icon: ATTENDANCE_ICON_MAP.present,
+    label: ICON_GUIDE_LABELS.present,
+  },
+  {
+    icon: ATTENDANCE_ICON_MAP.late,
+    label: ICON_GUIDE_LABELS.late,
+  },
+  {
+    icon: ATTENDANCE_ICON_MAP.leftEarly,
+    label: ICON_GUIDE_LABELS.leftEarly,
+  },
+  {
+    icon: ATTENDANCE_ICON_MAP.leave,
+    label: ICON_GUIDE_LABELS.leave,
+  },
+  {
+    icon: ATTENDANCE_ICON_MAP.annual,
+    label: ICON_GUIDE_LABELS.annual,
+  },
+  {
+    icon: ATTENDANCE_ICON_MAP.absent,
+    label: ICON_GUIDE_LABELS.absent,
+  },
+  {
+    icon: <UnitIcon color={UNIT_COLORS.CURRENT_UNIT} size={20} />,
+    label: ICON_GUIDE_LABELS.CURRENT_UNIT,
+  },
+  {
+    icon: <UnitIcon color={UNIT_COLORS.OTHER_UNIT} size={20} />,
+    label: ICON_GUIDE_LABELS.OTHER_UNIT,
+  },
+];
+
+const UNIT_COLORS_CONFIG = {
+  currentUnit: UNIT_COLORS.CURRENT_UNIT,
+  otherUnit: UNIT_COLORS.OTHER_UNIT,
+} as const;
+
 const Attendance = () => {
   // TODO: 인증에서 userId 가져오기
   const userId = 1;
@@ -69,347 +116,185 @@ const Attendance = () => {
   const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
-  const {
-    data: bootcampSummaryData,
-    isLoading: isLoadingBootcamps,
-    isError: isErrorBootcamps,
-    error: errorBootcamps,
-  } = useMyBootcamps();
+  const [statsMode, setStatsMode] = useState<"unit" | "custom">("unit");
+  const [customDateRange, setCustomDateRange] = useState<{
+    startDate: Date;
+    endDate: Date;
+  } | null>(null);
 
-  const shouldUseMocks =
-    process.env.NEXT_PUBLIC_USE_ATTENDANCE_MOCKS === "true";
-
-  const finalBootcampData = useMemo(() => {
-    if (
-      shouldUseMocks &&
-      isErrorBootcamps &&
-      errorBootcamps &&
-      isNetworkError(errorBootcamps)
-    ) {
-      return generateMockBootcamps();
-    }
-    return bootcampSummaryData;
-  }, [shouldUseMocks, isErrorBootcamps, errorBootcamps, bootcampSummaryData]);
-
-  const bootcampOptions = useMemo(() => {
-    if (!finalBootcampData?.data) return [];
-    return transformBootcampsToOptions(finalBootcampData.data);
-  }, [finalBootcampData]);
-
-  const selectedBootcampId = useMemo(() => {
-    if (bootcampOptions.length === 0 || selectedBootcampIndex < 0) return null;
-    const selectedOption = bootcampOptions[selectedBootcampIndex];
-    return selectedOption ? Number(selectedOption.value) : null;
-  }, [bootcampOptions, selectedBootcampIndex]);
+  const statsModeOptions: ToggleOption<"unit" | "custom">[] = useMemo(
+    () => [
+      { value: "unit", label: "단위 기간" },
+      { value: "custom", label: "기간 선택" },
+    ],
+    [],
+  );
 
   const {
-    data: sessionsData,
-    isLoading: isLoadingSessions,
-    isError: isErrorSessions,
-    error: errorSessions,
-  } = useSessionsWithAttendance(selectedBootcampId, userId);
-
-  const finalSessionsData = useMemo(() => {
-    if (
-      shouldUseMocks &&
-      isErrorSessions &&
-      errorSessions &&
-      isNetworkError(errorSessions)
-    ) {
-      const mockBootcampId = finalBootcampData?.data?.[0]?.id || 1;
-      return generateMockSessions(mockBootcampId, userId);
-    }
-    return sessionsData;
-  }, [
-    shouldUseMocks,
+    bootcampOptions,
+    selectedBootcampId,
+    allCalendarDates,
+    unitPeriods,
+    selectedBootcamp,
+    isLoading,
+    hasData,
+    isErrorBootcamps,
+    errorBootcamps,
     isErrorSessions,
     errorSessions,
-    sessionsData,
-    finalBootcampData,
-    userId,
-  ]);
+    updateAttendanceMutation,
+    deleteAttendanceMutation,
+  } = useAttendanceData(selectedBootcampIndex, { userId });
 
-  const allCalendarDates = useMemo(() => {
-    if (!finalSessionsData?.data) return [];
-    return transformSessionsToDateData(finalSessionsData.data);
-  }, [finalSessionsData]);
+  useAttendanceErrors({
+    isErrorBootcamps,
+    errorBootcamps,
+    isErrorSessions,
+    errorSessions,
+  });
 
-  const unitPeriods = useMemo(() => {
-    if (!finalSessionsData?.data) return [];
-    return extractUnitPeriods(finalSessionsData.data);
-  }, [finalSessionsData]);
+  const { calendarDates, selectedPeriod, dateRange } = useCalendarDates({
+    allCalendarDates,
+    unitPeriods,
+    currentMonth,
+  });
 
-  const updateAttendanceMutation = useUpdateAttendance();
-  const deleteAttendanceMutation = useDeleteAttendance();
+  const { attendanceSummaryValues, unitStats, periodAllowance } =
+    useAttendanceStats({
+      allCalendarDates,
+      selectedPeriod: statsMode === "custom" ? null : selectedPeriod,
+      isKdt: selectedBootcamp?.isKdt,
+      customDateRange: statsMode === "custom" ? customDateRange : null,
+    });
 
-  const isLoading = isLoadingBootcamps || isLoadingSessions;
-  const hasData = finalBootcampData?.data && finalSessionsData?.data;
+  const isEmpty = !isLoading && !hasData;
 
-  useEffect(() => {
-    if (isErrorBootcamps && errorBootcamps && !isNetworkError(errorBootcamps)) {
-      const message = getErrorMessage(
-        errorBootcamps,
-        ERROR_MESSAGES.FETCH_BOOTCAMPS_FAILED,
-        ERROR_MESSAGES.NETWORK_ERROR,
-      );
-      toast.error(message);
-    }
-  }, [isErrorBootcamps, errorBootcamps, toast]);
+  const handleMonthChange = useCallback((month: Date) => {
+    setCurrentMonth(month);
+  }, []);
 
-  useEffect(() => {
-    if (isErrorSessions && errorSessions && !isNetworkError(errorSessions)) {
-      const message = getErrorMessage(
-        errorSessions,
-        ERROR_MESSAGES.FETCH_SESSIONS_FAILED,
-        ERROR_MESSAGES.NETWORK_ERROR,
-      );
-      toast.error(message);
-    }
-  }, [isErrorSessions, errorSessions, toast]);
+  const handleEdit = useCallback((dates: Date[]) => {
+    setSelectedDatesForEdit(dates);
+    setIsEditModalOpen(true);
+  }, []);
 
-  const shouldShowSkeleton = isLoading || !hasData;
-
-  const targetYear = currentMonth.getFullYear();
-  const targetMonthIndex = currentMonth.getMonth();
-
-  const monthStart = new Date(targetYear, targetMonthIndex, 1);
-  const monthEnd = new Date(targetYear, targetMonthIndex + 1, 0);
-
-  const overlappingPeriods = unitPeriods
-    .map((period) => {
-      const overlapStart = new Date(
-        Math.max(period.startDate.getTime(), monthStart.getTime()),
-      );
-      const overlapEnd = new Date(
-        Math.min(period.endDate.getTime(), monthEnd.getTime()),
-      );
-
-      if (overlapStart <= overlapEnd) {
-        const dayCount = allCalendarDates.filter((dateData) => {
-          const date = dateData.date;
-          return (
-            date.getTime() >= overlapStart.getTime() &&
-            date.getTime() <= overlapEnd.getTime()
+  const handleDateSelect = useCallback(
+    (dates: Date[]) => {
+      if (statsMode === "custom") {
+        if (dates.length >= 2) {
+          const sortedDates = [...dates].sort(
+            (a, b) => a.getTime() - b.getTime(),
           );
-        }).length;
+          const startDate = sortedDates[0];
+          const endDate = sortedDates[sortedDates.length - 1];
 
+          const startTime = normalizeStartDate(startDate);
+          const endTime = normalizeEndDate(endDate);
+
+          const datesInRange = allCalendarDates
+            .filter((dateData) => {
+              const dateTime = normalizeDate(dateData.date);
+              return dateTime >= startTime && dateTime <= endTime;
+            })
+            .map((dateData) => new Date(dateData.date));
+
+          setSelectedDates(datesInRange);
+          setCustomDateRange({
+            startDate,
+            endDate,
+          });
+        } else if (dates.length === 0) {
+          setSelectedDates([]);
+          setCustomDateRange(null);
+        } else {
+          setSelectedDates(dates);
+          setCustomDateRange(null);
+        }
+      } else {
+        setSelectedDates(dates);
+      }
+    },
+    [statsMode, allCalendarDates],
+  );
+
+  const handleCloseModal = useCallback(() => {
+    setIsEditModalOpen(false);
+  }, []);
+
+  const handleStatsModeChange = useCallback((mode: "unit" | "custom") => {
+    setStatsMode(mode);
+    if (mode === "unit") {
+      setSelectedDates([]);
+      setCustomDateRange(null);
+    }
+  }, []);
+
+  const displayDateRange = useMemo(() => {
+    if (statsMode === "custom") {
+      if (customDateRange) {
         return {
-          period,
-          dayCount,
+          startDate: customDateRange.startDate,
+          endDate: customDateRange.endDate,
+          sessionCount: unitStats.totalDays,
         };
       }
       return null;
-    })
-    .filter(
-      (item): item is { period: (typeof unitPeriods)[0]; dayCount: number } =>
-        item !== null,
-    );
+    }
+    return dateRange;
+  }, [statsMode, customDateRange, dateRange, unitStats.totalDays]);
 
-  const selectedPeriod =
-    overlappingPeriods.length > 0
-      ? overlappingPeriods.reduce((max, current) =>
-          current.dayCount > max.dayCount ? current : max,
-        ).period
-      : null;
+  const handleSaveEdit = useCallback(
+    async (dates: Date[], status: AttendanceStatus | undefined) => {
+      if (selectedBootcampId == null) return;
 
-  const dateRange = selectedPeriod
-    ? {
-        startDate: selectedPeriod.startDate,
-        endDate: selectedPeriod.endDate,
-        sessionCount: allCalendarDates.filter((dateData) => {
-          const date = dateData.date;
-          return (
-            date.getTime() >= selectedPeriod.startDate.getTime() &&
-            date.getTime() <= selectedPeriod.endDate.getTime()
-          );
-        }).length,
-      }
-    : null;
+      const classDates = formatDatesToStrings(dates);
 
-  const today = new Date();
-  const currentPeriodForCalendar = unitPeriods.find(
-    (period) =>
-      today.getTime() >= period.startDate.getTime() &&
-      today.getTime() <= period.endDate.getTime(),
-  );
-
-  const calendarDates = allCalendarDates
-    .filter((dateData) => {
-      const date = dateData.date;
-      const isInTargetMonth =
-        date.getFullYear() === targetYear &&
-        date.getMonth() === targetMonthIndex;
-
-      const prevMonth = new Date(targetYear, targetMonthIndex, 1);
-      prevMonth.setMonth(prevMonth.getMonth() - 1);
-      const isInPrevMonth =
-        date.getFullYear() === prevMonth.getFullYear() &&
-        date.getMonth() === prevMonth.getMonth();
-
-      const nextMonth = new Date(targetYear, targetMonthIndex, 1);
-      nextMonth.setMonth(nextMonth.getMonth() + 1);
-      const isInNextMonth =
-        date.getFullYear() === nextMonth.getFullYear() &&
-        date.getMonth() === nextMonth.getMonth();
-
-      if (!isInTargetMonth && !isInPrevMonth && !isInNextMonth) {
-        return false;
-      }
-
-      return unitPeriods.some(
-        (period) =>
-          date.getTime() >= period.startDate.getTime() &&
-          date.getTime() <= period.endDate.getTime(),
-      );
-    })
-    .map((dateData) => {
-      const date = dateData.date;
-      const isInCurrentPeriod =
-        currentPeriodForCalendar !== undefined &&
-        date.getTime() >= currentPeriodForCalendar.startDate.getTime() &&
-        date.getTime() <= currentPeriodForCalendar.endDate.getTime();
-
-      const isInOtherPeriod = unitPeriods.some(
-        (period) =>
-          period !== currentPeriodForCalendar &&
-          date.getTime() >= period.startDate.getTime() &&
-          date.getTime() <= period.endDate.getTime(),
-      );
-
-      return {
-        ...dateData,
-        isCurrentUnit: isInCurrentPeriod ? true : undefined,
-        isOtherUnit: isInOtherPeriod ? true : undefined,
-      };
-    });
-
-  const handleMonthChange = (month: Date) => {
-    setCurrentMonth(month);
-  };
-
-  const periodDates = selectedPeriod
-    ? allCalendarDates.filter(
-        (dateData) =>
-          dateData.date.getTime() >= selectedPeriod.startDate.getTime() &&
-          dateData.date.getTime() <= selectedPeriod.endDate.getTime(),
-      )
-    : [];
-
-  const statusCounts = calculateStatusCounts(periodDates);
-
-  const attendanceSummaryValues = {
-    present: statusCounts.present || 0,
-    late: statusCounts.late || 0,
-    leftEarly: statusCounts.leftEarly || 0,
-    leave: statusCounts.leave || 0,
-    annual: statusCounts.annual || 0,
-    absent: statusCounts.absent || 0,
-  };
-
-  const unitStats = calculateUnitStats(periodDates, statusCounts);
-
-  const selectedBootcamp = bootcampOptions[selectedBootcampIndex];
-  const periodAllowance = calculatePeriodAllowance(
-    selectedPeriod,
-    unitStats.totalAttendance,
-    selectedBootcamp?.isKdt ?? false,
-  );
-
-  const iconGuideItems = [
-    {
-      icon: ATTENDANCE_ICON_MAP.present,
-      label: ICON_GUIDE_LABELS.present,
-    },
-    {
-      icon: ATTENDANCE_ICON_MAP.late,
-      label: ICON_GUIDE_LABELS.late,
-    },
-    {
-      icon: ATTENDANCE_ICON_MAP.leftEarly,
-      label: ICON_GUIDE_LABELS.leftEarly,
-    },
-    {
-      icon: ATTENDANCE_ICON_MAP.leave,
-      label: ICON_GUIDE_LABELS.leave,
-    },
-    {
-      icon: ATTENDANCE_ICON_MAP.annual,
-      label: ICON_GUIDE_LABELS.annual,
-    },
-    {
-      icon: ATTENDANCE_ICON_MAP.absent,
-      label: ICON_GUIDE_LABELS.absent,
-    },
-    {
-      icon: <UnitIcon color={UNIT_COLORS.CURRENT_UNIT} size={20} />,
-      label: ICON_GUIDE_LABELS.CURRENT_UNIT,
-    },
-    {
-      icon: <UnitIcon color={UNIT_COLORS.OTHER_UNIT} size={20} />,
-      label: ICON_GUIDE_LABELS.OTHER_UNIT,
-    },
-  ];
-
-  const handleEdit = (dates: Date[]) => {
-    setSelectedDatesForEdit(dates);
-    setIsEditModalOpen(true);
-  };
-
-  const handleDateSelect = (dates: Date[]) => {
-    setSelectedDates(dates);
-  };
-
-  const handleSaveEdit = async (
-    dates: Date[],
-    status: AttendanceStatus | undefined,
-  ) => {
-    if (!selectedBootcampId) return;
-
-    const classDates = dates.map((date) => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    });
-
-    try {
-      if (status === undefined) {
-        await deleteAttendanceMutation.mutateAsync({
-          userId,
-          bootcampId: selectedBootcampId,
-          classDates,
-        });
-        toast.success(SUCCESS_MESSAGES.ATTENDANCE_DELETED);
-      } else {
-        const apiStatus = mapCalendarStatusToApiStatus(status);
-        if (apiStatus) {
-          await updateAttendanceMutation.mutateAsync({
+      try {
+        if (status === undefined) {
+          await deleteAttendanceMutation.mutateAsync({
             userId,
             bootcampId: selectedBootcampId,
-            status: apiStatus,
             classDates,
           });
-          toast.success(SUCCESS_MESSAGES.ATTENDANCE_SAVED);
+          toast.success(SUCCESS_MESSAGES.ATTENDANCE_DELETED);
+        } else {
+          const apiStatus = mapCalendarStatusToApiStatus(status);
+          if (apiStatus) {
+            await updateAttendanceMutation.mutateAsync({
+              userId,
+              bootcampId: selectedBootcampId,
+              status: apiStatus,
+              classDates,
+            });
+            toast.success(SUCCESS_MESSAGES.ATTENDANCE_SAVED);
+          }
         }
+      } catch (error) {
+        const defaultMessage =
+          status === undefined
+            ? ERROR_MESSAGES.DELETE_ATTENDANCE_FAILED
+            : ERROR_MESSAGES.SAVE_ATTENDANCE_FAILED;
+
+        const message = getErrorMessage(
+          error,
+          defaultMessage,
+          ERROR_MESSAGES.NETWORK_ERROR,
+        );
+        toast.error(message);
+        return;
       }
-    } catch (error) {
-      const defaultMessage =
-        status === undefined
-          ? ERROR_MESSAGES.DELETE_ATTENDANCE_FAILED
-          : ERROR_MESSAGES.SAVE_ATTENDANCE_FAILED;
 
-      const message = getErrorMessage(
-        error,
-        defaultMessage,
-        ERROR_MESSAGES.NETWORK_ERROR,
-      );
-      toast.error(message);
-      return;
-    }
-
-    setSelectedDates([]);
-    setIsEditModalOpen(false);
-  };
+      setSelectedDates([]);
+      setIsEditModalOpen(false);
+    },
+    [
+      selectedBootcampId,
+      userId,
+      deleteAttendanceMutation,
+      updateAttendanceMutation,
+      toast,
+    ],
+  );
 
   return (
     <div className={styles.container}>
@@ -419,21 +304,42 @@ const Attendance = () => {
             options={bootcampOptions}
             selectedIndex={selectedBootcampIndex}
             onIndexChange={setSelectedBootcampIndex}
-            dateRange={dateRange}
+            dateRange={displayDateRange}
           />
+          {!isLoading && !isEmpty && (
+            <Toggle
+              options={statsModeOptions}
+              value={statsMode}
+              onChange={handleStatsModeChange}
+            />
+          )}
         </div>
 
-        <div className={styles.summaryCards}>
-          {shouldShowSkeleton ? (
-            <>
+        {isLoading ? (
+          <>
+            <div className={styles.summaryCards}>
               <AttendanceSummaryCardSkeleton
                 title={CARD_TITLES.ATTENDANCE_SUMMARY}
               />
               <UnitPeriodStatsCardSkeleton />
               <PeriodAllowanceCardSkeleton />
-            </>
-          ) : (
-            <>
+            </div>
+            <CalendarSkeleton />
+          </>
+        ) : isEmpty ? (
+          <div className={styles.emptyState}>
+            <p className={styles.emptyMessage}>
+              {bootcampOptions.length === 0
+                ? "등록된 부트캠프가 없습니다."
+                : "출결 데이터가 없습니다."}
+            </p>
+          </div>
+        ) : (
+          <>
+            <div
+              className={styles.summaryCards}
+              data-columns={statsMode === "unit" ? 3 : 2}
+            >
               <Suspense
                 fallback={
                   <AttendanceSummaryCardSkeleton
@@ -451,34 +357,29 @@ const Attendance = () => {
                 totalAbsent={unitStats.totalAbsent}
                 totalUnrecorded={unitStats.totalUnrecorded}
               />
-              <PeriodAllowanceCard
-                amount={periodAllowance.amount}
-                dateRange={periodAllowance.dateRange}
-              />
-            </>
-          )}
-        </div>
-
-        {shouldShowSkeleton ? (
-          <CalendarSkeleton />
-        ) : (
-          <Card variant="solid" width="100%">
-            <Suspense fallback={<CalendarSkeleton />}>
-              <CalendarComponent
-                dates={calendarDates}
-                selectedDates={selectedDates}
-                onDateSelect={handleDateSelect}
-                initialMonth={currentMonth}
-                onEdit={handleEdit}
-                onMonthChange={handleMonthChange}
-                unitColors={{
-                  currentUnit: UNIT_COLORS.CURRENT_UNIT,
-                  otherUnit: UNIT_COLORS.OTHER_UNIT,
-                }}
-              />
-              <IconGuide items={iconGuideItems} />
-            </Suspense>
-          </Card>
+              {statsMode === "unit" && (
+                <PeriodAllowanceCard
+                  amount={periodAllowance.amount}
+                  dateRange={periodAllowance.dateRange}
+                />
+              )}
+            </div>
+            <Card width="100%">
+              <Suspense fallback={<CalendarSkeleton />}>
+                <CalendarComponent
+                  dates={calendarDates}
+                  selectedDates={selectedDates}
+                  onDateSelect={handleDateSelect}
+                  initialMonth={currentMonth}
+                  onEdit={handleEdit}
+                  onMonthChange={handleMonthChange}
+                  hideFloatingBar={statsMode === "custom"}
+                  unitColors={UNIT_COLORS_CONFIG}
+                />
+                <IconGuide items={ICON_GUIDE_ITEMS} />
+              </Suspense>
+            </Card>
+          </>
         )}
       </div>
 
@@ -486,7 +387,7 @@ const Attendance = () => {
         <Suspense fallback={null}>
           <EditAttendanceModalLazy
             selectedDates={selectedDatesForEdit}
-            onClose={() => setIsEditModalOpen(false)}
+            onClose={handleCloseModal}
             onSave={handleSaveEdit}
           />
         </Suspense>

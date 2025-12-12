@@ -11,18 +11,6 @@
   }
 }
 
-.title {
-  font-family: var(--font-family);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--foreground);
-  text-align: left;
-
-  @media (width <= 400px) {
-    font-size: var(--font-size-lg);
-  }
-}
-
 .section {
   display: flex;
   flex-direction: column;

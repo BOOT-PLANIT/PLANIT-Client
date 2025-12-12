@@ -40,6 +40,7 @@ interface CalendarProps {
     currentUnit?: string;
     otherUnit?: string;
   };
+  hideFloatingBar?: boolean;
 }
 
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
@@ -69,6 +70,7 @@ const Calendar = ({
   initialMonth = new Date(),
   onMonthChange,
   unitColors,
+  hideFloatingBar = false,
 }: CalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(
     new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1),
@@ -553,7 +555,7 @@ const Calendar = ({
         </div>
       </div>
 
-      {selectedDates.length > 0 && (
+      {!hideFloatingBar && selectedDates.length > 0 && (
         <FloatingBar
           selectedCount={selectedDates.length}
           onClear={handleClearSelection}

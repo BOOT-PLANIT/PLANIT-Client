@@ -8,7 +8,7 @@ import styles from "./UnitPeriodStatsCardSkeleton.module.scss";
 
 const UnitPeriodStatsCardSkeleton = () => {
   return (
-    <Card variant="solid" title={CARD_TITLES.PERIOD_STATS}>
+    <Card title={CARD_TITLES.PERIOD_STATS}>
       <div className={styles.container}>
         <div className={styles.chartBox}>
           <Skeleton
