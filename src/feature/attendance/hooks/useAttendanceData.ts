@@ -7,12 +7,7 @@ import {
 import { useMyBootcamps } from "@/feature/enrollment/api";
 import { useSessionsWithAttendance } from "@/feature/session/api";
 import type { DateData } from "@/shared/ui/Calendar";
-import { isNetworkError } from "@/shared/utils";
 
-import {
-  generateMockBootcamps,
-  generateMockSessions,
-} from "../../../page-layer/attendance/model/mockData";
 import type {
   BootcampOption,
   UnitPeriod,
@@ -48,8 +43,6 @@ export const useAttendanceData = (
   options: UseAttendanceDataOptions,
 ): UseAttendanceDataReturn => {
   const { userId } = options;
-  const shouldUseMocks =
-    process.env.NEXT_PUBLIC_USE_ATTENDANCE_MOCKS === "true";
 
   const {
     data: bootcampSummaryData,
@@ -58,23 +51,11 @@ export const useAttendanceData = (
     error: errorBootcamps,
   } = useMyBootcamps();
 
-  const finalBootcampData = useMemo(() => {
-    if (
-      shouldUseMocks &&
-      isErrorBootcamps &&
-      errorBootcamps &&
-      isNetworkError(errorBootcamps)
-    ) {
-      return generateMockBootcamps();
-    }
-    return bootcampSummaryData;
-  }, [shouldUseMocks, isErrorBootcamps, errorBootcamps, bootcampSummaryData]);
-
   const bootcampOptions = useMemo(() => {
-    if (!finalBootcampData?.data) return [];
-    if (!Array.isArray(finalBootcampData.data)) return [];
-    return transformBootcampsToOptions(finalBootcampData.data);
-  }, [finalBootcampData]);
+    if (!bootcampSummaryData?.data) return [];
+    if (!Array.isArray(bootcampSummaryData.data)) return [];
+    return transformBootcampsToOptions(bootcampSummaryData.data);
+  }, [bootcampSummaryData]);
 
   const selectedBootcampId = useMemo(() => {
     if (bootcampOptions.length === 0 || selectedBootcampIndex < 0) return null;
@@ -89,35 +70,15 @@ export const useAttendanceData = (
     error: errorSessions,
   } = useSessionsWithAttendance(selectedBootcampId, userId);
 
-  const finalSessionsData = useMemo(() => {
-    if (
-      shouldUseMocks &&
-      isErrorSessions &&
-      errorSessions &&
-      isNetworkError(errorSessions)
-    ) {
-      const mockBootcampId = finalBootcampData?.data?.[0]?.id || 1;
-      return generateMockSessions(mockBootcampId, userId);
-    }
-    return sessionsData;
-  }, [
-    shouldUseMocks,
-    isErrorSessions,
-    errorSessions,
-    sessionsData,
-    finalBootcampData,
-    userId,
-  ]);
-
   const allCalendarDates = useMemo(() => {
-    if (!finalSessionsData?.data) return [];
-    return transformSessionsToDateData(finalSessionsData.data);
-  }, [finalSessionsData]);
+    if (!sessionsData?.data) return [];
+    return transformSessionsToDateData(sessionsData.data);
+  }, [sessionsData]);
 
   const unitPeriods = useMemo(() => {
-    if (!finalSessionsData?.data) return [];
-    return extractUnitPeriods(finalSessionsData.data);
-  }, [finalSessionsData]);
+    if (!sessionsData?.data) return [];
+    return extractUnitPeriods(sessionsData.data);
+  }, [sessionsData]);
 
   const updateAttendanceMutation = useUpdateAttendance();
   const deleteAttendanceMutation = useDeleteAttendance();
@@ -125,10 +86,10 @@ export const useAttendanceData = (
   const isLoading = isLoadingBootcamps || isLoadingSessions;
   const hasData =
     bootcampOptions.length > 0 &&
-    !!finalBootcampData?.data &&
-    !!finalSessionsData?.data &&
-    Array.isArray(finalSessionsData.data) &&
-    finalSessionsData.data.length > 0;
+    !!bootcampSummaryData?.data &&
+    !!sessionsData?.data &&
+    Array.isArray(sessionsData.data) &&
+    sessionsData.data.length > 0;
   const selectedBootcamp = bootcampOptions[selectedBootcampIndex];
 
   return {

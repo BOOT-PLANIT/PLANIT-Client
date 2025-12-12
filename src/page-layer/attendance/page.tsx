@@ -38,7 +38,12 @@ import PeriodAllowanceCardSkeleton from "./ui/PeriodAllowanceCard/PeriodAllowanc
 import { UnitIcon } from "./ui/UnitIcon";
 import UnitPeriodStatsCardSkeleton from "./ui/UnitPeriodStatsCard/UnitPeriodStatsCardSkeleton";
 import { mapCalendarStatusToApiStatus } from "./utils/apiTransform";
-import { formatDatesToStrings } from "./utils/formatter";
+import {
+  formatDatesToStrings,
+  normalizeDate,
+  normalizeEndDate,
+  normalizeStartDate,
+} from "./utils/formatter";
 
 const AttendanceSummaryCard = lazy(() =>
   import("@/entities/attendance/ui/AttendanceSummaryCard").then((module) => ({
@@ -178,16 +183,8 @@ const Attendance = () => {
           const startDate = sortedDates[0];
           const endDate = sortedDates[sortedDates.length - 1];
 
-          const normalizeDate = (date: Date) => {
-            return new Date(
-              date.getFullYear(),
-              date.getMonth(),
-              date.getDate(),
-            ).getTime();
-          };
-
-          const startTime = normalizeDate(startDate);
-          const endTime = normalizeDate(endDate);
+          const startTime = normalizeStartDate(startDate);
+          const endTime = normalizeEndDate(endDate);
 
           const datesInRange = allCalendarDates
             .filter((dateData) => {
@@ -205,7 +202,9 @@ const Attendance = () => {
           setSelectedDates([]);
           setCustomDateRange(null);
         } else {
+          // 날짜가 1개만 선택된 경우 기간이 아니므로 customDateRange 초기화
           setSelectedDates(dates);
+          setCustomDateRange(null);
         }
       } else {
         setSelectedDates(dates);
@@ -228,34 +227,6 @@ const Attendance = () => {
 
   const displayDateRange = useMemo(() => {
     if (statsMode === "custom" && customDateRange) {
-      const normalizeStartDate = (date: Date) => {
-        return new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate(),
-        ).getTime();
-      };
-
-      const normalizeEndDate = (date: Date) => {
-        return new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate(),
-          23,
-          59,
-          59,
-          999,
-        ).getTime();
-      };
-
-      const normalizeDate = (date: Date) => {
-        return new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate(),
-        ).getTime();
-      };
-
       const startTime = normalizeStartDate(customDateRange.startDate);
       const endTime = normalizeEndDate(customDateRange.endDate);
 

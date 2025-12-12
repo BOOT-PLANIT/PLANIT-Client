@@ -13,6 +13,11 @@ import {
   calculateStatusCounts,
   calculateUnitStats,
 } from "../utils/calculator";
+import {
+  normalizeDate,
+  normalizeEndDate,
+  normalizeStartDate,
+} from "../utils/formatter";
 
 interface UseAttendanceStatsOptions {
   allCalendarDates: DateData[];
@@ -36,26 +41,6 @@ export const useAttendanceStats = (
   const { allCalendarDates, selectedPeriod, isKdt, customDateRange } = options;
 
   const periodTimeRange = useMemo(() => {
-    const normalizeStartDate = (date: Date) => {
-      return new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-      ).getTime();
-    };
-
-    const normalizeEndDate = (date: Date) => {
-      return new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        23,
-        59,
-        59,
-        999,
-      ).getTime();
-    };
-
     if (customDateRange) {
       return {
         startTime: normalizeStartDate(customDateRange.startDate),
@@ -71,14 +56,6 @@ export const useAttendanceStats = (
 
   const periodDates = useMemo(() => {
     if (!periodTimeRange) return [];
-
-    const normalizeDate = (date: Date) => {
-      return new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-      ).getTime();
-    };
 
     return allCalendarDates.filter((dateData) => {
       const dateTime = normalizeDate(dateData.date);
