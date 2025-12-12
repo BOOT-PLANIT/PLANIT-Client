@@ -101,6 +101,11 @@ const ICON_GUIDE_ITEMS: Array<{
   },
 ];
 
+const UNIT_COLORS_CONFIG = {
+  currentUnit: UNIT_COLORS.CURRENT_UNIT,
+  otherUnit: UNIT_COLORS.OTHER_UNIT,
+} as const;
+
 const Attendance = () => {
   // TODO: 인증에서 userId 가져오기
   const userId = 1;
@@ -202,7 +207,6 @@ const Attendance = () => {
           setSelectedDates([]);
           setCustomDateRange(null);
         } else {
-          // 날짜가 1개만 선택된 경우 기간이 아니므로 customDateRange 초기화
           setSelectedDates(dates);
           setCustomDateRange(null);
         }
@@ -227,22 +231,14 @@ const Attendance = () => {
 
   const displayDateRange = useMemo(() => {
     if (statsMode === "custom" && customDateRange) {
-      const startTime = normalizeStartDate(customDateRange.startDate);
-      const endTime = normalizeEndDate(customDateRange.endDate);
-
-      const sessionCount = allCalendarDates.filter((dateData) => {
-        const dateTime = normalizeDate(dateData.date);
-        return dateTime >= startTime && dateTime <= endTime;
-      }).length;
-
       return {
         startDate: customDateRange.startDate,
         endDate: customDateRange.endDate,
-        sessionCount,
+        sessionCount: unitStats.totalDays,
       };
     }
     return dateRange;
-  }, [statsMode, customDateRange, dateRange, allCalendarDates]);
+  }, [statsMode, customDateRange, dateRange, unitStats.totalDays]);
 
   const handleSaveEdit = useCallback(
     async (dates: Date[], status: AttendanceStatus | undefined) => {
@@ -367,10 +363,7 @@ const Attendance = () => {
                 onEdit={handleEdit}
                 onMonthChange={handleMonthChange}
                 hideFloatingBar={statsMode === "custom"}
-                unitColors={{
-                  currentUnit: UNIT_COLORS.CURRENT_UNIT,
-                  otherUnit: UNIT_COLORS.OTHER_UNIT,
-                }}
+                unitColors={UNIT_COLORS_CONFIG}
               />
               <IconGuide items={ICON_GUIDE_ITEMS} />
             </Suspense>
