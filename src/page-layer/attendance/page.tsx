@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, lazy, useMemo, useEffect } from "react";
+import { useState, Suspense, lazy, useMemo } from "react";
 
 import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
 import {
@@ -12,34 +12,24 @@ import {
 } from "@/entities/attendance/model";
 import { AttendanceSummaryCardSkeleton } from "@/entities/attendance/ui/AttendanceSummaryCard";
 import { BootcampInfo } from "@/entities/bootcamp/ui/BootcampInfo";
-import {
-  useUpdateAttendance,
-  useDeleteAttendance,
-} from "@/feature/attendance/api";
-import { useMyBootcamps } from "@/feature/enrollment/api";
-import { useSessionsWithAttendance } from "@/feature/session/api";
 import { useToast } from "@/shared/lib";
 import { Card } from "@/shared/ui";
 import { CalendarSkeleton, type AttendanceStatus } from "@/shared/ui/Calendar";
-import { getErrorMessage, isNetworkError } from "@/shared/utils";
+import { getErrorMessage } from "@/shared/utils";
 
 import styles from "./Attendance.module.scss";
-import { generateMockBootcamps, generateMockSessions } from "./model/mockData";
+import {
+  useAttendanceData,
+  useAttendanceErrors,
+  useAttendanceStats,
+  useCalendarDates,
+} from "./hooks";
 import { IconGuide, PeriodAllowanceCard, UnitPeriodStatsCard } from "./ui";
 import PeriodAllowanceCardSkeleton from "./ui/PeriodAllowanceCard/PeriodAllowanceCardSkeleton";
 import { UnitIcon } from "./ui/UnitIcon";
 import UnitPeriodStatsCardSkeleton from "./ui/UnitPeriodStatsCard/UnitPeriodStatsCardSkeleton";
-import {
-  extractUnitPeriods,
-  mapCalendarStatusToApiStatus,
-  transformBootcampsToOptions,
-  transformSessionsToDateData,
-} from "./utils/apiTransform";
-import {
-  calculatePeriodAllowance,
-  calculateStatusCounts,
-  calculateUnitStats,
-} from "./utils/calculator";
+import { mapCalendarStatusToApiStatus } from "./utils/apiTransform";
+import { formatDatesToStrings } from "./utils/formatter";
 
 const AttendanceSummaryCard = lazy(() =>
   import("@/entities/attendance/ui/AttendanceSummaryCard").then((module) => ({
@@ -69,286 +59,86 @@ const Attendance = () => {
   const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
-  const {
-    data: bootcampSummaryData,
-    isLoading: isLoadingBootcamps,
-    isError: isErrorBootcamps,
-    error: errorBootcamps,
-  } = useMyBootcamps();
-
-  const shouldUseMocks =
-    process.env.NEXT_PUBLIC_USE_ATTENDANCE_MOCKS === "true";
-
-  const finalBootcampData = useMemo(() => {
-    if (
-      shouldUseMocks &&
-      isErrorBootcamps &&
-      errorBootcamps &&
-      isNetworkError(errorBootcamps)
-    ) {
-      return generateMockBootcamps();
-    }
-    return bootcampSummaryData;
-  }, [shouldUseMocks, isErrorBootcamps, errorBootcamps, bootcampSummaryData]);
-
-  const bootcampOptions = useMemo(() => {
-    if (!finalBootcampData?.data) return [];
-    return transformBootcampsToOptions(finalBootcampData.data);
-  }, [finalBootcampData]);
-
-  const selectedBootcampId = useMemo(() => {
-    if (bootcampOptions.length === 0 || selectedBootcampIndex < 0) return null;
-    const selectedOption = bootcampOptions[selectedBootcampIndex];
-    return selectedOption ? Number(selectedOption.value) : null;
-  }, [bootcampOptions, selectedBootcampIndex]);
 
   const {
-    data: sessionsData,
-    isLoading: isLoadingSessions,
-    isError: isErrorSessions,
-    error: errorSessions,
-  } = useSessionsWithAttendance(selectedBootcampId, userId);
-
-  const finalSessionsData = useMemo(() => {
-    if (
-      shouldUseMocks &&
-      isErrorSessions &&
-      errorSessions &&
-      isNetworkError(errorSessions)
-    ) {
-      const mockBootcampId = finalBootcampData?.data?.[0]?.id || 1;
-      return generateMockSessions(mockBootcampId, userId);
-    }
-    return sessionsData;
-  }, [
-    shouldUseMocks,
+    bootcampOptions,
+    selectedBootcampId,
+    allCalendarDates,
+    unitPeriods,
+    selectedBootcamp,
+    isLoading,
+    hasData,
+    isErrorBootcamps,
+    errorBootcamps,
     isErrorSessions,
     errorSessions,
-    sessionsData,
-    finalBootcampData,
-    userId,
-  ]);
+    updateAttendanceMutation,
+    deleteAttendanceMutation,
+  } = useAttendanceData(selectedBootcampIndex, { userId });
 
-  const allCalendarDates = useMemo(() => {
-    if (!finalSessionsData?.data) return [];
-    return transformSessionsToDateData(finalSessionsData.data);
-  }, [finalSessionsData]);
+  useAttendanceErrors({
+    isErrorBootcamps,
+    errorBootcamps,
+    isErrorSessions,
+    errorSessions,
+  });
 
-  const unitPeriods = useMemo(() => {
-    if (!finalSessionsData?.data) return [];
-    return extractUnitPeriods(finalSessionsData.data);
-  }, [finalSessionsData]);
+  const { calendarDates, selectedPeriod, dateRange } = useCalendarDates({
+    allCalendarDates,
+    unitPeriods,
+    currentMonth,
+  });
 
-  const updateAttendanceMutation = useUpdateAttendance();
-  const deleteAttendanceMutation = useDeleteAttendance();
-
-  const isLoading = isLoadingBootcamps || isLoadingSessions;
-  const hasData = finalBootcampData?.data && finalSessionsData?.data;
-
-  useEffect(() => {
-    if (isErrorBootcamps && errorBootcamps && !isNetworkError(errorBootcamps)) {
-      const message = getErrorMessage(
-        errorBootcamps,
-        ERROR_MESSAGES.FETCH_BOOTCAMPS_FAILED,
-        ERROR_MESSAGES.NETWORK_ERROR,
-      );
-      toast.error(message);
-    }
-  }, [isErrorBootcamps, errorBootcamps, toast]);
-
-  useEffect(() => {
-    if (isErrorSessions && errorSessions && !isNetworkError(errorSessions)) {
-      const message = getErrorMessage(
-        errorSessions,
-        ERROR_MESSAGES.FETCH_SESSIONS_FAILED,
-        ERROR_MESSAGES.NETWORK_ERROR,
-      );
-      toast.error(message);
-    }
-  }, [isErrorSessions, errorSessions, toast]);
+  const { attendanceSummaryValues, unitStats, periodAllowance } =
+    useAttendanceStats({
+      allCalendarDates,
+      selectedPeriod,
+      isKdt: selectedBootcamp?.isKdt,
+    });
 
   const shouldShowSkeleton = isLoading || !hasData;
 
-  const targetYear = currentMonth.getFullYear();
-  const targetMonthIndex = currentMonth.getMonth();
-
-  const monthStart = new Date(targetYear, targetMonthIndex, 1);
-  const monthEnd = new Date(targetYear, targetMonthIndex + 1, 0);
-
-  const overlappingPeriods = unitPeriods
-    .map((period) => {
-      const overlapStart = new Date(
-        Math.max(period.startDate.getTime(), monthStart.getTime()),
-      );
-      const overlapEnd = new Date(
-        Math.min(period.endDate.getTime(), monthEnd.getTime()),
-      );
-
-      if (overlapStart <= overlapEnd) {
-        const dayCount = allCalendarDates.filter((dateData) => {
-          const date = dateData.date;
-          return (
-            date.getTime() >= overlapStart.getTime() &&
-            date.getTime() <= overlapEnd.getTime()
-          );
-        }).length;
-
-        return {
-          period,
-          dayCount,
-        };
-      }
-      return null;
-    })
-    .filter(
-      (item): item is { period: (typeof unitPeriods)[0]; dayCount: number } =>
-        item !== null,
-    );
-
-  const selectedPeriod =
-    overlappingPeriods.length > 0
-      ? overlappingPeriods.reduce((max, current) =>
-          current.dayCount > max.dayCount ? current : max,
-        ).period
-      : null;
-
-  const dateRange = selectedPeriod
-    ? {
-        startDate: selectedPeriod.startDate,
-        endDate: selectedPeriod.endDate,
-        sessionCount: allCalendarDates.filter((dateData) => {
-          const date = dateData.date;
-          return (
-            date.getTime() >= selectedPeriod.startDate.getTime() &&
-            date.getTime() <= selectedPeriod.endDate.getTime()
-          );
-        }).length,
-      }
-    : null;
-
-  const today = new Date();
-  const currentPeriodForCalendar = unitPeriods.find(
-    (period) =>
-      today.getTime() >= period.startDate.getTime() &&
-      today.getTime() <= period.endDate.getTime(),
+  const iconGuideItems = useMemo(
+    () => [
+      {
+        icon: ATTENDANCE_ICON_MAP.present,
+        label: ICON_GUIDE_LABELS.present,
+      },
+      {
+        icon: ATTENDANCE_ICON_MAP.late,
+        label: ICON_GUIDE_LABELS.late,
+      },
+      {
+        icon: ATTENDANCE_ICON_MAP.leftEarly,
+        label: ICON_GUIDE_LABELS.leftEarly,
+      },
+      {
+        icon: ATTENDANCE_ICON_MAP.leave,
+        label: ICON_GUIDE_LABELS.leave,
+      },
+      {
+        icon: ATTENDANCE_ICON_MAP.annual,
+        label: ICON_GUIDE_LABELS.annual,
+      },
+      {
+        icon: ATTENDANCE_ICON_MAP.absent,
+        label: ICON_GUIDE_LABELS.absent,
+      },
+      {
+        icon: <UnitIcon color={UNIT_COLORS.CURRENT_UNIT} size={20} />,
+        label: ICON_GUIDE_LABELS.CURRENT_UNIT,
+      },
+      {
+        icon: <UnitIcon color={UNIT_COLORS.OTHER_UNIT} size={20} />,
+        label: ICON_GUIDE_LABELS.OTHER_UNIT,
+      },
+    ],
+    [],
   );
-
-  const calendarDates = allCalendarDates
-    .filter((dateData) => {
-      const date = dateData.date;
-      const isInTargetMonth =
-        date.getFullYear() === targetYear &&
-        date.getMonth() === targetMonthIndex;
-
-      const prevMonth = new Date(targetYear, targetMonthIndex, 1);
-      prevMonth.setMonth(prevMonth.getMonth() - 1);
-      const isInPrevMonth =
-        date.getFullYear() === prevMonth.getFullYear() &&
-        date.getMonth() === prevMonth.getMonth();
-
-      const nextMonth = new Date(targetYear, targetMonthIndex, 1);
-      nextMonth.setMonth(nextMonth.getMonth() + 1);
-      const isInNextMonth =
-        date.getFullYear() === nextMonth.getFullYear() &&
-        date.getMonth() === nextMonth.getMonth();
-
-      if (!isInTargetMonth && !isInPrevMonth && !isInNextMonth) {
-        return false;
-      }
-
-      return unitPeriods.some(
-        (period) =>
-          date.getTime() >= period.startDate.getTime() &&
-          date.getTime() <= period.endDate.getTime(),
-      );
-    })
-    .map((dateData) => {
-      const date = dateData.date;
-      const isInCurrentPeriod =
-        currentPeriodForCalendar !== undefined &&
-        date.getTime() >= currentPeriodForCalendar.startDate.getTime() &&
-        date.getTime() <= currentPeriodForCalendar.endDate.getTime();
-
-      const isInOtherPeriod = unitPeriods.some(
-        (period) =>
-          period !== currentPeriodForCalendar &&
-          date.getTime() >= period.startDate.getTime() &&
-          date.getTime() <= period.endDate.getTime(),
-      );
-
-      return {
-        ...dateData,
-        isCurrentUnit: isInCurrentPeriod ? true : undefined,
-        isOtherUnit: isInOtherPeriod ? true : undefined,
-      };
-    });
 
   const handleMonthChange = (month: Date) => {
     setCurrentMonth(month);
   };
-
-  const periodDates = selectedPeriod
-    ? allCalendarDates.filter(
-        (dateData) =>
-          dateData.date.getTime() >= selectedPeriod.startDate.getTime() &&
-          dateData.date.getTime() <= selectedPeriod.endDate.getTime(),
-      )
-    : [];
-
-  const statusCounts = calculateStatusCounts(periodDates);
-
-  const attendanceSummaryValues = {
-    present: statusCounts.present || 0,
-    late: statusCounts.late || 0,
-    leftEarly: statusCounts.leftEarly || 0,
-    leave: statusCounts.leave || 0,
-    annual: statusCounts.annual || 0,
-    absent: statusCounts.absent || 0,
-  };
-
-  const unitStats = calculateUnitStats(periodDates, statusCounts);
-
-  const selectedBootcamp = bootcampOptions[selectedBootcampIndex];
-  const periodAllowance = calculatePeriodAllowance(
-    selectedPeriod,
-    unitStats.totalAttendance,
-    selectedBootcamp?.isKdt ?? false,
-  );
-
-  const iconGuideItems = [
-    {
-      icon: ATTENDANCE_ICON_MAP.present,
-      label: ICON_GUIDE_LABELS.present,
-    },
-    {
-      icon: ATTENDANCE_ICON_MAP.late,
-      label: ICON_GUIDE_LABELS.late,
-    },
-    {
-      icon: ATTENDANCE_ICON_MAP.leftEarly,
-      label: ICON_GUIDE_LABELS.leftEarly,
-    },
-    {
-      icon: ATTENDANCE_ICON_MAP.leave,
-      label: ICON_GUIDE_LABELS.leave,
-    },
-    {
-      icon: ATTENDANCE_ICON_MAP.annual,
-      label: ICON_GUIDE_LABELS.annual,
-    },
-    {
-      icon: ATTENDANCE_ICON_MAP.absent,
-      label: ICON_GUIDE_LABELS.absent,
-    },
-    {
-      icon: <UnitIcon color={UNIT_COLORS.CURRENT_UNIT} size={20} />,
-      label: ICON_GUIDE_LABELS.CURRENT_UNIT,
-    },
-    {
-      icon: <UnitIcon color={UNIT_COLORS.OTHER_UNIT} size={20} />,
-      label: ICON_GUIDE_LABELS.OTHER_UNIT,
-    },
-  ];
 
   const handleEdit = (dates: Date[]) => {
     setSelectedDatesForEdit(dates);
@@ -365,12 +155,7 @@ const Attendance = () => {
   ) => {
     if (!selectedBootcampId) return;
 
-    const classDates = dates.map((date) => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    });
+    const classDates = formatDatesToStrings(dates);
 
     try {
       if (status === undefined) {
