@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, lazy, useMemo, useCallback } from "react";
+import { useState, Suspense, lazy, useCallback } from "react";
 
 import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
 import {
@@ -48,6 +48,44 @@ const EditAttendanceModalLazy = lazy(() =>
     default: module.EditAttendanceModal,
   })),
 );
+
+const ICON_GUIDE_ITEMS: Array<{
+  icon: React.ReactNode;
+  label: string;
+}> = [
+  {
+    icon: ATTENDANCE_ICON_MAP.present,
+    label: ICON_GUIDE_LABELS.present,
+  },
+  {
+    icon: ATTENDANCE_ICON_MAP.late,
+    label: ICON_GUIDE_LABELS.late,
+  },
+  {
+    icon: ATTENDANCE_ICON_MAP.leftEarly,
+    label: ICON_GUIDE_LABELS.leftEarly,
+  },
+  {
+    icon: ATTENDANCE_ICON_MAP.leave,
+    label: ICON_GUIDE_LABELS.leave,
+  },
+  {
+    icon: ATTENDANCE_ICON_MAP.annual,
+    label: ICON_GUIDE_LABELS.annual,
+  },
+  {
+    icon: ATTENDANCE_ICON_MAP.absent,
+    label: ICON_GUIDE_LABELS.absent,
+  },
+  {
+    icon: <UnitIcon color={UNIT_COLORS.CURRENT_UNIT} size={20} />,
+    label: ICON_GUIDE_LABELS.CURRENT_UNIT,
+  },
+  {
+    icon: <UnitIcon color={UNIT_COLORS.OTHER_UNIT} size={20} />,
+    label: ICON_GUIDE_LABELS.OTHER_UNIT,
+  },
+];
 
 const Attendance = () => {
   // TODO: 인증에서 userId 가져오기
@@ -97,44 +135,6 @@ const Attendance = () => {
     });
 
   const shouldShowSkeleton = isLoading || !hasData;
-
-  const iconGuideItems = useMemo(
-    () => [
-      {
-        icon: ATTENDANCE_ICON_MAP.present,
-        label: ICON_GUIDE_LABELS.present,
-      },
-      {
-        icon: ATTENDANCE_ICON_MAP.late,
-        label: ICON_GUIDE_LABELS.late,
-      },
-      {
-        icon: ATTENDANCE_ICON_MAP.leftEarly,
-        label: ICON_GUIDE_LABELS.leftEarly,
-      },
-      {
-        icon: ATTENDANCE_ICON_MAP.leave,
-        label: ICON_GUIDE_LABELS.leave,
-      },
-      {
-        icon: ATTENDANCE_ICON_MAP.annual,
-        label: ICON_GUIDE_LABELS.annual,
-      },
-      {
-        icon: ATTENDANCE_ICON_MAP.absent,
-        label: ICON_GUIDE_LABELS.absent,
-      },
-      {
-        icon: <UnitIcon color={UNIT_COLORS.CURRENT_UNIT} size={20} />,
-        label: ICON_GUIDE_LABELS.CURRENT_UNIT,
-      },
-      {
-        icon: <UnitIcon color={UNIT_COLORS.OTHER_UNIT} size={20} />,
-        label: ICON_GUIDE_LABELS.OTHER_UNIT,
-      },
-    ],
-    [],
-  );
 
   const handleMonthChange = useCallback((month: Date) => {
     setCurrentMonth(month);
@@ -271,7 +271,7 @@ const Attendance = () => {
                   otherUnit: UNIT_COLORS.OTHER_UNIT,
                 }}
               />
-              <IconGuide items={iconGuideItems} />
+              <IconGuide items={ICON_GUIDE_ITEMS} />
             </Suspense>
           </Card>
         )}
