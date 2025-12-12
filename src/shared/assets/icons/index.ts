@@ -12,3 +12,6 @@ export { default as LeftEarlyIcon } from "./LeftEarlyIcon";
 export { default as LeaveIcon } from "./LeaveIcon";
 export { default as AnnualIcon } from "./AnnualIcon";
 export { default as AbsentIcon } from "./AbsentIcon";
+export { default as SearchIcon } from "./SearchIcon";
+export { default as DeleteIcon } from "./DeleteIcon";
+export { default as EditIcon } from "./EditIcon";
