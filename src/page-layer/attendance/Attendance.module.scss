@@ -5,6 +5,7 @@
 .content {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0;
 }
 
 .headerSection {
@@ -13,6 +14,10 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--spacing-16);
+
+  @media (width <= 768px) {
+    flex-wrap: wrap;
+  }
 }
 
 .summaryCards {
@@ -27,10 +32,6 @@
 }
 
 @media (width <= 1024px) {
-  .summaryCards {
-    grid-template-columns: 1fr;
-  }
-
   .headerSection {
     flex-direction: column;
     align-items: stretch;
@@ -38,6 +39,16 @@
 
   .statsModeToggle {
     align-self: flex-start;
+  }
+}
+
+@media (width <= 768px) {
+  .summaryCards {
+    grid-template-columns: 1fr;
+
+    &[data-columns="2"] {
+      grid-template-columns: 1fr;
+    }
   }
 }
 

@@ -5,6 +5,15 @@
   background-color: var(--color-cloud-normal);
   border-radius: var(--radius-8);
   align-items: center;
+  flex-shrink: 0;
+
+  @media (width <= 768px) {
+    background-color: transparent;
+    padding: 0;
+    gap: var(--spacing-8);
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
 
 .button {
