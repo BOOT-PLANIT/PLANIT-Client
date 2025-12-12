@@ -1,0 +1,21 @@
+.badgeBase {
+  padding: var(--spacing-4) var(--spacing-10);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-6);
+  font-weight: var(--font-weight-semibold);
+}
+
+.kdt {
+  background-color: var(--color-badge-kdt-bg);
+  color: var(--color-badge-kdt-f);
+}
+
+.active {
+  background-color: var(--color-badge-active-bg);
+  color: var(--color-badge-active-f);
+}
+
+.ended {
+  background-color: var(--color-badge-ended-bg);
+  color: var(--color-badge-ended-f);
+}

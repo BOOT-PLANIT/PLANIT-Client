@@ -1,0 +1,17 @@
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--spacing-16);
+}
+
+.gridContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: var(--spacing-16);
+
+  @media screen and (width <= 960px) {
+    flex-direction: column;
+  }
+}

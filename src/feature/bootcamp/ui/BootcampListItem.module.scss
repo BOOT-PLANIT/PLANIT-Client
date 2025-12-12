@@ -1,0 +1,81 @@
+.row {
+  height: 56px;
+  border-bottom: 1px solid var(--color-grey-light-strong);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+
+  @media (width >= 450px) {
+    &:hover {
+      background: var(--color-cloud-normal);
+    }
+  }
+}
+
+.selected {
+  background-color: var(--color-blue-lighter);
+
+  &:hover {
+    background: var(--color-blue-lighter);
+  }
+}
+
+.organization,
+.name,
+.schedule,
+.duration,
+.kdt,
+.status {
+  padding: 0 0 0 var(--spacing-2);
+}
+
+.scheduleWrap {
+  display: flex;
+  flex-direction: row;
+
+  @media (width <= 820px) {
+    flex-direction: column;
+  }
+}
+
+.kdtBadge {
+  padding: var(--spacing-4) var(--spacing-10);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-6);
+  background-color: var(--color-badge-kdt-bg);
+  color: var(--color-badge-kdt-f);
+  font-weight: var(--font-weight-semibold);
+}
+
+.activeBadge {
+  padding: var(--spacing-4) var(--spacing-10);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-6);
+  background-color: var(--color-badge-active-bg);
+  color: var(--color-badge-active-f);
+  font-weight: var(--font-weight-semibold);
+}
+
+.endedBadge {
+  padding: var(--spacing-4) var(--spacing-10);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-6);
+  background-color: var(--color-badge-ended-bg);
+  color: var(--color-badge-ended-f);
+  font-weight: var(--font-weight-semibold);
+}
+
+.icon {
+  width: fit-content;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+
+  &:hover {
+    opacity: 0.6;
+  }
+}
+
+.delete {
+  color: var(--color-system-error);
+}
