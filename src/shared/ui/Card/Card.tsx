@@ -1,28 +1,33 @@
+"use client";
+
+import React from "react";
+
 import styles from "./Card.module.scss";
 
-type CardVariant = "solid" | "gradient";
-
 interface CardProps {
-  variant?: CardVariant;
   title?: string;
   titleIcon?: React.ReactNode;
   children: React.ReactNode;
   width?: string;
-  isClickable?: boolean;
+  onClick?: () => void;
 }
 
 const Card = ({
-  variant = "solid",
   title,
   titleIcon,
   children,
   width = "100%",
-  isClickable = false,
+  onClick,
 }: CardProps) => {
-  const Wrapper = isClickable ? "button" : "div";
+  const Wrapper: React.ElementType = onClick ? "button" : "div";
 
   return (
-    <Wrapper className={`${styles.card} ${styles[variant]}`} style={{ width }}>
+    <Wrapper
+      className={styles.card}
+      style={{ width }}
+      onClick={onClick}
+      type={onClick ? "button" : undefined}
+    >
       {title && (
         <div className={styles.header}>
           {titleIcon && <span className={styles.titleIcon}>{titleIcon}</span>}

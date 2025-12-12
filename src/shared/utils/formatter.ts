@@ -4,3 +4,11 @@ export const formatCurrency = (amount: number): string => {
     currency: "KRW",
   }).format(amount);
 };
+
+export const formatDate = (date: Date): string => {
+  return date.toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};

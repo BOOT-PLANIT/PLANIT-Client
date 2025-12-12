@@ -12,7 +12,7 @@ const AttendanceSummaryCardSkeleton = ({
   title,
 }: AttendanceSummaryCardSkeletonProps) => {
   return (
-    <Card variant="solid" title={title}>
+    <Card title={title}>
       <div className={styles.list}>
         {Array.from({ length: 6 }).map((_, index) => (
           <div key={index} className={styles.item}>

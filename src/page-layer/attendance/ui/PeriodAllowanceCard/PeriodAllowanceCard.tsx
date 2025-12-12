@@ -19,7 +19,7 @@ const PeriodAllowanceCard = ({
   const formattedAmount = formatCurrency(amount);
 
   return (
-    <Card variant="solid" title={CARD_TITLES.PERIOD_ALLOWANCE}>
+    <Card title={CARD_TITLES.PERIOD_ALLOWANCE}>
       <div className={styles.container}>
         <div className={styles.amount}>{formattedAmount}</div>
         <div className={styles.dateRange}>{dateRange}</div>

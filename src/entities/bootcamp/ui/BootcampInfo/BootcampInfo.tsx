@@ -1,5 +1,8 @@
+"use client";
+
 import { LeaveIcon } from "@/shared/assets/icons";
 import { Combobox } from "@/shared/ui";
+import { formatDate } from "@/shared/utils";
 
 import styles from "./BootcampInfo.module.scss";
 
@@ -20,14 +23,6 @@ interface BootcampInfoProps {
   onIndexChange: (index: number) => void;
   dateRange: DateRange | null;
 }
-
-const formatDate = (date: Date): string => {
-  return date.toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
 
 export const BootcampInfo = ({
   options,

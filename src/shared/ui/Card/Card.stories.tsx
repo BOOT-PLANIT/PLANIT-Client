@@ -21,11 +21,6 @@ const meta: Meta<typeof Card> = {
   },
   tags: ["autodocs"],
   argTypes: {
-    variant: {
-      control: "select",
-      options: ["solid", "gradient"],
-      description: "카드 배경 스타일",
-    },
     title: {
       control: "text",
       description: "카드 제목",
@@ -42,25 +37,14 @@ type Story = StoryObj<typeof Card>;
 
 export const Solid: Story = {
   args: {
-    variant: "solid",
     title: "Solid Card",
     children: <div>흰색 단색 배경</div>,
     width: "300px",
   },
 };
 
-export const Gradient: Story = {
-  args: {
-    variant: "gradient",
-    title: "Gradient Card",
-    children: <div>블루 5% 그라데이션 (좌상단 → 우하단)</div>,
-    width: "300px",
-  },
-};
-
 export const WithIcon: Story = {
   args: {
-    variant: "solid",
     title: "Period Allowance",
     titleIcon: <DollarIcon />,
     children: (
@@ -79,28 +63,14 @@ export const WithIcon: Story = {
 
 export const NoTitle: Story = {
   args: {
-    variant: "solid",
     children: <div style={{ padding: 20 }}>Card without title</div>,
     width: "300px",
   },
 };
 
-export const AllVariants: Story = {
-  render: () => (
-    <div style={{ display: "flex", gap: 20 }}>
-      <Card variant="solid" title="Solid" width="200px">
-        <div>흰색 단색</div>
-      </Card>
-      <Card variant="gradient" title="Gradient" width="200px">
-        <div>블루 5%</div>
-      </Card>
-    </div>
-  ),
-};
-
 export const AttendanceSummary: Story = {
   render: () => (
-    <Card variant="solid" title="Attendance Summary" width="500px">
+    <Card title="Attendance Summary" width="500px">
       <div
         style={{
           display: "grid",
@@ -121,7 +91,7 @@ export const AttendanceSummary: Story = {
 
 export const UnitPeriodStats: Story = {
   render: () => (
-    <Card variant="gradient" title="Unit Period Stats" width="350px">
+    <Card title="Unit Period Stats" width="350px">
       <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
         <div
           style={{
@@ -146,12 +116,7 @@ export const UnitPeriodStats: Story = {
 
 export const PeriodAllowance: Story = {
   render: () => (
-    <Card
-      variant="solid"
-      title="Period Allowance"
-      titleIcon={<DollarIcon />}
-      width="250px"
-    >
+    <Card title="Period Allowance" titleIcon={<DollarIcon />} width="250px">
       <div>
         <p style={{ fontSize: 24, fontWeight: 600, color: "#048724" }}>
           ₩500,000

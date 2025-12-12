@@ -16,7 +16,7 @@ const Header = ({ title, userName, children }: HeaderProps) => {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <Link href="/" className={styles.logo}>
+        <Link href="/dashboard" className={styles.logo}>
           <div className={styles.logoIcon}>
             <Image alt="logo" src="logo.svg" width={40} height={40} priority />
           </div>

@@ -1,23 +1,16 @@
 .card {
+  display: flex;
+  flex-direction: column;
   border-radius: var(--radius-12);
   box-shadow: var(--shadow-embossed);
   border: 1px solid var(--border-secondary);
   padding: var(--spacing-20);
   container-type: inline-size;
-}
-
-.solid {
   background-color: var(--background);
 }
 
-.gradient {
-  background:
-    linear-gradient(
-      to bottom right,
-      color-mix(in srgb, var(--color-blue-normal) 5%, transparent) 0%,
-      color-mix(in srgb, var(--color-black) 0%, transparent) 100%
-    ),
-    var(--background);
+button.card {
+  cursor: pointer;
 }
 
 .header {

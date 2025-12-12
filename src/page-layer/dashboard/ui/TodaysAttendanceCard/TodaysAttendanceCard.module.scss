@@ -1,0 +1,11 @@
+.guide {
+  display: flex;
+  font-size: var(--font-size-base);
+  margin-bottom: var(--spacing-8);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
