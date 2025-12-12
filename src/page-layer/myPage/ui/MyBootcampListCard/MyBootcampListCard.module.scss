@@ -1,0 +1,123 @@
+.container {
+  width: 100%;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  gap: var(--spacing-40);
+}
+
+.topRow {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: start;
+
+  .title {
+    font-family: var(--font-family);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--foreground);
+    margin: 0;
+  }
+
+  .registButton {
+    max-width: 170px;
+  }
+}
+
+.listLayout {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+
+/////// 아이템 시작
+.bootcampItem {
+  width: 100%;
+  border-radius: var(--radius-8);
+  background-color: var(--background-tertiary-darker);
+  padding: var(--spacing-16);
+  gap: var(--spacing-12);
+  display: flex;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: var(--radius-8);
+  background-color: var(--color-blue-normal);
+  color: var(--color-white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.infoLayout {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.infoTopRow {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  .topRowLeft {
+    .name {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      color: var(--foreground);
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  .topRowRight {
+    display: flex;
+    justify-content: end;
+    align-items: start;
+    gap: var(--spacing-8);
+
+    .delete {
+      width: fit-content;
+      border: none;
+      padding: 0;
+      background-color: transparent;
+      color: var(--color-system-error);
+
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  .organizer {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--foreground);
+    margin: 0;
+  }
+
+  .date {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--foreground);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 18px;
+    line-height: 1;
+  }
+}

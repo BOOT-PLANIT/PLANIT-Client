@@ -3,6 +3,11 @@
   font-size: var(--font-size-sm);
   border-radius: var(--radius-6);
   font-weight: var(--font-weight-semibold);
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  gap: 4px;
+  line-height: 1;
 }
 
 .kdt {

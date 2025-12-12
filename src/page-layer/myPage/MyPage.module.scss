@@ -3,10 +3,18 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: var(--spacing-24);
   width: 100%;
 }
 
-.userInfo {
+.userInfoCard {
+  width: 100%;
+  max-width: 850px;
+  min-width: 350px;
+}
+
+.myBootcampsCard {
   width: 100%;
   max-width: 850;
+  min-width: 350px;
 }
