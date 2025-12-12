@@ -1,5 +1,12 @@
 import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
 
+/**
+ * 수당 정책 상수
+ */
+const DAILY_ALLOWANCE_KDT = 15800; // KDT 일일 수당 (원)
+const DAILY_ALLOWANCE_GENERAL = 5800; // 일반 일일 수당 (원)
+const MAX_ATTENDANCE_DAYS = 20; // 최대 출석일 수
+
 interface UnitStats {
   totalAttendance: number;
   totalAbsent: number;
@@ -88,8 +95,8 @@ export const calculatePeriodAllowance = (
     return { amount: 0, dateRange: "" };
   }
 
-  const dailyAllowance = isKdt ? 15800 : 5800;
-  const attendanceDays = Math.min(totalAttendance, 20);
+  const dailyAllowance = isKdt ? DAILY_ALLOWANCE_KDT : DAILY_ALLOWANCE_GENERAL;
+  const attendanceDays = Math.min(totalAttendance, MAX_ATTENDANCE_DAYS);
   const amount = attendanceDays * dailyAllowance;
 
   return {

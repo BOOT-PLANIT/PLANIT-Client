@@ -31,14 +31,24 @@ export const useAttendanceStats = (
 ): UseAttendanceStatsReturn => {
   const { allCalendarDates, selectedPeriod, isKdt } = options;
 
+  const periodTimeRange = useMemo(() => {
+    if (!selectedPeriod) return null;
+    return {
+      startTime: selectedPeriod.startDate.getTime(),
+      endTime: selectedPeriod.endDate.getTime(),
+    };
+  }, [selectedPeriod]);
+
   const periodDates = useMemo(() => {
-    if (!selectedPeriod) return [];
-    return allCalendarDates.filter(
-      (dateData) =>
-        dateData.date.getTime() >= selectedPeriod.startDate.getTime() &&
-        dateData.date.getTime() <= selectedPeriod.endDate.getTime(),
-    );
-  }, [allCalendarDates, selectedPeriod]);
+    if (!periodTimeRange) return [];
+    return allCalendarDates.filter((dateData) => {
+      const dateTime = dateData.date.getTime();
+      return (
+        dateTime >= periodTimeRange.startTime &&
+        dateTime <= periodTimeRange.endTime
+      );
+    });
+  }, [allCalendarDates, periodTimeRange]);
 
   const statusCounts = useMemo(() => {
     return calculateStatusCounts(periodDates);
