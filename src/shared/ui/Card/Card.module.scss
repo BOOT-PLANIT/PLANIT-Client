@@ -1,10 +1,16 @@
 .card {
+  display: flex;
+  flex-direction: column;
   border-radius: var(--radius-12);
   box-shadow: var(--shadow-embossed);
   border: 1px solid var(--border-secondary);
   padding: var(--spacing-20);
   container-type: inline-size;
   background-color: var(--background);
+}
+
+button.card {
+  cursor: pointer;
 }
 
 .header {

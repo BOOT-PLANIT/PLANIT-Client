@@ -8,9 +8,13 @@ interface TotalAllowanceCardProps {
   value: number;
 }
 
+const handleClick = () => {
+  console.log("클릭");
+};
+
 const TotalAllowanceCard = ({ value }: TotalAllowanceCardProps) => {
   return (
-    <Card title="총 수령액">
+    <Card title="총 수령액" onClick={handleClick}>
       <div className={styles.container}>
         <div className={styles.textBox}>
           <h2 className={styles.totalAllowanceText}>{formatCurrency(value)}</h2>
