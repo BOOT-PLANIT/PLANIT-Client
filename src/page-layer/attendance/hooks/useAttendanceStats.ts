@@ -36,23 +36,52 @@ export const useAttendanceStats = (
   const { allCalendarDates, selectedPeriod, isKdt, customDateRange } = options;
 
   const periodTimeRange = useMemo(() => {
+    const normalizeStartDate = (date: Date) => {
+      return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+      ).getTime();
+    };
+
+    const normalizeEndDate = (date: Date) => {
+      return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        23,
+        59,
+        59,
+        999,
+      ).getTime();
+    };
+
     if (customDateRange) {
       return {
-        startTime: customDateRange.startDate.getTime(),
-        endTime: customDateRange.endDate.getTime(),
+        startTime: normalizeStartDate(customDateRange.startDate),
+        endTime: normalizeEndDate(customDateRange.endDate),
       };
     }
     if (!selectedPeriod) return null;
     return {
-      startTime: selectedPeriod.startDate.getTime(),
-      endTime: selectedPeriod.endDate.getTime(),
+      startTime: normalizeStartDate(selectedPeriod.startDate),
+      endTime: normalizeEndDate(selectedPeriod.endDate),
     };
   }, [selectedPeriod, customDateRange]);
 
   const periodDates = useMemo(() => {
     if (!periodTimeRange) return [];
+
+    const normalizeDate = (date: Date) => {
+      return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+      ).getTime();
+    };
+
     return allCalendarDates.filter((dateData) => {
-      const dateTime = dateData.date.getTime();
+      const dateTime = normalizeDate(dateData.date);
       return (
         dateTime >= periodTimeRange.startTime &&
         dateTime <= periodTimeRange.endTime

@@ -202,6 +202,26 @@ const Attendance = () => {
 
   const displayDateRange = useMemo(() => {
     if (statsMode === "custom" && customDateRange) {
+      const normalizeStartDate = (date: Date) => {
+        return new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+        ).getTime();
+      };
+
+      const normalizeEndDate = (date: Date) => {
+        return new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          23,
+          59,
+          59,
+          999,
+        ).getTime();
+      };
+
       const normalizeDate = (date: Date) => {
         return new Date(
           date.getFullYear(),
@@ -210,8 +230,8 @@ const Attendance = () => {
         ).getTime();
       };
 
-      const startTime = normalizeDate(customDateRange.startDate);
-      const endTime = normalizeDate(customDateRange.endDate);
+      const startTime = normalizeStartDate(customDateRange.startDate);
+      const endTime = normalizeEndDate(customDateRange.endDate);
 
       const sessionCount = allCalendarDates.filter((dateData) => {
         const dateTime = normalizeDate(dateData.date);
@@ -347,7 +367,7 @@ const Attendance = () => {
                 selectedDates={selectedDates}
                 onDateSelect={handleDateSelect}
                 initialMonth={currentMonth}
-                onEdit={statsMode === "custom" ? undefined : handleEdit}
+                onEdit={handleEdit}
                 onMonthChange={handleMonthChange}
                 unitColors={{
                   currentUnit: UNIT_COLORS.CURRENT_UNIT,
