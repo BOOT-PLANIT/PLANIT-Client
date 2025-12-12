@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, lazy, useMemo } from "react";
+import { useState, Suspense, lazy, useMemo, useCallback } from "react";
 
 import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
 import {
@@ -136,65 +136,75 @@ const Attendance = () => {
     [],
   );
 
-  const handleMonthChange = (month: Date) => {
+  const handleMonthChange = useCallback((month: Date) => {
     setCurrentMonth(month);
-  };
+  }, []);
 
-  const handleEdit = (dates: Date[]) => {
+  const handleEdit = useCallback((dates: Date[]) => {
     setSelectedDatesForEdit(dates);
     setIsEditModalOpen(true);
-  };
+  }, []);
 
-  const handleDateSelect = (dates: Date[]) => {
+  const handleDateSelect = useCallback((dates: Date[]) => {
     setSelectedDates(dates);
-  };
+  }, []);
 
-  const handleSaveEdit = async (
-    dates: Date[],
-    status: AttendanceStatus | undefined,
-  ) => {
-    if (!selectedBootcampId) return;
+  const handleCloseModal = useCallback(() => {
+    setIsEditModalOpen(false);
+  }, []);
 
-    const classDates = formatDatesToStrings(dates);
+  const handleSaveEdit = useCallback(
+    async (dates: Date[], status: AttendanceStatus | undefined) => {
+      if (!selectedBootcampId) return;
 
-    try {
-      if (status === undefined) {
-        await deleteAttendanceMutation.mutateAsync({
-          userId,
-          bootcampId: selectedBootcampId,
-          classDates,
-        });
-        toast.success(SUCCESS_MESSAGES.ATTENDANCE_DELETED);
-      } else {
-        const apiStatus = mapCalendarStatusToApiStatus(status);
-        if (apiStatus) {
-          await updateAttendanceMutation.mutateAsync({
+      const classDates = formatDatesToStrings(dates);
+
+      try {
+        if (status === undefined) {
+          await deleteAttendanceMutation.mutateAsync({
             userId,
             bootcampId: selectedBootcampId,
-            status: apiStatus,
             classDates,
           });
-          toast.success(SUCCESS_MESSAGES.ATTENDANCE_SAVED);
+          toast.success(SUCCESS_MESSAGES.ATTENDANCE_DELETED);
+        } else {
+          const apiStatus = mapCalendarStatusToApiStatus(status);
+          if (apiStatus) {
+            await updateAttendanceMutation.mutateAsync({
+              userId,
+              bootcampId: selectedBootcampId,
+              status: apiStatus,
+              classDates,
+            });
+            toast.success(SUCCESS_MESSAGES.ATTENDANCE_SAVED);
+          }
         }
+      } catch (error) {
+        const defaultMessage =
+          status === undefined
+            ? ERROR_MESSAGES.DELETE_ATTENDANCE_FAILED
+            : ERROR_MESSAGES.SAVE_ATTENDANCE_FAILED;
+
+        const message = getErrorMessage(
+          error,
+          defaultMessage,
+          ERROR_MESSAGES.NETWORK_ERROR,
+        );
+        toast.error(message);
+        return;
       }
-    } catch (error) {
-      const defaultMessage =
-        status === undefined
-          ? ERROR_MESSAGES.DELETE_ATTENDANCE_FAILED
-          : ERROR_MESSAGES.SAVE_ATTENDANCE_FAILED;
 
-      const message = getErrorMessage(
-        error,
-        defaultMessage,
-        ERROR_MESSAGES.NETWORK_ERROR,
-      );
-      toast.error(message);
-      return;
-    }
-
-    setSelectedDates([]);
-    setIsEditModalOpen(false);
-  };
+      setSelectedDates([]);
+      setIsEditModalOpen(false);
+    },
+    [
+      selectedBootcampId,
+      userId,
+      deleteAttendanceMutation,
+      updateAttendanceMutation,
+      toast,
+    ],
+  );
 
   return (
     <div className={styles.container}>
@@ -271,7 +281,7 @@ const Attendance = () => {
         <Suspense fallback={null}>
           <EditAttendanceModalLazy
             selectedDates={selectedDatesForEdit}
-            onClose={() => setIsEditModalOpen(false)}
+            onClose={handleCloseModal}
             onSave={handleSaveEdit}
           />
         </Suspense>

@@ -83,15 +83,6 @@ export const useUpdateAttendance = () => {
     },
     onSettled: (_, __, variables) => {
       queryClient.invalidateQueries({
-        queryKey: [
-          "sessions",
-          "bootcamp",
-          variables.bootcampId,
-          "user",
-          variables.userId,
-        ],
-      });
-      queryClient.invalidateQueries({
         queryKey: ["attendance", "total", variables.userId],
       });
       queryClient.invalidateQueries({
@@ -164,15 +155,6 @@ export const useDeleteAttendance = () => {
       }
     },
     onSettled: (_, __, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: [
-          "sessions",
-          "bootcamp",
-          variables.bootcampId,
-          "user",
-          variables.userId,
-        ],
-      });
       queryClient.invalidateQueries({
         queryKey: ["attendance", "total", variables.userId],
       });
