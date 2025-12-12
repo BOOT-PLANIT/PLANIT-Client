@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, lazy, useCallback } from "react";
+import { useState, Suspense, lazy, useCallback, type ReactNode } from "react";
 
 import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
 import {
@@ -50,7 +50,7 @@ const EditAttendanceModalLazy = lazy(() =>
 );
 
 const ICON_GUIDE_ITEMS: Array<{
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
 }> = [
   {
@@ -155,7 +155,7 @@ const Attendance = () => {
 
   const handleSaveEdit = useCallback(
     async (dates: Date[], status: AttendanceStatus | undefined) => {
-      if (!selectedBootcampId) return;
+      if (selectedBootcampId == null) return;
 
       const classDates = formatDatesToStrings(dates);
 
