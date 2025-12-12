@@ -33,7 +33,7 @@ const AttendanceSummaryCard = ({
   values,
 }: AttendanceSummaryCardProps) => {
   return (
-    <Card variant="solid" title={title}>
+    <Card title={title}>
       <div className={styles.list}>
         {ATTENDANCE_STATUSES.map((status) => (
           <div key={status} className={styles.item}>

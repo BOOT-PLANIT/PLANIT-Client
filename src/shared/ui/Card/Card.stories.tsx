@@ -88,7 +88,7 @@ export const NoTitle: Story = {
 export const AllVariants: Story = {
   render: () => (
     <div style={{ display: "flex", gap: 20 }}>
-      <Card variant="solid" title="Solid" width="200px">
+      <Card title="Solid" width="200px">
         <div>흰색 단색</div>
       </Card>
       <Card variant="gradient" title="Gradient" width="200px">
@@ -100,7 +100,7 @@ export const AllVariants: Story = {
 
 export const AttendanceSummary: Story = {
   render: () => (
-    <Card variant="solid" title="Attendance Summary" width="500px">
+    <Card title="Attendance Summary" width="500px">
       <div
         style={{
           display: "grid",
@@ -146,12 +146,7 @@ export const UnitPeriodStats: Story = {
 
 export const PeriodAllowance: Story = {
   render: () => (
-    <Card
-      variant="solid"
-      title="Period Allowance"
-      titleIcon={<DollarIcon />}
-      width="250px"
-    >
+    <Card title="Period Allowance" titleIcon={<DollarIcon />} width="250px">
       <div>
         <p style={{ fontSize: 24, fontWeight: 600, color: "#048724" }}>
           ₩500,000
