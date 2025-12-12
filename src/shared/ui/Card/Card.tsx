@@ -1,3 +1,7 @@
+"use client";
+
+import React from "react";
+
 import styles from "./Card.module.scss";
 
 interface CardProps {
@@ -15,8 +19,15 @@ const Card = ({
   width = "100%",
   onClick,
 }: CardProps) => {
+  const Wrapper: React.ElementType = onClick ? "button" : "div";
+
   return (
-    <button className={`${styles.card}`} style={{ width }} onClick={onClick}>
+    <Wrapper
+      className={styles.card}
+      style={{ width }}
+      onClick={onClick}
+      type={onClick ? "button" : undefined}
+    >
       {title && (
         <div className={styles.header}>
           {titleIcon && <span className={styles.titleIcon}>{titleIcon}</span>}
@@ -24,7 +35,7 @@ const Card = ({
         </div>
       )}
       <div className={styles.content}>{children}</div>
-    </button>
+    </Wrapper>
   );
 };
 
