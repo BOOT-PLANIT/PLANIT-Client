@@ -1,24 +1,16 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import {
+  BootcampTest as Bootcamp,
+  BootcampListItem,
+  dummyFetchBootcamps,
+} from "@/feature/bootcamp";
 import SearchIcon from "@/shared/assets/icons/SearchIcon";
-import { dummyFetchBootcamps } from "@/shared/lib";
 import { Input, Spinner } from "@/shared/ui";
 
 import styles from "./BootcampList.module.scss";
-import BootcampListItem from "./BootcampListItem";
-
-export interface Bootcamp {
-  id: number;
-  name: string;
-  organizer: string;
-  isKdt: boolean;
-  startedAt: string;
-  endedAt: string;
-  isEnded: boolean;
-  classDates: string[];
-}
 
 interface BootcampListProps {
   onSelectBootcamp: (bootcamp: Bootcamp | null) => void;
@@ -30,6 +22,9 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
 
   const [search, setSearch] = useState("");
   const [debounced, setDebounced] = useState("");
+
+  const scrollBoxRef = useRef<HTMLDivElement>(null);
+  const anchorRef = useRef<HTMLTableRowElement>(null);
 
   //0.5초 검색할시간 유예
   useEffect(() => {
@@ -49,8 +44,8 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
 
   //옵저버
   useEffect(() => {
-    const target = document.getElementById("scroll-anchor");
-    const scrollBox = document.getElementById("scroll-box");
+    const target = anchorRef.current;
+    const scrollBox = scrollBoxRef.current;
     if (!target || !scrollBox) return;
 
     const observer = new IntersectionObserver(
@@ -103,59 +98,68 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
   const flatList = data?.pages.flatMap((page) => page.items) ?? [];
 
   return (
-    <div className={styles.container}>
-      <Input
-        placeholder="검색하실 부트캠프 이름 또는 교육기관을 입력하세요..."
-        icon={<SearchIcon />}
-        value={search}
-        onChange={(e) => handleSearchChange(e.target.value)}
-      />
-
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>훈련기관</th>
-            <th>부트캠프 이름</th>
-            <th>일정</th>
-            <th>훈련일수</th>
-            <th>KDT</th>
-            <th>상태</th>
-            {manage && <th colSpan={2}>관리</th>}
-          </tr>
-        </thead>
-      </table>
-      <div className={styles.tableLayout} id="scroll-box">
-        <table className={styles.table}>
-          <tbody>
-            {isLoading && (
-              <tr>
-                <td colSpan={manage ? 8 : 6}>
-                  <Spinner />
-                </td>
-              </tr>
-            )}
-
-            {flatList.map((b) => (
-              <BootcampListItem
-                key={b.id}
-                isSelect={b.id === selectedItem?.id}
-                bootcamp={b}
-                manage={manage}
-                selectItem={() => handleSelect(b)}
-                editItem={() => handleEdit(b)}
-                deleteItem={() => handleDelete(b)}
-              />
-            ))}
-            {/* 옵저버 */}
-            <tr id="scroll-anchor" className={styles.scrollAnchor}>
-              <td colSpan={manage ? 8 : 6}>
-                {isFetchingNextPage && <Spinner />}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <>
+      <div className={styles.inputLayout}>
+        <Input
+          placeholder="부트캠프명, 교육기관명을 입력하세요"
+          icon={<SearchIcon />}
+          value={search}
+          onChange={(e) => handleSearchChange(e.target.value)}
+        />
       </div>
-    </div>
+      <div className={styles.container}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>훈련기관</th>
+              <th>부트캠프 이름</th>
+              <th>일정</th>
+              <th>훈련일수</th>
+              <th>KDT</th>
+              <th>상태</th>
+              {manage && <th colSpan={2}>관리</th>}
+            </tr>
+          </thead>
+        </table>
+        <div className={styles.tableLayout} ref={scrollBoxRef}>
+          <table className={styles.table}>
+            <tbody>
+              {isLoading && (
+                <tr>
+                  <td className={styles.spinner} colSpan={manage ? 8 : 6}>
+                    <Spinner />
+                  </td>
+                </tr>
+              )}
+
+              {flatList.map((b) => (
+                <BootcampListItem
+                  key={b.id}
+                  isSelect={b.id === selectedItem?.id}
+                  bootcamp={b}
+                  manage={manage}
+                  selectItem={() => handleSelect(b)}
+                  editItem={() => handleEdit(b)}
+                  deleteItem={() => handleDelete(b)}
+                />
+              ))}
+              {isFetchingNextPage && (
+                <tr>
+                  <td className={styles.spinner} colSpan={manage ? 8 : 6}>
+                    <Spinner />
+                  </td>
+                </tr>
+              )}
+
+              {/* 옵저버 */}
+              <tr ref={anchorRef}>
+                <td className={styles.spinner} colSpan={manage ? 8 : 6}></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
   );
 };
 

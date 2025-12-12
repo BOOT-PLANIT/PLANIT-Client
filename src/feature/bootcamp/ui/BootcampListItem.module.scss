@@ -4,7 +4,6 @@
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
   color: var(--foreground);
-  transition: all 0.3s ease;
 
   @media (width >= 450px) {
     &:hover {
@@ -14,12 +13,10 @@
 }
 
 .selected {
-  background-color: #c7d5ff;
-
-  // background-color: var(--color-blue-light);
+  background-color: var(--color-blue-lighter);
 
   &:hover {
-    background: var(--color-blue-light);
+    background: var(--color-blue-lighter);
   }
 }
 

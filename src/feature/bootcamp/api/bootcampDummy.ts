@@ -1,4 +1,4 @@
-import { Bootcamp } from "@/features/BootcampList/ui/BootcampList";
+import { BootcampTest as Bootcamp } from "./types";
 
 // 랜덤 날짜 생성 도우미
 function randomDate(start: Date, end: Date) {
@@ -42,6 +42,8 @@ const organizers = [
 
 // 랜덤 부트캠프 이름
 const campNames = [
+  "『ITQ 쪽집게 강의』 ITQ OA Master(한글+파워포인트+엑셀) 자격증 취득 과정",
+  "ChatGPT 마스터 클래스 : 남들보다 100배 더 잘 쓰기 위한 활용법 A to Z",
   "웹 개발 기초 부트캠프",
   "KDT 프론트엔드 심화 과정",
   "백엔드 스프링 부트 실전",
@@ -53,8 +55,7 @@ const campNames = [
   "SQL·DB 전문가 과정",
   "클라우드(AWS) 엔지니어 준비반",
 ];
-
-// 50개 생성
+//더미생성
 export const bootcampDummy: Bootcamp[] = Array.from({ length: 100 }).map(
   (_, i) => {
     const name = campNames[Math.floor(Math.random() * campNames.length)];

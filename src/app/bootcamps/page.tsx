@@ -1,3 +1,3 @@
-import { AddBootcamp } from "@/page-layer/AddBootcamp";
+import { Onboarding } from "@/page-layer/onboarding";
 
-export default AddBootcamp;
+export default Onboarding;
