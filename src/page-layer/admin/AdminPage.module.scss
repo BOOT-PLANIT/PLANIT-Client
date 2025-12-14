@@ -1,0 +1,57 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-24);
+  width: 100%;
+}
+
+.topRow {
+  width: 100%;
+  max-width: 1200px;
+  min-width: 355px;
+  margin-top: var(--spacing-40);
+  padding: 0 var(--spacing-6);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  .titleLayout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+  }
+
+  .title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--foreground);
+  }
+
+  .description {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--foreground-secondary-darker);
+  }
+}
+
+.cardLayout {
+  width: 100%;
+  max-width: 1200px;
+  min-width: 355px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-16);
+
+  @media (width<=800px) {
+    flex-direction: column;
+  }
+}
+
+.listLayout {
+  width: 100%;
+  max-width: 1200px;
+  min-width: 355px;
+}

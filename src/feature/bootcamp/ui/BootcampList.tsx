@@ -13,7 +13,7 @@ import { Input, Spinner } from "@/shared/ui";
 import styles from "./BootcampList.module.scss";
 
 interface BootcampListProps {
-  onSelectBootcamp: (bootcamp: Bootcamp | null) => void;
+  onSelectBootcamp?: (bootcamp: Bootcamp | null) => void;
   manage: boolean; // 관리자모드
 }
 
@@ -65,14 +65,14 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
     setSearch(value);
 
     // 검색어 바뀌면 선택 초기화
-    if (selectedItem !== null) {
+    if (selectedItem !== null && onSelectBootcamp) {
       setSelectedItem(null);
       onSelectBootcamp(null);
     }
   };
 
   const handleSelect = (bootcamp: Bootcamp) => {
-    if (!manage) {
+    if (!manage && onSelectBootcamp) {
       if (selectedItem?.id === bootcamp.id) {
         setSelectedItem(null);
         onSelectBootcamp(null);
