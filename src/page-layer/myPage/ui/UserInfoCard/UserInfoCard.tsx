@@ -1,5 +1,6 @@
 import type { User } from "@/feature/user";
 import { StudyIcon } from "@/shared/assets/icons";
+import ShieldIcon from "@/shared/assets/icons/ShieldIcon";
 import { Avatar, Card } from "@/shared/ui";
 import { Badge } from "@/shared/ui/Badge";
 
@@ -28,7 +29,11 @@ const UserInfoCard = ({ user }: UserInfoCardProps) => {
                 <StudyIcon /> Student
               </Badge>
             ) : (
-              <Badge variant="kdt">Admin</Badge>
+              <>
+                <Badge variant="active">
+                  <ShieldIcon size={12} /> Admin
+                </Badge>
+              </>
             )}
           </div>
         </div>

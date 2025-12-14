@@ -1,0 +1,44 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: var(--spacing-10);
+  gap: var(--spacing-12);
+}
+
+.button {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+}
+
+.modalContainer {
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  padding-top: var(--spacing-12);
+  gap: var(--spacing-12);
+
+  @media (width <= 400px) {
+    width: 100%;
+  }
+}
+
+.modalButtonLayout {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-6);
+}
+
+.modalButtonLayout > button {
+  @media (width <= 400px) {
+    width: 50%;
+  }
+}

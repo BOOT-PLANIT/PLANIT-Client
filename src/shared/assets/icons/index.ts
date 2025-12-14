@@ -21,3 +21,6 @@ export { default as StudyIcon } from "./StudyIcon";
 export { default as CalenderIcon } from "./CalenderIcon";
 export { default as AddIcon } from "./AddIcon";
 export { default as InstituteIcon } from "./InstituteIcon";
+export { default as BellIcon } from "./BellIcon";
+export { default as UserRemoveIcon } from "./UserRemoveIcon";
+export { default as LogoutIcon } from "./LogoutIcon";

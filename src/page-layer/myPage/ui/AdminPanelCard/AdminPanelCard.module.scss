@@ -1,0 +1,19 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  padding-left: var(--spacing-6);
+  gap: var(--spacing-20);
+}
+
+.titleIcon {
+  color: var(--color-blue-normal);
+}
+
+.description {
+  font-size: var(--font-size-bese);
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground-secondary);
+}
