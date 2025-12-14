@@ -37,7 +37,6 @@ const ToggleSwitch = ({ checked, onToggle }: ToggleSwitchProps) => {
               ? "var(--color-blue-normal)"
               : "var(--color-grey-light-strong)"
           }
-          //   transition="fill 0.2s ease"
         />
 
         {/* Thumb */}

@@ -18,7 +18,7 @@ export { default as SearchIcon } from "./SearchIcon";
 export { default as DeleteIcon } from "./DeleteIcon";
 export { default as EditIcon } from "./EditIcon";
 export { default as StudyIcon } from "./StudyIcon";
-export { default as CalenderIcon } from "./CalenderIcon";
+export { default as CalendarIcon } from "./CalendarIcon";
 export { default as AddIcon } from "./AddIcon";
 export { default as InstituteIcon } from "./InstituteIcon";
 export { default as BellIcon } from "./BellIcon";

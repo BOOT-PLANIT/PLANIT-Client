@@ -20,7 +20,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: start;
+  align-items: flex-start;
   padding-top: var(--spacing-12);
   gap: var(--spacing-12);
 
@@ -35,10 +35,4 @@
   flex-direction: row;
   align-items: center;
   gap: var(--spacing-6);
-}
-
-.modalButtonLayout > button {
-  @media (width <= 400px) {
-    width: 50%;
-  }
 }

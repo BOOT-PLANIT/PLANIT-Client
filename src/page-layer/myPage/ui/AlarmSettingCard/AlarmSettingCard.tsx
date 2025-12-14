@@ -8,19 +8,16 @@ import styles from "./AlarmSettingCard.module.scss";
 import ToggleSwitch from "./ToggleSwitch";
 
 interface AlarmSettingCardProps {
-  AlarmDefaultIs?: boolean;
+  alarmDefaultIs?: boolean;
 }
 
 const AlarmSettingCard = ({
-  AlarmDefaultIs = false,
+  alarmDefaultIs = false,
 }: AlarmSettingCardProps) => {
-  const [enabled, setEnabled] = useState(AlarmDefaultIs);
+  const [enabled, setEnabled] = useState(alarmDefaultIs);
 
   const handleToggle = () => {
-    setEnabled((prev) => {
-      const next = !prev;
-      return next;
-    });
+    setEnabled((prev) => !prev);
   };
 
   return (

@@ -1,15 +1,16 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { BootcampTest as Bootcamp } from "@/feature/bootcamp";
 import {
   AddIcon,
-  CalenderIcon,
+  CalendarIcon,
   DeleteIcon,
   InstituteIcon,
   StudyIcon,
 } from "@/shared/assets/icons";
-import { Button, Card } from "@/shared/ui";
+import { Button, Card, Modal } from "@/shared/ui";
 import { Badge } from "@/shared/ui/Badge";
 
 import styles from "./MyBootcampListCard.module.scss";
@@ -19,10 +20,26 @@ interface MyBootcampListCardProps {
 }
 
 const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectBootcmapId, setSelectBootcmapId] = useState<number | null>(null);
   const router = useRouter();
 
   const handleRegist = () => {
     router.push("/bootcamps");
+  };
+
+  const handleDelete = () => {
+    console.log("부트캠트아이디", selectBootcmapId);
+    setModalOpen(false);
+  };
+
+  const handleOpenModal = (bootcampId: number) => {
+    setSelectBootcmapId(bootcampId);
+    setModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setSelectBootcmapId(null);
+    setModalOpen(false);
   };
 
   return (
@@ -30,7 +47,7 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
       <div className={styles.container}>
         <div className={styles.listLayout}>
           {/* 아이템시작 */}
-          {bootcamps.length == 0 && (
+          {!bootcamps.length && (
             <div className={styles.noneBootcamp}>
               <span className={styles.noneTitle}>
                 진행중인 부트캠프가 없습니다.
@@ -58,7 +75,11 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
                     ) : (
                       <Badge variant="active">Active</Badge>
                     )}
-                    <button type="button" className={styles.delete}>
+                    <button
+                      onClick={() => handleOpenModal(b.id)}
+                      type="button"
+                      className={styles.delete}
+                    >
                       <DeleteIcon size={20} />
                     </button>
                   </div>
@@ -67,7 +88,7 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
                   <InstituteIcon size={16} /> {b.organizer}
                 </div>
                 <div className={styles.date}>
-                  <CalenderIcon size={16} />
+                  <CalendarIcon size={16} />
                   {` ${b.startedAt} - ${b.endedAt} · ${b.classDates.length}`}일
                 </div>
               </div>
@@ -87,6 +108,24 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
           </Button>
         </div>
       </div>
+      {isModalOpen && (
+        <Modal onClose={handleCloseModal} title="부트캠프 삭제확인">
+          <div className={styles.modalContainer}>
+            <div>
+              <span>
+                정말로 삭제하시겠어요? <br />
+                삭제하면 출석 정보는 복구할 수 없어요.
+              </span>
+            </div>
+            <div className={styles.modalButtonLayout}>
+              <Button variant="outline" onClick={handleCloseModal}>
+                취소
+              </Button>
+              <Button onClick={handleDelete}>삭제하기</Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </Card>
   );
 };

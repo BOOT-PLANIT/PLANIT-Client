@@ -7,7 +7,7 @@ import { Button, Card } from "@/shared/ui";
 import styles from "./AdminPanelCard.module.scss";
 
 interface AdminPanelCardProps {
-  userLevel: string;
+  userLevel: "USER" | "ADMIN";
 }
 const AdminPanelCard = ({ userLevel }: AdminPanelCardProps) => {
   const router = useRouter();
@@ -26,7 +26,7 @@ const AdminPanelCard = ({ userLevel }: AdminPanelCardProps) => {
         </span>
         <Button
           onClick={handleAdmin}
-          disabled={userLevel == "USER"}
+          disabled={userLevel === "USER"}
           icon={<ShieldIcon size={18} />}
         >
           관리자 페이지로 이동

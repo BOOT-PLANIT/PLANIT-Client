@@ -2,7 +2,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   gap: var(--spacing-10);
 }
@@ -23,7 +23,7 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   gap: var(--spacing-12);
 }
@@ -110,7 +110,7 @@
   .topRowRight {
     display: flex;
     justify-content: end;
-    align-items: start;
+    align-items: flex-start;
     gap: var(--spacing-8);
 
     .delete {
@@ -133,7 +133,7 @@
   color: var(--foreground);
   display: flex;
   height: 18px;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   gap: var(--spacing-5);
 }
@@ -144,7 +144,29 @@
   color: var(--foreground);
   display: flex;
   height: 18px;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   gap: var(--spacing-5);
+}
+
+.modalContainer {
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: var(--spacing-12);
+  gap: var(--spacing-12);
+
+  @media (width <= 400px) {
+    width: 100%;
+  }
+}
+
+.modalButtonLayout {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-6);
 }

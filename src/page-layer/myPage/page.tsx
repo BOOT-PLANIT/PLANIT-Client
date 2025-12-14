@@ -10,11 +10,10 @@ import { UserInfoCard } from "./ui/UserInfoCard";
 
 const userProfile: User = {
   id: 1,
-  uid: "vWXeLvJa8gfGjGxttVeBztkBc0t1",
+  uid: "vWXeL",
   email: "adcdemail@gmail.com",
   displayName: "정현문",
-  photoUrl:
-    "https://lh3.googleusercontent.com/a/ACg8ocJPONv2549sT57Bt9LekE1hBHwYRV1k66U9iRB3qlVBZ4jj2Q=s96-c",
+  photoUrl: "https://lh3.googleusercontent.com/",
   userLevel: "ADMIN",
   provider: "google.com",
   emailVerified: true,

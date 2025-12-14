@@ -24,16 +24,14 @@ const UserInfoCard = ({ user }: UserInfoCardProps) => {
           <div className={styles.email}>{user.email}</div>
           <div className={styles.date}>등록일: {createdDate}</div>
           <div className={styles.tags}>
-            {user.userLevel == "USER" ? (
+            {user.userLevel === "USER" ? (
               <Badge variant="kdt">
                 <StudyIcon /> Student
               </Badge>
             ) : (
-              <>
-                <Badge variant="active">
-                  <ShieldIcon size={12} /> Admin
-                </Badge>
-              </>
+              <Badge variant="active">
+                <ShieldIcon size={12} /> Admin
+              </Badge>
             )}
           </div>
         </div>
