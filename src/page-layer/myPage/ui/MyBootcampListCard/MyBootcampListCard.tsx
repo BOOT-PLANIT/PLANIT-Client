@@ -21,7 +21,7 @@ interface MyBootcampListCardProps {
 
 const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectBootcmapId, setSelectBootcmapId] = useState<number | null>(null);
+  const [selectBootcampId, setSelectBootcampId] = useState<number | null>(null);
   const router = useRouter();
 
   const handleRegist = () => {
@@ -29,16 +29,16 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
   };
 
   const handleDelete = () => {
-    console.log("부트캠트아이디", selectBootcmapId);
+    console.log("부트캠트아이디", selectBootcampId);
     setModalOpen(false);
   };
 
   const handleOpenModal = (bootcampId: number) => {
-    setSelectBootcmapId(bootcampId);
+    setSelectBootcampId(bootcampId);
     setModalOpen(true);
   };
   const handleCloseModal = () => {
-    setSelectBootcmapId(null);
+    setSelectBootcampId(null);
     setModalOpen(false);
   };
 
@@ -79,6 +79,7 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
                       onClick={() => handleOpenModal(b.id)}
                       type="button"
                       className={styles.delete}
+                      aria-label={`${b.name} 부트캠프 삭제`}
                     >
                       <DeleteIcon size={20} />
                     </button>
