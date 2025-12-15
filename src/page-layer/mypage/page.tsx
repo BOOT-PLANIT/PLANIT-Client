@@ -119,7 +119,7 @@ const MyPage = () => {
       </div>
       {userProfile.userLevel === "ADMIN" && (
         <div className={styles.myPageCard}>
-          <AdminPanelCard userLevel={userProfile.userLevel} />
+          <AdminPanelCard />
         </div>
       )}
       <div className={styles.myPageCard}>
