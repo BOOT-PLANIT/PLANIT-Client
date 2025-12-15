@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { Pretendard } from "@/shared/font";
+import { Pretendard } from "@/shared/assets/font/font";
 import Providers from "@/shared/providers";
 import "./globals.css";
 import { GlobalComponents } from "@/shared/ui";

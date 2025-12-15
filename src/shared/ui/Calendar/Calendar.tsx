@@ -41,6 +41,7 @@ interface CalendarProps {
     otherUnit?: string;
   };
   hideFloatingBar?: boolean;
+  allowSelectionWithoutData?: boolean;
 }
 
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
@@ -71,6 +72,7 @@ const Calendar = ({
   onMonthChange,
   unitColors,
   hideFloatingBar = false,
+  allowSelectionWithoutData = false,
 }: CalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(
     new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1),
@@ -158,10 +160,12 @@ const Calendar = ({
       ) {
         return false;
       }
-      const dateKey = getDateKey(date);
-      const dateData = datesMap.get(dateKey);
-      if (!dateData) {
-        return false;
+      if (!allowSelectionWithoutData) {
+        const dateKey = getDateKey(date);
+        const dateData = datesMap.get(dateKey);
+        if (!dateData) {
+          return false;
+        }
       }
       const dateTime = date.getTime();
       const startTime = Math.min(
@@ -171,7 +175,13 @@ const Calendar = ({
       const endTime = Math.max(dragStartDate.getTime(), dragEndDate.getTime());
       return dateTime >= startTime && dateTime <= endTime;
     },
-    [dragStartDate, dragEndDate, currentMonth, datesMap],
+    [
+      dragStartDate,
+      dragEndDate,
+      currentMonth,
+      datesMap,
+      allowSelectionWithoutData,
+    ],
   );
 
   const isCurrentMonth = useCallback(
@@ -237,10 +247,12 @@ const Calendar = ({
         return;
       }
 
-      const dateKey = getDateKey(date);
-      const dateData = datesMap.get(dateKey);
-      if (!dateData) {
-        return;
+      if (!allowSelectionWithoutData) {
+        const dateKey = getDateKey(date);
+        const dateData = datesMap.get(dateKey);
+        if (!dateData) {
+          return;
+        }
       }
 
       if (e && "touches" in e) {
@@ -251,7 +263,7 @@ const Calendar = ({
       setDragEndDate(date);
       setIsDragging(false);
     },
-    [currentMonth, datesMap],
+    [currentMonth, datesMap, allowSelectionWithoutData],
   );
 
   const handleDateMouseEnter = useCallback(
@@ -267,16 +279,18 @@ const Calendar = ({
         return;
       }
 
-      const dateKey = getDateKey(date);
-      const dateData = datesMap.get(dateKey);
-      if (!dateData) {
-        return;
+      if (!allowSelectionWithoutData) {
+        const dateKey = getDateKey(date);
+        const dateData = datesMap.get(dateKey);
+        if (!dateData) {
+          return;
+        }
       }
 
       setIsDragging(true);
       setDragEndDate(date);
     },
-    [dragStartDate, datesMap, currentMonth],
+    [dragStartDate, datesMap, currentMonth, allowSelectionWithoutData],
   );
 
   const handleDateMouseUp = useCallback(() => {
@@ -301,10 +315,14 @@ const Calendar = ({
           currentDate.getMonth() === currentMonth.getMonth() &&
           currentDate.getFullYear() === currentMonth.getFullYear()
         ) {
-          const dateKey = getDateKey(currentDate);
-          const dateData = datesMap.get(dateKey);
-          if (dateData) {
+          if (allowSelectionWithoutData) {
             datesInRange.push(new Date(currentDate));
+          } else {
+            const dateKey = getDateKey(currentDate);
+            const dateData = datesMap.get(dateKey);
+            if (dateData) {
+              datesInRange.push(new Date(currentDate));
+            }
           }
         }
         currentDate.setDate(currentDate.getDate() + 1);
@@ -347,6 +365,7 @@ const Calendar = ({
     onDateSelect,
     selectedDates,
     currentMonth,
+    allowSelectionWithoutData,
   ]);
 
   const handleDateClick = useCallback(
@@ -362,10 +381,12 @@ const Calendar = ({
         return;
       }
 
-      const dateKey = getDateKey(date);
-      const dateData = datesMap.get(dateKey);
-      if (!dateData) {
-        return;
+      if (!allowSelectionWithoutData) {
+        const dateKey = getDateKey(date);
+        const dateData = datesMap.get(dateKey);
+        if (!dateData) {
+          return;
+        }
       }
 
       const updateSelectedDates = (newDates: Date[]) => {
@@ -375,6 +396,7 @@ const Calendar = ({
         onDateSelect?.(newDates);
       };
 
+      const dateKey = getDateKey(date);
       const prevKeys = new Set(selectedDates.map(getDateKey));
       const isCurrentlySelected = prevKeys.has(dateKey);
       const newSelectedDates = isCurrentlySelected
@@ -389,6 +411,7 @@ const Calendar = ({
       selectedDates,
       datesMap,
       isDragging,
+      allowSelectionWithoutData,
     ],
   );
 
