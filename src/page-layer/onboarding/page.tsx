@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { BootcampTest as Bootcamp, BootcampList } from "@/feature/bootcamp";
+import { Bootcamp, BootcampList } from "@/feature/bootcamp";
 import { SuccessIcon } from "@/shared/assets";
 import { Button, Card } from "@/shared/ui";
 

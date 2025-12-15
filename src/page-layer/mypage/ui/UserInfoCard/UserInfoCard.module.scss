@@ -1,0 +1,36 @@
+.topRow {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  gap: var(--spacing-20);
+}
+
+.avatarImg {
+  min-width: 80px;
+}
+
+.infoCard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.name {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--foreground);
+  margin-bottom: var(--spacing-6);
+}
+
+.email {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+  color: var(--foreground-lighter);
+}
+
+.date {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  color: var(--foreground-lighter);
+}

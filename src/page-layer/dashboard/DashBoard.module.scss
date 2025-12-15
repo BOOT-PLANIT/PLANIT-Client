@@ -1,8 +1,16 @@
+.pageContainer {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
 .cardContainer {
   display: flex;
   flex-direction: column;
   width: 100%;
   gap: var(--spacing-16);
+  max-width: 1000px;
 }
 
 .gridContainer {

@@ -1,4 +1,4 @@
-import { BootcampTest as Bootcamp } from "./types";
+import { Bootcamp } from "./types";
 
 // 랜덤 날짜 생성 도우미
 function randomDate(start: Date, end: Date) {
@@ -74,8 +74,8 @@ export const bootcampDummy: Bootcamp[] = Array.from({ length: 100 }).map(
       name,
       organizer,
       isKdt,
-      startedAt: format(startDate),
-      endedAt: format(endDate),
+      startDate: format(startDate),
+      endDate: format(endDate),
       isEnded: endDate < new Date(),
       classDates,
     };

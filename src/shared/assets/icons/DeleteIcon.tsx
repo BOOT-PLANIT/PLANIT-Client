@@ -1,8 +1,14 @@
-const DeleteIcon = () => {
+import type { SVGProps } from "react";
+
+type IconProps = SVGProps<SVGSVGElement> & {
+  size?: number;
+};
+
+const DeleteIcon = ({ size = 24 }: IconProps) => {
   return (
     <svg
-      width="24"
-      height="24"
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

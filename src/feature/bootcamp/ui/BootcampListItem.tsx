@@ -1,6 +1,6 @@
 import React from "react";
 
-import { BootcampTest as Bootcamp } from "@/feature/bootcamp";
+import { Bootcamp } from "@/feature/bootcamp";
 import { EditIcon, DeleteIcon } from "@/shared/assets";
 import { Badge } from "@/shared/ui/Badge";
 
@@ -34,8 +34,8 @@ const BootcampListItem = ({
 
       <td className={styles.schedule}>
         <div className={styles.scheduleWrap}>
-          <div>{bootcamp.startedAt} ~</div>
-          <div>{bootcamp.endedAt}</div>
+          <div>{bootcamp.startDate} ~</div>
+          <div>{bootcamp.endDate}</div>
         </div>
       </td>
 

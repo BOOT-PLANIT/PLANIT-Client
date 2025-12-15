@@ -9,15 +9,6 @@ export interface Bootcamp {
   startDate: string;
   endDate: string;
   isEnded: boolean;
-}
-export interface BootcampTest {
-  id: number;
-  name: string;
-  organizer: string;
-  isKdt: boolean;
-  startedAt: string;
-  endedAt: string;
-  isEnded: boolean;
   classDates: string[];
 }
 
