@@ -3,9 +3,9 @@ import { useState } from "react";
 
 import { BellIcon } from "@/shared/assets";
 import { Card } from "@/shared/ui";
+import { ToggleSwitch } from "@/shared/ui";
 
 import styles from "./AlarmSettingCard.module.scss";
-import ToggleSwitch from "./ToggleSwitch";
 
 interface AlarmSettingCardProps {
   alarmDefaultIs?: boolean;

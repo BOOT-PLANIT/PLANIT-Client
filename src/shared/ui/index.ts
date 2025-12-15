@@ -13,3 +13,4 @@ export type { ToggleOption } from "./Toggle";
 export { DoughnutChart } from "./Chart";
 export { HorizontalPercentageBarChart } from "./Chart";
 export { Spinner } from "./Spinner";
+export { ToggleSwitch } from "./ToggleSwitch";
