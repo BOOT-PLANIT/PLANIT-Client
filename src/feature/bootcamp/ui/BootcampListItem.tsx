@@ -1,18 +1,18 @@
 import React from "react";
 
 import { Bootcamp } from "@/feature/bootcamp";
-import { EditIcon, DeleteIcon } from "@/shared/assets";
+import { EditIcon, DeleteIcon, CalendarIcon } from "@/shared/assets";
 import { Badge } from "@/shared/ui/Badge";
 
 import styles from "./BootcampListItem.module.scss";
 
+type ModalType = "add" | "edit" | "delete" | "session" | null;
 interface BootcampListItemProps {
   bootcamp: Bootcamp;
   isSelect?: boolean;
   manage: boolean;
   selectItem: (bootcamp: Bootcamp) => void;
-  editItem: (bootcamp: Bootcamp) => void;
-  deleteItem: (bootcamp: Bootcamp) => void;
+  isModalOpen: (type: ModalType, bootcamp: Bootcamp) => void;
 }
 
 const BootcampListItem = ({
@@ -20,8 +20,7 @@ const BootcampListItem = ({
   isSelect,
   manage,
   selectItem,
-  editItem,
-  deleteItem,
+  isModalOpen,
 }: BootcampListItemProps) => {
   return (
     <tr
@@ -61,10 +60,22 @@ const BootcampListItem = ({
               className={styles.icon}
               onClick={(e) => {
                 e.stopPropagation();
-                editItem(bootcamp);
+                isModalOpen("edit", bootcamp);
               }}
             >
               <EditIcon />
+            </button>
+          </td>
+          <td>
+            <button
+              type="button"
+              className={styles.icon}
+              onClick={(e) => {
+                e.stopPropagation();
+                isModalOpen("session", bootcamp);
+              }}
+            >
+              <CalendarIcon size={20} />
             </button>
           </td>
 
@@ -74,7 +85,7 @@ const BootcampListItem = ({
               className={`${styles.delete} ${styles.icon}`}
               onClick={(e) => {
                 e.stopPropagation();
-                deleteItem(bootcamp);
+                isModalOpen("delete", bootcamp);
               }}
             >
               <DeleteIcon />

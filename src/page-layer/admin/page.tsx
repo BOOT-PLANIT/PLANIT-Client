@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-import { BootcampList } from "@/feature/bootcamp";
+import { Bootcamp, BootcampList } from "@/feature/bootcamp";
 import {
   AddIcon,
   CalendarIcon,
@@ -14,24 +14,25 @@ import styles from "./AdminPage.module.scss";
 import { AddBootcampModal } from "./ui/AddBootcampModal";
 import { DeleteBootcampModal } from "./ui/DeleteBootcampModal";
 import { EditBootcampModal } from "./ui/EditBootcampModal";
+import { EditSessionModal } from "./ui/EditSessionModal";
 import { StatCard } from "./ui/StatCard";
 
-type ModalType = "add" | "edit" | "delete" | null;
+type ModalType = "add" | "edit" | "delete" | "session" | null;
 
 const AdminPage = () => {
   const [isModalOpen, setOpenModal] = useState<ModalType>(null);
-  const [isBootcampId, setBootcampId] = useState<number | null>(null);
+  const [isBootcamp, setBootcamp] = useState<Bootcamp | null>(null);
 
-  const handleModalOpen = (type: ModalType, bootcampId?: number) => {
+  const handleModalOpen = (type: ModalType, bootcamp?: Bootcamp) => {
     setOpenModal(type);
-    if (bootcampId) {
-      setBootcampId(bootcampId);
-      console.log("모달오픈 부캠아이디", bootcampId);
+    if (bootcamp) {
+      setBootcamp(bootcamp);
+      console.log("모달오픈 부캠아이디", bootcamp);
     }
   };
   const handleModalClose = () => {
     setOpenModal(null);
-    setBootcampId(null);
+    setBootcamp(null);
   };
 
   return (
@@ -81,16 +82,13 @@ const AdminPage = () => {
       </div>
       {isModalOpen === "add" && <AddBootcampModal onClose={handleModalClose} />}
       {isModalOpen === "edit" && (
-        <EditBootcampModal
-          onClose={handleModalClose}
-          bootcampId={isBootcampId}
-        />
+        <EditBootcampModal onClose={handleModalClose} bootcamp={isBootcamp} />
+      )}
+      {isModalOpen === "session" && (
+        <EditSessionModal onClose={handleModalClose} bootcamp={isBootcamp} />
       )}
       {isModalOpen === "delete" && (
-        <DeleteBootcampModal
-          onClose={handleModalClose}
-          bootcampId={isBootcampId}
-        />
+        <DeleteBootcampModal onClose={handleModalClose} bootcamp={isBootcamp} />
       )}
     </>
   );

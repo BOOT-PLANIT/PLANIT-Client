@@ -1,19 +1,20 @@
+import { Bootcamp } from "@/feature/bootcamp";
 import { Button, Modal } from "@/shared/ui";
 
 import styles from "./DeleteBootcampModal.module.scss";
 
 interface DeleteBootcampModalProps {
   onClose: () => void;
-  bootcampId: number | null;
+  bootcamp: Bootcamp | null;
 }
 
 const DeleteBootcampModal = ({
   onClose,
-  bootcampId,
+  bootcamp,
 }: DeleteBootcampModalProps) => {
   const handleBootcampRemove = () => {
-    if (bootcampId) {
-      console.log("부트캠프 삭제 아이디: ", bootcampId);
+    if (bootcamp) {
+      console.log("부트캠프 삭제 아이디: ", bootcamp.id);
       onClose();
     }
   };

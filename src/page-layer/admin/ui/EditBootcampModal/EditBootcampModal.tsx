@@ -1,51 +1,32 @@
 "use client";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Button, Calendar, Input, Modal } from "@/shared/ui";
-import { DateData } from "@/shared/ui/Calendar";
-import { parseDateString } from "@/shared/utils";
+import { Bootcamp } from "@/feature/bootcamp";
+import { Button, Input, Modal } from "@/shared/ui";
 
 import styles from "./EditBootcampModal.module.scss";
 
-interface AddBootcampModalProps {
+interface EditBootcampModalProps {
   onClose: () => void;
-  bootcampId: number | null;
+  bootcamp: Bootcamp | null;
 }
 
 interface BootcampFormValues {
   organizer: string;
   name: string;
   isKdt: boolean;
-  classDates: string[];
 }
 
-const getDateKey = (date: Date): string => {
-  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-};
-
-const dummyDate = [
-  "2025-12-10",
-  "2025-12-11",
-  "2025-12-12",
-  "2025-12-15",
-  "2025-12-16",
-  "2025-12-17",
-  "2025-12-18",
-  "2025-12-19",
-];
-//bootcampId 추가해야됨
-const EditBootcampModal = ({ onClose }: AddBootcampModalProps) => {
-  const [selectedDatesForEdit, setSelectedDatesForEdit] = useState<Date[]>([]);
-  const [isModalOpen, setModalOpen] = useState(false);
-
+const EditBootcampModal = ({ onClose, bootcamp }: EditBootcampModalProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<BootcampFormValues>({
     defaultValues: {
-      isKdt: false,
+      organizer: bootcamp?.organizer,
+      name: bootcamp?.name,
+      isKdt: bootcamp?.isKdt,
     },
   });
   const onSubmit = (data: BootcampFormValues) => {
@@ -53,28 +34,12 @@ const EditBootcampModal = ({ onClose }: AddBootcampModalProps) => {
     onClose();
   };
 
-  const calendarSessionDate: DateData[] = dummyDate.map((date) => {
-    return { date: parseDateString(date), isCurrentUnit: true };
-  });
-
-  const handleSessionEditModal = (dates: Date[]) => {
-    setSelectedDatesForEdit(dates);
-    setModalOpen(true);
-  };
-
-  const handleSessionEditSubmit = () => {
-    const stringClassDate = selectedDatesForEdit.map((date) =>
-      getDateKey(date),
-    );
-    console.log(stringClassDate);
-  };
-
   return (
-    <Modal title="부트캠프 수정" onClose={onClose}>
+    <Modal title="부트캠프 정보 수정" onClose={onClose}>
       <div className={styles.layout}>
         <div className={styles.container}>
           <div className={styles.description}>
-            부트캠프의 상세정보 및 일정을 수정하세요.
+            부트캠프의 상세정보를 수정하세요.
           </div>
 
           <form className={styles.formLayout} onSubmit={handleSubmit(onSubmit)}>
@@ -106,12 +71,6 @@ const EditBootcampModal = ({ onClose }: AddBootcampModalProps) => {
               </div>
             </label>
 
-            <Calendar
-              onEdit={handleSessionEditModal}
-              dates={calendarSessionDate}
-              unitColors={{ currentUnit: "var(--color-purple-lightest)" }}
-            />
-
             <div className={styles.buttonLayout}>
               <Button onClick={onClose} variant="outline" width="70px">
                 취소
@@ -123,15 +82,6 @@ const EditBootcampModal = ({ onClose }: AddBootcampModalProps) => {
           </form>
         </div>
       </div>
-      {isModalOpen && (
-        <Modal title="일정 삭제 확인" onClose={() => setModalOpen(false)}>
-          삭제 하시겠습니까?
-          <Button onClick={() => setModalOpen(false)} variant="outline">
-            취소
-          </Button>
-          <Button onClick={handleSessionEditSubmit}>일정 삭제</Button>
-        </Modal>
-      )}
     </Modal>
   );
 };

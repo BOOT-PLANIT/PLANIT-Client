@@ -11,10 +11,10 @@ import SearchIcon from "@/shared/assets/icons/SearchIcon";
 import { Input, Spinner } from "@/shared/ui";
 
 import styles from "./BootcampList.module.scss";
-type ModalType = "add" | "edit" | "delete" | null;
+type ModalType = "add" | "edit" | "delete" | "session" | null;
 interface BootcampListProps {
   onSelectBootcamp?: (bootcamp: Bootcamp | null) => void;
-  onModalOpen?: (type: ModalType, bootcampId?: number) => void;
+  onModalOpen?: (type: ModalType, bootcamp?: Bootcamp) => void;
   manage: boolean; // 관리자모드
 }
 
@@ -88,15 +88,9 @@ const BootcampList = ({
     }
   };
 
-  const handleDelete = (bootcamp: Bootcamp) => {
+  const handleModalOpen = (type: ModalType, bootcamp: Bootcamp) => {
     if (manage && onModalOpen) {
-      onModalOpen("delete", bootcamp.id);
-    }
-  };
-
-  const handleEdit = (bootcamp: Bootcamp) => {
-    if (manage && onModalOpen) {
-      onModalOpen("edit", bootcamp.id);
+      onModalOpen(type, bootcamp);
     }
   };
 
@@ -122,7 +116,7 @@ const BootcampList = ({
               <th>훈련일수</th>
               <th>KDT</th>
               <th>상태</th>
-              {manage && <th colSpan={2}>관리</th>}
+              {manage && <th colSpan={3}>관리</th>}
             </tr>
           </thead>
         </table>
@@ -131,7 +125,7 @@ const BootcampList = ({
             <tbody>
               {isLoading && (
                 <tr>
-                  <td className={styles.spinner} colSpan={manage ? 8 : 6}>
+                  <td className={styles.spinner} colSpan={manage ? 9 : 6}>
                     <Spinner />
                   </td>
                 </tr>
@@ -144,13 +138,12 @@ const BootcampList = ({
                   bootcamp={b}
                   manage={manage}
                   selectItem={handleSelect}
-                  editItem={handleEdit}
-                  deleteItem={handleDelete}
+                  isModalOpen={handleModalOpen}
                 />
               ))}
               {isFetchingNextPage && (
                 <tr>
-                  <td className={styles.spinner} colSpan={manage ? 8 : 6}>
+                  <td className={styles.spinner} colSpan={manage ? 9 : 6}>
                     <Spinner />
                   </td>
                 </tr>
@@ -158,7 +151,7 @@ const BootcampList = ({
 
               {/* 옵저버 */}
               <tr ref={anchorRef}>
-                <td className={styles.spinner} colSpan={manage ? 8 : 6}></td>
+                <td className={styles.spinner} colSpan={manage ? 9 : 6}></td>
               </tr>
             </tbody>
           </table>
