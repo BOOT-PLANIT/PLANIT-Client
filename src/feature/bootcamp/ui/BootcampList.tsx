@@ -3,7 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 
 import {
-  BootcampTest as Bootcamp,
+  Bootcamp,
   BootcampListItem,
   dummyFetchBootcamps,
 } from "@/feature/bootcamp";

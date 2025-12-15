@@ -316,7 +316,7 @@ const Attendance = () => {
         </div>
 
         {isLoading ? (
-          <>
+          <div>
             <div className={styles.summaryCards}>
               <AttendanceSummaryCardSkeleton
                 title={CARD_TITLES.ATTENDANCE_SUMMARY}
@@ -325,7 +325,7 @@ const Attendance = () => {
               <PeriodAllowanceCardSkeleton />
             </div>
             <CalendarSkeleton />
-          </>
+          </div>
         ) : isEmpty ? (
           <div className={styles.emptyState}>
             <p className={styles.emptyMessage}>
@@ -335,7 +335,7 @@ const Attendance = () => {
             </p>
           </div>
         ) : (
-          <>
+          <div>
             <div
               className={styles.summaryCards}
               data-columns={statsMode === "unit" ? 3 : 2}
@@ -379,7 +379,7 @@ const Attendance = () => {
                 <IconGuide items={ICON_GUIDE_ITEMS} />
               </Suspense>
             </Card>
-          </>
+          </div>
         )}
       </div>
 

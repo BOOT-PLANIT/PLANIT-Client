@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { BootcampTest as Bootcamp } from "@/feature/bootcamp";
+import { Bootcamp } from "@/feature/bootcamp";
 import {
   AddIcon,
   CalendarIcon,
@@ -90,7 +90,7 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
                 </div>
                 <div className={styles.date}>
                   <CalendarIcon size={16} />
-                  {` ${b.startedAt} - ${b.endedAt} · ${b.classDates.length}`}일
+                  {` ${b.startDate} - ${b.endDate} · ${b.classDates.length}`}일
                 </div>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { BootcampTest as Bootcamp } from "@/feature/bootcamp";
+import { Bootcamp } from "@/feature/bootcamp";
 import { User } from "@/feature/user";
 
 import styles from "./MyPage.module.scss";
@@ -27,8 +27,8 @@ const dummyBootcamps: Bootcamp[] = [
     name: "ITQ 쪽집게 강의』 ITQ OA Master(한글+파워포인트+엑셀) 자격증 취득 과정",
     organizer: "멀티 캠퍼스",
     isKdt: true,
-    startedAt: "2025-12-01",
-    endedAt: "2025-12-05",
+    startDate: "2025-12-01",
+    endDate: "2025-12-05",
     isEnded: true,
     classDates: [
       "2025-12-01",
@@ -43,8 +43,8 @@ const dummyBootcamps: Bootcamp[] = [
     name: "ChatGPT 마스터 클래스 : 남들보다 100배 더 잘 쓰기 위한 활용법 A to Z",
     organizer: "인공지능개발원",
     isKdt: false,
-    startedAt: "2026-01-20",
-    endedAt: "2026-01-25",
+    startDate: "2026-01-20",
+    endDate: "2026-01-25",
     isEnded: false,
     classDates: [
       "2026-01-20",
@@ -59,8 +59,8 @@ const dummyBootcamps: Bootcamp[] = [
     name: "ChatGPT 마스터 클래스 : 남들보다 100배 더 잘 쓰기 위한 활용법 A to Z",
     organizer: "인공지능개발원",
     isKdt: false,
-    startedAt: "2026-01-20",
-    endedAt: "2026-01-25",
+    startDate: "2026-01-20",
+    endDate: "2026-01-25",
     isEnded: false,
     classDates: [
       "2026-01-20",
@@ -75,8 +75,8 @@ const dummyBootcamps: Bootcamp[] = [
     name: "ChatGPT 마스터 클래스 : 남들보다 100배 더 잘 쓰기 위한 활용법 A to Z",
     organizer: "인공지능개발원",
     isKdt: false,
-    startedAt: "2026-01-20",
-    endedAt: "2026-01-25",
+    startDate: "2026-01-20",
+    endDate: "2026-01-25",
     isEnded: false,
     classDates: [
       "2026-01-20",
@@ -91,8 +91,8 @@ const dummyBootcamps: Bootcamp[] = [
     name: "ChatGPT 마스터 클래스 : 남들보다 100배 더 잘 쓰기 위한 활용법 A to Z",
     organizer: "인공지능개발원",
     isKdt: false,
-    startedAt: "2026-01-20",
-    endedAt: "2026-01-25",
+    startDate: "2026-01-20",
+    endDate: "2026-01-25",
     isEnded: false,
     classDates: [
       "2026-01-20",
@@ -117,9 +117,11 @@ const MyPage = () => {
       <div className={styles.myPageCard}>
         <AlarmSettingCard />
       </div>
-      <div className={styles.myPageCard}>
-        <AdminPanelCard userLevel={userProfile.userLevel} />
-      </div>
+      {userProfile.userLevel === "ADMIN" && (
+        <div className={styles.myPageCard}>
+          <AdminPanelCard />
+        </div>
+      )}
       <div className={styles.myPageCard}>
         <AccountActionsCard />
       </div>
