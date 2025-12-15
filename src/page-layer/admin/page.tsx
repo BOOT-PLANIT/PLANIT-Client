@@ -12,15 +12,26 @@ import { Button, Card } from "@/shared/ui";
 
 import styles from "./AdminPage.module.scss";
 import { AddBootcampModal } from "./ui/AddBootcampModal";
+import { DeleteBootcampModal } from "./ui/DeleteBootcampModal";
+import { EditBootcampModal } from "./ui/EditBootcampModal";
 import { StatCard } from "./ui/StatCard";
 
+type ModalType = "add" | "edit" | "delete" | null;
+
 const AdminPage = () => {
-  const [isAddModalOpen, setAddModalOpen] = useState(false);
-  const handleAddBootcampModalOpen = () => {
-    setAddModalOpen(true);
+  const [isModalOpen, setOpenModal] = useState<ModalType>(null);
+  const [isBootcampId, setBootcampId] = useState<number | null>(null);
+
+  const handleModalOpen = (type: ModalType, bootcampId?: number) => {
+    setOpenModal(type);
+    if (bootcampId) {
+      setBootcampId(bootcampId);
+      console.log("모달오픈 부캠아이디", bootcampId);
+    }
   };
-  const handleAddBootcampModalClose = () => {
-    setAddModalOpen(false);
+  const handleModalClose = () => {
+    setOpenModal(null);
+    setBootcampId(null);
   };
 
   return (
@@ -35,7 +46,7 @@ const AdminPage = () => {
           </div>
           <div className={styles.buttonLayout}>
             <Button
-              onClick={handleAddBootcampModalOpen}
+              onClick={() => handleModalOpen("add")}
               icon={<AddIcon size={18} />}
             >
               부트캠프 추가
@@ -64,12 +75,22 @@ const AdminPage = () => {
         </div>
         <div className={styles.listLayout}>
           <Card title="부트캠프 목록">
-            <BootcampList manage={true} />
+            <BootcampList manage={true} onModalOpen={handleModalOpen} />
           </Card>
         </div>
       </div>
-      {isAddModalOpen && (
-        <AddBootcampModal onClose={handleAddBootcampModalClose} />
+      {isModalOpen === "add" && <AddBootcampModal onClose={handleModalClose} />}
+      {isModalOpen === "edit" && (
+        <EditBootcampModal
+          onClose={handleModalClose}
+          bootcampId={isBootcampId}
+        />
+      )}
+      {isModalOpen === "delete" && (
+        <DeleteBootcampModal
+          onClose={handleModalClose}
+          bootcampId={isBootcampId}
+        />
       )}
     </>
   );

@@ -11,13 +11,18 @@ import SearchIcon from "@/shared/assets/icons/SearchIcon";
 import { Input, Spinner } from "@/shared/ui";
 
 import styles from "./BootcampList.module.scss";
-
+type ModalType = "add" | "edit" | "delete" | null;
 interface BootcampListProps {
   onSelectBootcamp?: (bootcamp: Bootcamp | null) => void;
+  onModalOpen?: (type: ModalType, bootcampId?: number) => void;
   manage: boolean; // 관리자모드
 }
 
-const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
+const BootcampList = ({
+  onSelectBootcamp,
+  onModalOpen,
+  manage,
+}: BootcampListProps) => {
   const [selectedItem, setSelectedItem] = useState<Bootcamp | null>(null);
 
   const [search, setSearch] = useState("");
@@ -84,14 +89,14 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
   };
 
   const handleDelete = (bootcamp: Bootcamp) => {
-    if (manage) {
-      console.log("부트캠프 삭제", bootcamp);
+    if (manage && onModalOpen) {
+      onModalOpen("delete", bootcamp.id);
     }
   };
 
   const handleEdit = (bootcamp: Bootcamp) => {
-    if (manage) {
-      console.log("부트캠프 수정", bootcamp);
+    if (manage && onModalOpen) {
+      onModalOpen("edit", bootcamp.id);
     }
   };
 
@@ -138,9 +143,9 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
                   isSelect={b.id === selectedItem?.id}
                   bootcamp={b}
                   manage={manage}
-                  selectItem={() => handleSelect(b)}
-                  editItem={() => handleEdit(b)}
-                  deleteItem={() => handleDelete(b)}
+                  selectItem={handleSelect}
+                  editItem={handleEdit}
+                  deleteItem={handleDelete}
                 />
               ))}
               {isFetchingNextPage && (

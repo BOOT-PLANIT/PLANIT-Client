@@ -10,9 +10,9 @@ interface BootcampListItemProps {
   bootcamp: Bootcamp;
   isSelect?: boolean;
   manage: boolean;
-  selectItem: () => void;
-  editItem: () => void;
-  deleteItem: () => void;
+  selectItem: (bootcamp: Bootcamp) => void;
+  editItem: (bootcamp: Bootcamp) => void;
+  deleteItem: (bootcamp: Bootcamp) => void;
 }
 
 const BootcampListItem = ({
@@ -26,7 +26,7 @@ const BootcampListItem = ({
   return (
     <tr
       className={`${styles.row} ${isSelect ? styles.selected : ""}`}
-      onClick={selectItem}
+      onClick={() => selectItem(bootcamp)}
     >
       <td className={styles.organization}>{bootcamp.organizer}</td>
 
@@ -61,7 +61,7 @@ const BootcampListItem = ({
               className={styles.icon}
               onClick={(e) => {
                 e.stopPropagation();
-                editItem();
+                editItem(bootcamp);
               }}
             >
               <EditIcon />
@@ -74,7 +74,7 @@ const BootcampListItem = ({
               className={`${styles.delete} ${styles.icon}`}
               onClick={(e) => {
                 e.stopPropagation();
-                deleteItem();
+                deleteItem(bootcamp);
               }}
             >
               <DeleteIcon />
