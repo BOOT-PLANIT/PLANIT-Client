@@ -56,7 +56,7 @@ const AdminPage = () => {
         <div className={styles.cardLayout}>
           <StatCard
             icon={<StudyIcon size={20} />}
-            label="전체 부트 캠프 개수"
+            label="전체 부트캠프 개수"
             value={5}
             color="blue"
           />
@@ -68,7 +68,7 @@ const AdminPage = () => {
           />
           <StatCard
             icon={<CalendarIcon size={20} />}
-            label="진행 중인 전체 부트 캠프"
+            label="진행 중인 전체 부트캠프"
             value={2}
             color="purple"
           />

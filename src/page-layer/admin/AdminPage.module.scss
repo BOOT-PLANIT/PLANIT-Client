@@ -9,8 +9,7 @@
 
 .topRow {
   width: 100%;
-  max-width: 1200px;
-  min-width: 355px;
+  max-width: 1000px;
   margin-top: var(--spacing-40);
   padding: 0 var(--spacing-6);
   display: flex;
@@ -38,8 +37,7 @@
 
 .cardLayout {
   width: 100%;
-  max-width: 1200px;
-  min-width: 355px;
+  max-width: 1000px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,6 +50,5 @@
 
 .listLayout {
   width: 100%;
-  max-width: 1200px;
-  min-width: 355px;
+  max-width: 1000px;
 }
