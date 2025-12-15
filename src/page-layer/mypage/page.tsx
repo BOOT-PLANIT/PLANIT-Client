@@ -117,9 +117,11 @@ const MyPage = () => {
       <div className={styles.myPageCard}>
         <AlarmSettingCard />
       </div>
-      <div className={styles.myPageCard}>
-        <AdminPanelCard userLevel={userProfile.userLevel} />
-      </div>
+      {userProfile.userLevel === "ADMIN" && (
+        <div className={styles.myPageCard}>
+          <AdminPanelCard userLevel={userProfile.userLevel} />
+        </div>
+      )}
       <div className={styles.myPageCard}>
         <AccountActionsCard />
       </div>

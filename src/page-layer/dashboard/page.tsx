@@ -52,25 +52,27 @@ const Dashboard = () => {
   const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
 
   return (
-    <div className={styles.cardContainer}>
-      <BootcampInfo
-        options={bootcampOption}
-        selectedIndex={selectedBootcampIndex}
-        onIndexChange={setSelectedBootcampIndex}
-        dateRange={{
-          startDate: new Date("2025-04-12"),
-          endDate: new Date("2025-09-12"),
-          sessionCount: 135,
-        }}
-      />
-      <TodaysAttendanceCard />
-      <div className={styles.gridContainer}>
-        <DoughnutChartCard title="출석률" data={doughnutData} />
-        <RemainingBalanceCard values={balanceData} />
-        <TotalAllowanceCard value={totalAllowance} />
+    <div className={styles.pageContainer}>
+      <div className={styles.cardContainer}>
+        <BootcampInfo
+          options={bootcampOption}
+          selectedIndex={selectedBootcampIndex}
+          onIndexChange={setSelectedBootcampIndex}
+          dateRange={{
+            startDate: new Date("2025-04-12"),
+            endDate: new Date("2025-09-12"),
+            sessionCount: 135,
+          }}
+        />
+        <TodaysAttendanceCard />
+        <div className={styles.gridContainer}>
+          <DoughnutChartCard title="출석률" data={doughnutData} />
+          <RemainingBalanceCard values={balanceData} />
+          <TotalAllowanceCard value={totalAllowance} />
+        </div>
+        <AttendanceSummaryCard title="출결 정보" values={attendanceSummary} />
+        <BarChartCard title="부트캠프 진행률" data={barChartItem} />
       </div>
-      <AttendanceSummaryCard title="출결 정보" values={attendanceSummary} />
-      <BarChartCard title="부트캠프 진행률" data={barChartItem} />
     </div>
   );
 };
