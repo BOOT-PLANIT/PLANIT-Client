@@ -1,4 +1,4 @@
-import type { AttendanceStatus as ApiAttendanceStatus } from "@/feature/session/api";
+import type { AttendanceStatus as ApiAttendanceStatus } from "@/shared/api";
 import type { AttendanceStatus as CalendarAttendanceStatus } from "@/shared/ui/Calendar";
 
 /**

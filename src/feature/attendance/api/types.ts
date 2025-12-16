@@ -1,4 +1,4 @@
-import type { AttendanceStatus } from "@/feature/session/api";
+import type { AttendanceStatus } from "@/shared/api";
 
 /**
  * Calendar 컴포넌트에서 사용하는 출결 상태
