@@ -9,7 +9,7 @@ import { features } from "./model";
 import styles from "./SignIn.module.scss";
 
 const SignIn = () => {
-  const { mutate: googleLogin } = useGoogleLogin();
+  const { mutate: googleLogin, isPending } = useGoogleLogin();
 
   return (
     <div className={styles.container}>
@@ -32,8 +32,13 @@ const SignIn = () => {
             </div>
           ))}
         </div>
-
-        <div className={styles.buttonContainer} onClick={() => googleLogin()}>
+        <button
+          type="button"
+          className={styles.buttonContainer}
+          onClick={() => googleLogin()}
+          disabled={isPending}
+          aria-label="Google 계정으로 로그인"
+        >
           <Image
             src="/google.svg"
             width={200}
@@ -42,7 +47,7 @@ const SignIn = () => {
             className={styles.googleImg}
             priority
           />
-        </div>
+        </button>
       </div>
     </div>
   );
