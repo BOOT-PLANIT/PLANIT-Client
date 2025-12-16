@@ -47,6 +47,7 @@ export const useBootcamps = (params?: BootcampListParams) => {
 
 /**
  * 부트캠프 검색
+ * keyword가 없으면 전체 목록을 반환합니다.
  */
 export const useSearchBootcamps = (params: BootcampSearchParams) => {
   return useQuery<ApiResponse<Bootcamp[]>>({
@@ -58,7 +59,6 @@ export const useSearchBootcamps = (params: BootcampSearchParams) => {
       );
       return response.data;
     },
-    enabled: !!params.keyword,
   });
 };
 

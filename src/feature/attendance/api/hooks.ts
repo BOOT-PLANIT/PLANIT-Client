@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import type { Session } from "@/feature/session/api";
+import type { Session } from "@/shared/api";
 import type { ApiResponse } from "@/shared/api";
 import { apiClient } from "@/shared/api";
 

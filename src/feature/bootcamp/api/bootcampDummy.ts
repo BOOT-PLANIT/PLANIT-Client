@@ -1,4 +1,4 @@
-import { Bootcamp } from "./types";
+import type { Bootcamp } from "@/shared/api";
 
 // 랜덤 날짜 생성 도우미
 function randomDate(start: Date, end: Date) {

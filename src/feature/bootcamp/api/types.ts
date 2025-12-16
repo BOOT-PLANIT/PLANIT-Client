@@ -1,16 +1,4 @@
-/**
- * 부트캠프 정보
- */
-export interface Bootcamp {
-  id: number;
-  name: string;
-  organizer: string;
-  isKdt: boolean;
-  startedAt: string;
-  endedAt: string;
-  isEnded: boolean;
-  classDates: string[];
-}
+import { Bootcamp } from "@/shared/api";
 
 /**
  * 부트캠프 목록 응답
@@ -63,3 +51,4 @@ export interface BootcampSearchParams {
   page?: number;
   size?: number;
 }
+export type { Bootcamp };

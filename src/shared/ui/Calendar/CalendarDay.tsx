@@ -1,7 +1,8 @@
 import React, { memo } from "react";
 
-import type { AttendanceStatus, DateData } from "./Calendar";
+import type { AttendanceStatus } from "./Calendar";
 import styles from "./Calendar.module.scss";
+import type { DateData } from "./types";
 
 interface CalendarDayProps {
   date: Date;

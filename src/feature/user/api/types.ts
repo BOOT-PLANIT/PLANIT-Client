@@ -13,3 +13,10 @@ export interface User {
   createdAt: string;
   lastLoginAt: string;
 }
+
+/**
+ * FCM 토큰 저장/갱신 요청
+ */
+export interface FcmTokenRequest {
+  fcmToken: string;
+}
