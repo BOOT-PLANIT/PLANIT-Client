@@ -1,6 +1,5 @@
 import type { PeriodAllowance, UnitStats } from "@/entities/attendance/model";
-import type { CalendarAttendanceStatus } from "@/feature/attendance/api";
-import type { DateData } from "@/shared/ui/Calendar";
+import type { CalendarAttendanceStatus, DateData } from "@/shared/ui/Calendar";
 
 type AttendanceStatus = CalendarAttendanceStatus;
 

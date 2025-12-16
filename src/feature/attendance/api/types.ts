@@ -1,15 +1,8 @@
 import type { AttendanceStatus } from "@/shared/api";
+import type { CalendarAttendanceStatus } from "@/shared/ui/Calendar";
 
-/**
- * Calendar 컴포넌트에서 사용하는 출결 상태
- */
-export type CalendarAttendanceStatus =
-  | "present"
-  | "late"
-  | "leftEarly"
-  | "leave"
-  | "annual"
-  | "absent";
+// CalendarAttendanceStatus를 re-export하여 feature 레이어에서 사용 가능하도록 함
+export type { CalendarAttendanceStatus };
 
 /**
  * 출결 등록/수정 요청

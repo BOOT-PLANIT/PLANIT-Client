@@ -1,9 +1,9 @@
 "use client";
 
-import type { CalendarAttendanceStatus } from "@/feature/attendance/api";
 import { Card } from "@/shared/ui";
+import type { CalendarAttendanceStatus } from "@/shared/ui/Calendar";
 
-// CalendarAttendanceStatus를 AttendanceStatus로 alias하여 기존 코드와의 호환성 유지
+// 기존 코드와의 호환성을 위해 AttendanceStatus로 alias
 type AttendanceStatus = CalendarAttendanceStatus;
 
 import { ATTENDANCE_ICON_MAP, ATTENDANCE_STATUS_LABELS } from "../../model";

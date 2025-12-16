@@ -1,5 +1,5 @@
-import type { CalendarAttendanceStatus } from "@/feature/attendance/api";
 import type { AttendanceStatus as ApiAttendanceStatus } from "@/shared/api";
+import type { CalendarAttendanceStatus } from "@/shared/ui/Calendar";
 
 /**
  * Calendar 출결 상태를 API 출결 상태로 변환

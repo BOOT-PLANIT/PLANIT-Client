@@ -8,22 +8,16 @@ import React, {
   useEffect,
 } from "react";
 
-import type { CalendarAttendanceStatus } from "@/feature/attendance/api";
 import { ChevronLeft, ChevronRight } from "@/shared/assets/icons";
 
 import styles from "./Calendar.module.scss";
 import CalendarDay from "./CalendarDay";
 import FloatingBar from "./FloatingBar";
+import type { CalendarAttendanceStatus, DateData } from "./types";
 
-// CalendarAttendanceStatus를 AttendanceStatus로 re-export하여 기존 코드와의 호환성 유지
+// 기존 코드와의 호환성을 위해 AttendanceStatus로 re-export
 export type AttendanceStatus = CalendarAttendanceStatus;
-
-export interface DateData {
-  date: Date;
-  status?: AttendanceStatus;
-  isCurrentUnit?: boolean;
-  isOtherUnit?: boolean;
-}
+export type { DateData };
 
 interface CalendarProps {
   dates?: DateData[];

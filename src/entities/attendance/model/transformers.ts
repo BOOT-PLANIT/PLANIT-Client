@@ -1,11 +1,10 @@
-import type { CalendarAttendanceStatus } from "@/feature/attendance/api";
 import type {
   AttendanceStatus as ApiAttendanceStatus,
   Bootcamp,
   Enrollment,
   Session,
 } from "@/shared/api";
-import type { DateData } from "@/shared/ui/Calendar";
+import type { CalendarAttendanceStatus, DateData } from "@/shared/ui/Calendar";
 import { parseDateString } from "@/shared/utils";
 
 /**
