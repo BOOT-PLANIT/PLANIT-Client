@@ -4,8 +4,8 @@ import type { DateData } from "@/shared/ui/Calendar";
  * 단위 기간 정보
  */
 export interface UnitPeriod {
-  startedAt: Date;
-  endedAt: Date;
+  startDate: Date;
+  endDate: Date;
   unitNumber: number;
 }
 
@@ -22,8 +22,8 @@ export interface BootcampOption {
  * 날짜 범위 정보
  */
 export interface DateRange {
-  startedAt: Date;
-  endedAt: Date;
+  startDate: Date;
+  endDate: Date;
   sessionCount: number;
 }
 

@@ -10,7 +10,7 @@ import styles from "./EditSessionModal.module.scss";
 
 interface EditSessionModalProps {
   onClose: () => void;
-  bootcamp: Bootcamp | null;
+  bootcamp: Bootcamp;
 }
 
 const getDateKey = (date: Date): string => {
@@ -50,10 +50,7 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
 
   const isDisabled = addedLectures.size > 0 || removedLectures.size > 0;
 
-  //api연동필요
-  if (!bootcamp) return <div>부트캠프에 입력된 강의가 없습니다.</div>;
-
-  const textSession: SessionDateDto[] = bootcamp?.classDates.map((date, i) => {
+  const textSession: SessionDateDto[] = bootcamp.classDates.map((date, i) => {
     return { id: i + 1, classDate: date };
   });
 
@@ -73,7 +70,7 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
     const isAdd = new Map<string, AddedLecture>();
     const isRemove = new Map<string, RemovedLecture>();
 
-    stringSelectDate.map((date) => {
+    stringSelectDate.forEach((date) => {
       const hasSession = sessionMap.has(date);
 
       if (hasSession) {

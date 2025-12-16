@@ -2,6 +2,7 @@
 import { useState } from "react";
 
 import { Bootcamp, BootcampList } from "@/feature/bootcamp";
+import { ModalType } from "@/feature/bootcamp/ui/BootcampList";
 import {
   AddIcon,
   CalendarIcon,
@@ -17,21 +18,21 @@ import { EditBootcampModal } from "./ui/EditBootcampModal";
 import { EditSessionModal } from "./ui/EditSessionModal";
 import { StatCard } from "./ui/StatCard";
 
-type ModalType = "add" | "edit" | "delete" | "session" | null;
-
 const AdminPage = () => {
   const [isModalOpen, setOpenModal] = useState<ModalType>(null);
-  const [isBootcamp, setBootcamp] = useState<Bootcamp | null>(null);
+  const [selectedBootcamp, setSelectedBootcamp] = useState<Bootcamp | null>(
+    null,
+  );
 
   const handleModalOpen = (type: ModalType, bootcamp?: Bootcamp) => {
     setOpenModal(type);
     if (bootcamp) {
-      setBootcamp(bootcamp);
+      setSelectedBootcamp(bootcamp);
     }
   };
   const handleModalClose = () => {
     setOpenModal(null);
-    setBootcamp(null);
+    setSelectedBootcamp(null);
   };
 
   return (
@@ -80,14 +81,23 @@ const AdminPage = () => {
         </div>
       </div>
       {isModalOpen === "add" && <AddBootcampModal onClose={handleModalClose} />}
-      {isModalOpen === "edit" && (
-        <EditBootcampModal onClose={handleModalClose} bootcamp={isBootcamp} />
+      {isModalOpen === "edit" && selectedBootcamp && (
+        <EditBootcampModal
+          onClose={handleModalClose}
+          bootcamp={selectedBootcamp}
+        />
       )}
-      {isModalOpen === "session" && (
-        <EditSessionModal onClose={handleModalClose} bootcamp={isBootcamp} />
+      {isModalOpen === "session" && selectedBootcamp && (
+        <EditSessionModal
+          onClose={handleModalClose}
+          bootcamp={selectedBootcamp}
+        />
       )}
-      {isModalOpen === "delete" && (
-        <DeleteBootcampModal onClose={handleModalClose} bootcamp={isBootcamp} />
+      {isModalOpen === "delete" && selectedBootcamp && (
+        <DeleteBootcampModal
+          onClose={handleModalClose}
+          bootcamp={selectedBootcamp}
+        />
       )}
     </>
   );

@@ -24,8 +24,8 @@ interface UseAttendanceStatsOptions {
   selectedPeriod: UnitPeriod | null;
   isKdt?: boolean;
   customDateRange?: {
-    startedAt: Date;
-    endedAt: Date;
+    startDate: Date;
+    endDate: Date;
   } | null;
 }
 
@@ -43,14 +43,14 @@ export const useAttendanceStats = (
   const periodTimeRange = useMemo(() => {
     if (customDateRange) {
       return {
-        startTime: normalizeStartDate(customDateRange.startedAt),
-        endTime: normalizeEndDate(customDateRange.endedAt),
+        startTime: normalizeStartDate(customDateRange.startDate),
+        endTime: normalizeEndDate(customDateRange.endDate),
       };
     }
     if (!selectedPeriod) return null;
     return {
-      startTime: normalizeStartDate(selectedPeriod.startedAt),
-      endTime: normalizeEndDate(selectedPeriod.endedAt),
+      startTime: normalizeStartDate(selectedPeriod.startDate),
+      endTime: normalizeEndDate(selectedPeriod.endDate),
     };
   }, [selectedPeriod, customDateRange]);
 

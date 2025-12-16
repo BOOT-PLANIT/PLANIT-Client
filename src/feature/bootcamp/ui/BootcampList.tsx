@@ -11,7 +11,7 @@ import SearchIcon from "@/shared/assets/icons/SearchIcon";
 import { Input, Spinner } from "@/shared/ui";
 
 import styles from "./BootcampList.module.scss";
-type ModalType = "add" | "edit" | "delete" | "session" | null;
+export type ModalType = "add" | "edit" | "delete" | "session" | null;
 interface BootcampListProps {
   onSelectBootcamp?: (bootcamp: Bootcamp | null) => void;
   onModalOpen?: (type: ModalType, bootcamp?: Bootcamp) => void;

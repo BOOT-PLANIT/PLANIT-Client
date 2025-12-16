@@ -9,8 +9,8 @@ const DAILY_ALLOWANCE_GENERAL = 5800; // 일반 일일 수당 (원)
 const MAX_ATTENDANCE_DAYS = 20; // 최대 출석일 수
 
 interface Period {
-  startedAt: Date;
-  endedAt: Date;
+  startDate: Date;
+  endDate: Date;
 }
 
 /**
@@ -90,10 +90,10 @@ export const calculatePeriodAllowance = (
 
   return {
     amount,
-    dateRange: `${selectedPeriod.startedAt.toLocaleDateString("ko-KR", {
+    dateRange: `${selectedPeriod.startDate.toLocaleDateString("ko-KR", {
       month: "long",
       day: "numeric",
-    })}-${selectedPeriod.endedAt.toLocaleDateString("ko-KR", {
+    })}-${selectedPeriod.endDate.toLocaleDateString("ko-KR", {
       month: "long",
       day: "numeric",
     })}`,

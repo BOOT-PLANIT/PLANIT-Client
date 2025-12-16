@@ -5,7 +5,7 @@ import styles from "./DeleteBootcampModal.module.scss";
 
 interface DeleteBootcampModalProps {
   onClose: () => void;
-  bootcamp: Bootcamp | null;
+  bootcamp: Bootcamp;
 }
 
 const DeleteBootcampModal = ({

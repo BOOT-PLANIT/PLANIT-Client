@@ -4,9 +4,9 @@ import { Bootcamp } from "@/feature/bootcamp";
 import { EditIcon, DeleteIcon, CalendarIcon } from "@/shared/assets";
 import { Badge } from "@/shared/ui/Badge";
 
+import { ModalType } from "./BootcampList";
 import styles from "./BootcampListItem.module.scss";
 
-type ModalType = "add" | "edit" | "delete" | "session" | null;
 interface BootcampListItemProps {
   bootcamp: Bootcamp;
   isSelect?: boolean;

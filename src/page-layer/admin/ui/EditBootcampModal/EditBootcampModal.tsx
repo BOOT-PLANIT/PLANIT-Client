@@ -8,7 +8,7 @@ import styles from "./EditBootcampModal.module.scss";
 
 interface EditBootcampModalProps {
   onClose: () => void;
-  bootcamp: Bootcamp | null;
+  bootcamp: Bootcamp;
 }
 
 interface BootcampFormValues {
@@ -24,9 +24,9 @@ const EditBootcampModal = ({ onClose, bootcamp }: EditBootcampModalProps) => {
     formState: { errors },
   } = useForm<BootcampFormValues>({
     defaultValues: {
-      organizer: bootcamp?.organizer,
-      name: bootcamp?.name,
-      isKdt: bootcamp?.isKdt,
+      organizer: bootcamp.organizer,
+      name: bootcamp.name,
+      isKdt: bootcamp.isKdt,
     },
   });
   const onSubmit = (data: BootcampFormValues) => {
