@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { signOut } from "firebase/auth";
 import { useDispatch } from "react-redux";
 
+import { apiClient } from "@/shared/api";
 import { auth } from "@/shared/config/firebaseConfig";
 import { queryClient } from "@/shared/query/queryClient";
 import { clearAuth } from "@/shared/store/authSlice";
@@ -12,14 +13,7 @@ export const useLogout = () => {
   return useMutation({
     mutationFn: async () => {
       await signOut(auth);
-
-      await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/logout`,
-        {
-          method: "POST",
-          credentials: "include",
-        },
-      );
+      await apiClient.post("/auth/logout");
     },
     onSuccess: () => {
       dispatch(clearAuth());
