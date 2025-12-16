@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { useLogout } from "@/feature/auth";
 import { LogoutIcon, UserRemoveIcon } from "@/shared/assets";
 import { useToast } from "@/shared/lib";
 import { Button, Card, Modal } from "@/shared/ui";
@@ -13,10 +14,7 @@ const AccountActionsCard = () => {
   const toast = useToast();
   const router = useRouter();
 
-  const handleLogout = () => {
-    toast.success("로그아웃되었습니다.");
-    router.replace("/signin");
-  };
+  const { mutate: logout, isPending } = useLogout();
 
   const handleUserRemove = () => {
     toast.success("그동안 이용해 주셔서 감사합니다.");
@@ -34,7 +32,8 @@ const AccountActionsCard = () => {
     <Card title="계정 관리">
       <div className={styles.container}>
         <Button
-          onClick={handleLogout}
+          onClick={() => logout()}
+          disabled={isPending}
           variant="outline"
           className={styles.button}
         >

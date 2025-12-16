@@ -6,14 +6,14 @@ import { apiClient } from "@/shared/api";
 import type { Enrollment } from "./types";
 
 /**
- * 내 부트캠프 목록 조회 (등록 정보)
+ * 내 부트캠프 목록 조회
  */
 export const useMyBootcamps = () => {
   return useQuery<ApiResponse<Enrollment[]>>({
-    queryKey: ["enrollments"],
+    queryKey: ["my-bootcamps"],
     queryFn: async () => {
       const response =
-        await apiClient.get<ApiResponse<Enrollment[]>>("/enrollments");
+        await apiClient.get<ApiResponse<Enrollment[]>>("/bootcamps/my");
       return response.data;
     },
   });

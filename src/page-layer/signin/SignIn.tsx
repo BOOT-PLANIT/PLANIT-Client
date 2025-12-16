@@ -2,13 +2,15 @@
 
 import Image from "next/image";
 
+import { useGoogleLogin } from "@/feature/auth";
 import { CheckIcon } from "@/shared/assets";
 
-import { googleLogin } from "./api/hooks";
-import { features } from "./model/constants";
+import { features } from "./model";
 import styles from "./SignIn.module.scss";
 
 const SignIn = () => {
+  const { mutate: googleLogin } = useGoogleLogin();
+
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -31,7 +33,7 @@ const SignIn = () => {
           ))}
         </div>
 
-        <div className={styles.buttonContainer} onClick={googleLogin}>
+        <div className={styles.buttonContainer} onClick={() => googleLogin()}>
           <Image
             src="/google.svg"
             width={200}
