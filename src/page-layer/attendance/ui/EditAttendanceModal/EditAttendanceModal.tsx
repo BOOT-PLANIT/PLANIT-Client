@@ -4,7 +4,10 @@ import { useState } from "react";
 
 import { ATTENDANCE_ICON_MAP } from "@/entities/attendance/model";
 import { Button, Modal, OptionButton } from "@/shared/ui";
-import type { AttendanceStatus } from "@/shared/ui/Calendar";
+import type { CalendarAttendanceStatus } from "@/shared/ui/Calendar";
+
+// 기존 코드와의 호환성을 위해 AttendanceStatus로 alias
+type AttendanceStatus = CalendarAttendanceStatus;
 
 import styles from "./EditAttendanceModal.module.scss";
 

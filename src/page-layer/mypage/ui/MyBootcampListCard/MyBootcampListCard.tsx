@@ -23,9 +23,10 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectBootcampId, setSelectBootcampId] = useState<number | null>(null);
   const router = useRouter();
+  const userType = "existing";
 
   const handleRegist = () => {
-    router.push("/bootcamps");
+    router.push(`/bootcamps?userType=${userType}`);
   };
 
   const handleDelete = () => {
@@ -90,7 +91,7 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
                 </div>
                 <div className={styles.date}>
                   <CalendarIcon size={16} />
-                  {` ${b.startDate} - ${b.endDate} · ${b.classDates.length}`}일
+                  {` ${b.startedAt} - ${b.endedAt} · ${b.classDates.length}`}일
                 </div>
               </div>
             </div>

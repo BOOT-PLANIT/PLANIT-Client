@@ -13,21 +13,11 @@ import { ChevronLeft, ChevronRight } from "@/shared/assets/icons";
 import styles from "./Calendar.module.scss";
 import CalendarDay from "./CalendarDay";
 import FloatingBar from "./FloatingBar";
+import type { CalendarAttendanceStatus, DateData } from "./types";
 
-export type AttendanceStatus =
-  | "present"
-  | "late"
-  | "leftEarly"
-  | "leave"
-  | "annual"
-  | "absent";
-
-export interface DateData {
-  date: Date;
-  status?: AttendanceStatus;
-  isCurrentUnit?: boolean;
-  isOtherUnit?: boolean;
-}
+// 기존 코드와의 호환성을 위해 AttendanceStatus로 re-export
+export type AttendanceStatus = CalendarAttendanceStatus;
+export type { DateData };
 
 interface CalendarProps {
   dates?: DateData[];

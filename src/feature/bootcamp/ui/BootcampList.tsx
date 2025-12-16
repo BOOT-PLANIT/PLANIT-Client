@@ -11,13 +11,18 @@ import SearchIcon from "@/shared/assets/icons/SearchIcon";
 import { Input, Spinner } from "@/shared/ui";
 
 import styles from "./BootcampList.module.scss";
-
+export type ModalType = "add" | "edit" | "delete" | "session" | null;
 interface BootcampListProps {
-  onSelectBootcamp: (bootcamp: Bootcamp | null) => void;
+  onSelectBootcamp?: (bootcamp: Bootcamp | null) => void;
+  onModalOpen?: (type: ModalType, bootcamp?: Bootcamp) => void;
   manage: boolean; // 관리자모드
 }
 
-const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
+const BootcampList = ({
+  onSelectBootcamp,
+  onModalOpen,
+  manage,
+}: BootcampListProps) => {
   const [selectedItem, setSelectedItem] = useState<Bootcamp | null>(null);
 
   const [search, setSearch] = useState("");
@@ -65,14 +70,14 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
     setSearch(value);
 
     // 검색어 바뀌면 선택 초기화
-    if (selectedItem !== null) {
+    if (selectedItem !== null && onSelectBootcamp) {
       setSelectedItem(null);
       onSelectBootcamp(null);
     }
   };
 
   const handleSelect = (bootcamp: Bootcamp) => {
-    if (!manage) {
+    if (!manage && onSelectBootcamp) {
       if (selectedItem?.id === bootcamp.id) {
         setSelectedItem(null);
         onSelectBootcamp(null);
@@ -83,15 +88,9 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
     }
   };
 
-  const handleDelete = (bootcamp: Bootcamp) => {
-    if (manage) {
-      console.log("부트캠프 삭제", bootcamp);
-    }
-  };
-
-  const handleEdit = (bootcamp: Bootcamp) => {
-    if (manage) {
-      console.log("부트캠프 수정", bootcamp);
+  const handleModalOpen = (type: ModalType, bootcamp: Bootcamp) => {
+    if (manage && onModalOpen) {
+      onModalOpen(type, bootcamp);
     }
   };
 
@@ -117,7 +116,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
               <th>훈련일수</th>
               <th>KDT</th>
               <th>상태</th>
-              {manage && <th colSpan={2}>관리</th>}
+              {manage && <th colSpan={3}>관리</th>}
             </tr>
           </thead>
         </table>
@@ -126,7 +125,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
             <tbody>
               {isLoading && (
                 <tr>
-                  <td className={styles.spinner} colSpan={manage ? 8 : 6}>
+                  <td className={styles.spinner} colSpan={manage ? 9 : 6}>
                     <Spinner />
                   </td>
                 </tr>
@@ -138,14 +137,13 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
                   isSelect={b.id === selectedItem?.id}
                   bootcamp={b}
                   manage={manage}
-                  selectItem={() => handleSelect(b)}
-                  editItem={() => handleEdit(b)}
-                  deleteItem={() => handleDelete(b)}
+                  selectItem={handleSelect}
+                  isModalOpen={handleModalOpen}
                 />
               ))}
               {isFetchingNextPage && (
                 <tr>
-                  <td className={styles.spinner} colSpan={manage ? 8 : 6}>
+                  <td className={styles.spinner} colSpan={manage ? 9 : 6}>
                     <Spinner />
                   </td>
                 </tr>
@@ -153,7 +151,7 @@ const BootcampList = ({ onSelectBootcamp, manage }: BootcampListProps) => {
 
               {/* 옵저버 */}
               <tr ref={anchorRef}>
-                <td className={styles.spinner} colSpan={manage ? 8 : 6}></td>
+                <td className={styles.spinner} colSpan={manage ? 9 : 6}></td>
               </tr>
             </tbody>
           </table>
