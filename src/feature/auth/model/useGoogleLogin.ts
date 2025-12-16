@@ -10,7 +10,7 @@ import { login } from "../api/login";
 
 export const useGoogleLogin = () => {
   const dispatch = useDispatch();
-  const rouer = useRouter();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: async () => {
@@ -27,7 +27,7 @@ export const useGoogleLogin = () => {
           recentBootcampId: data.recentBootcampId,
         }),
       );
-      rouer.replace("/dashboard");
+      router.replace("/dashboard");
     },
   });
 };
