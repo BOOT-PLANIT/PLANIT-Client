@@ -1,11 +1,10 @@
 "use client";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 
 import {
   Bootcamp,
   BootcampListItem,
-  dummyFetchBootcamps,
+  useSearchBootcampsInfinite,
 } from "@/feature/bootcamp";
 import SearchIcon from "@/shared/assets/icons/SearchIcon";
 import { Input, Spinner } from "@/shared/ui";
@@ -39,14 +38,10 @@ const BootcampList = ({
   }, [search]);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
-      queryKey: ["bootcamps", debounced],
-      queryFn: ({ pageParam = 1 }) =>
-        dummyFetchBootcamps({ query: debounced, pageParam }),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage) => lastPage.nextPage,
+    useSearchBootcampsInfinite({
+      keyword: debounced,
+      size: 20,
     });
-
   //옵저버
   useEffect(() => {
     const target = anchorRef.current;
@@ -94,7 +89,7 @@ const BootcampList = ({
     }
   };
 
-  const flatList = data?.pages.flatMap((page) => page.items) ?? [];
+  const flatList = data?.pages.flatMap((page) => page) ?? [];
 
   return (
     <>

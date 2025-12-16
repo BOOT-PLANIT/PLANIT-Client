@@ -1,9 +1,13 @@
 "use client";
+import { AxiosError } from "axios";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Bootcamp, BootcampList } from "@/feature/bootcamp";
+import { useEnrollBootcamp } from "@/feature/enrollment";
 import { SuccessIcon } from "@/shared/assets";
+import { useToast } from "@/shared/lib";
 import { Button, Card } from "@/shared/ui";
 
 import styles from "./Onboarding.module.scss";
@@ -12,9 +16,32 @@ const Onboarding = () => {
   const [selectedBootcamp, setSelectedBootcamp] = useState<Bootcamp | null>(
     null,
   );
+  const enrollBootcamp = useEnrollBootcamp();
+  const toast = useToast();
+  const router = useRouter();
 
   const handleRegister = () => {
-    console.log("부트캠프 등록", selectedBootcamp);
+    if (selectedBootcamp) {
+      enrollBootcamp.mutate(selectedBootcamp.id, {
+        onSuccess: () => {
+          toast.success("부트캠프 신청이 완료되었습니다.");
+        },
+        onError: (error) => {
+          let message = "등록 중 오류가 발생했습니다.";
+
+          if (error instanceof AxiosError) {
+            message =
+              error.response?.data?.message ??
+              error.response?.data?.error ??
+              message;
+          }
+          toast.error(message);
+        },
+      });
+      router.replace("/dashboard");
+    } else {
+      toast.error("부트캠프를 찾지못했습니다.");
+    }
   };
 
   return (
