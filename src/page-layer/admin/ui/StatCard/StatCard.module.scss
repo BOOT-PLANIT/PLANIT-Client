@@ -1,0 +1,52 @@
+.cardContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--spacing-12);
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: var(--radius-8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.blue {
+  background-color: var(--color-blue-normal);
+  color: var(--color-white);
+}
+
+.green {
+  background-color: var(--color-attendance-leftearly);
+  color: var(--color-white);
+}
+
+.purple {
+  background-color: var(--color-purple-lighter);
+  color: var(--color-white);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-4);
+
+  .label {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--foreground-secondary-darker);
+  }
+
+  .value {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-regular);
+    color: var(--foreground);
+  }
+}
