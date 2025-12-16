@@ -12,8 +12,8 @@ interface BootcampOption {
 }
 
 interface DateRange {
-  startDate: Date;
-  endDate: Date;
+  startedAt: Date;
+  endedAt: Date;
   sessionCount?: number;
 }
 
@@ -32,8 +32,8 @@ export const BootcampInfo = ({
 }: BootcampInfoProps) => {
   const displayText = dateRange
     ? (() => {
-        const startStr = formatDate(dateRange.startDate);
-        const endStr = formatDate(dateRange.endDate);
+        const startStr = formatDate(dateRange.startedAt);
+        const endStr = formatDate(dateRange.endedAt);
         const sessionCount = dateRange.sessionCount
           ? ` (${dateRange.sessionCount}일)`
           : "";

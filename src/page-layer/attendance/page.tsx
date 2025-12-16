@@ -118,8 +118,8 @@ const Attendance = () => {
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [statsMode, setStatsMode] = useState<"unit" | "custom">("unit");
   const [customDateRange, setCustomDateRange] = useState<{
-    startDate: Date;
-    endDate: Date;
+    startedAt: Date;
+    endedAt: Date;
   } | null>(null);
 
   const statsModeOptions: ToggleOption<"unit" | "custom">[] = useMemo(
@@ -185,11 +185,11 @@ const Attendance = () => {
           const sortedDates = [...dates].sort(
             (a, b) => a.getTime() - b.getTime(),
           );
-          const startDate = sortedDates[0];
-          const endDate = sortedDates[sortedDates.length - 1];
+          const startedAt = sortedDates[0];
+          const endedAt = sortedDates[sortedDates.length - 1];
 
-          const startTime = normalizeStartDate(startDate);
-          const endTime = normalizeEndDate(endDate);
+          const startTime = normalizeStartDate(startedAt);
+          const endTime = normalizeEndDate(endedAt);
 
           const datesInRange = allCalendarDates
             .filter((dateData) => {
@@ -200,8 +200,8 @@ const Attendance = () => {
 
           setSelectedDates(datesInRange);
           setCustomDateRange({
-            startDate,
-            endDate,
+            startedAt,
+            endedAt,
           });
         } else if (dates.length === 0) {
           setSelectedDates([]);
@@ -233,8 +233,8 @@ const Attendance = () => {
     if (statsMode === "custom") {
       if (customDateRange) {
         return {
-          startDate: customDateRange.startDate,
-          endDate: customDateRange.endDate,
+          startedAt: customDateRange.startedAt,
+          endedAt: customDateRange.endedAt,
           sessionCount: unitStats.totalDays,
         };
       }

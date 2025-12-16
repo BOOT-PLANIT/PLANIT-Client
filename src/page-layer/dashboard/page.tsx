@@ -59,8 +59,8 @@ const Dashboard = () => {
           selectedIndex={selectedBootcampIndex}
           onIndexChange={setSelectedBootcampIndex}
           dateRange={{
-            startDate: new Date("2025-04-12"),
-            endDate: new Date("2025-09-12"),
+            startedAt: new Date("2025-04-12"),
+            endedAt: new Date("2025-09-12"),
             sessionCount: 135,
           }}
         />

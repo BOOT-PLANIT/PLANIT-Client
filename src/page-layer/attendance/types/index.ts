@@ -4,8 +4,8 @@ import type { DateData } from "@/shared/ui/Calendar";
  * 날짜 범위 정보 (page-layer 전용)
  */
 export interface DateRange {
-  startDate: Date;
-  endDate: Date;
+  startedAt: Date;
+  endedAt: Date;
   sessionCount: number;
 }
 

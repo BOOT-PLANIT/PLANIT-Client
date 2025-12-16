@@ -45,10 +45,10 @@ export const useCalendarDates = (
     return unitPeriods
       .map((period) => {
         const overlapStartTime = Math.max(
-          period.startDate.getTime(),
+          period.startedAt.getTime(),
           monthStartTime,
         );
-        const overlapEndTime = Math.min(period.endDate.getTime(), monthEndTime);
+        const overlapEndTime = Math.min(period.endedAt.getTime(), monthEndTime);
 
         if (overlapStartTime <= overlapEndTime) {
           let dayCount = 0;
@@ -81,8 +81,8 @@ export const useCalendarDates = (
   const dateRange = useMemo(() => {
     if (!selectedPeriod) return null;
 
-    const startTime = selectedPeriod.startDate.getTime();
-    const endTime = selectedPeriod.endDate.getTime();
+    const startTime = selectedPeriod.startedAt.getTime();
+    const endTime = selectedPeriod.endedAt.getTime();
     let sessionCount = 0;
 
     for (const timestamp of dateTimestampSet) {
@@ -92,8 +92,8 @@ export const useCalendarDates = (
     }
 
     return {
-      startDate: selectedPeriod.startDate,
-      endDate: selectedPeriod.endDate,
+      startedAt: selectedPeriod.startedAt,
+      endedAt: selectedPeriod.endedAt,
       sessionCount,
     };
   }, [selectedPeriod, dateTimestampSet]);
@@ -102,8 +102,8 @@ export const useCalendarDates = (
     const today = new Date();
     return unitPeriods.find(
       (period) =>
-        today.getTime() >= period.startDate.getTime() &&
-        today.getTime() <= period.endDate.getTime(),
+        today.getTime() >= period.startedAt.getTime() &&
+        today.getTime() <= period.endedAt.getTime(),
     );
   }, [unitPeriods]);
 
@@ -134,8 +134,8 @@ export const useCalendarDates = (
 
         return unitPeriods.some(
           (period) =>
-            date.getTime() >= period.startDate.getTime() &&
-            date.getTime() <= period.endDate.getTime(),
+            date.getTime() >= period.startedAt.getTime() &&
+            date.getTime() <= period.endedAt.getTime(),
         );
       })
       .map((dateData) => {
@@ -151,14 +151,14 @@ export const useCalendarDates = (
         }
 
         const isInCurrentPeriod =
-          dateTime >= currentPeriodForCalendar.startDate.getTime() &&
-          dateTime <= currentPeriodForCalendar.endDate.getTime();
+          dateTime >= currentPeriodForCalendar.startedAt.getTime() &&
+          dateTime <= currentPeriodForCalendar.endedAt.getTime();
 
         const isInOtherPeriod = unitPeriods.some(
           (period) =>
             period !== currentPeriodForCalendar &&
-            dateTime >= period.startDate.getTime() &&
-            dateTime <= period.endDate.getTime(),
+            dateTime >= period.startedAt.getTime() &&
+            dateTime <= period.endedAt.getTime(),
         );
 
         return {

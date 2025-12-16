@@ -63,20 +63,20 @@ export const bootcampDummy: Bootcamp[] = Array.from({ length: 100 }).map(
     const isKdt = Math.random() > 0.5;
 
     // 랜덤 시작/종료일
-    const startDate = randomDate(new Date(2025, 10, 1), new Date(2025, 1, 1));
-    const endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + Math.floor(Math.random() * 120) + 30); // 30~150일 코스
+    const startedAt = randomDate(new Date(2025, 10, 1), new Date(2025, 1, 1));
+    const endedAt = new Date(startedAt);
+    endedAt.setDate(endedAt.getDate() + Math.floor(Math.random() * 120) + 30); // 30~150일 코스
 
-    const classDates = generateClassDates(startDate, endDate);
+    const classDates = generateClassDates(startedAt, endedAt);
 
     return {
       id: i + 1,
       name,
       organizer,
       isKdt,
-      startDate: format(startDate),
-      endDate: format(endDate),
-      isEnded: endDate < new Date(),
+      startedAt: format(startedAt),
+      endedAt: format(endedAt),
+      isEnded: endedAt < new Date(),
       classDates,
     };
   },
