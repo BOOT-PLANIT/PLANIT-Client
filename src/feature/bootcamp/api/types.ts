@@ -6,10 +6,12 @@ export interface Bootcamp {
   name: string;
   organizer: string;
   isKdt: boolean;
-  startDate: string;
-  endDate: string;
+  startedAt: string;
+  endedAt: string;
   isEnded: boolean;
   classDates: string[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 /**

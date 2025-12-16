@@ -74,8 +74,8 @@ export const bootcampDummy: Bootcamp[] = Array.from({ length: 100 }).map(
       name,
       organizer,
       isKdt,
-      startDate: format(startDate),
-      endDate: format(endDate),
+      startedAt: format(startDate),
+      endedAt: format(endDate),
       isEnded: endDate < new Date(),
       classDates,
     };

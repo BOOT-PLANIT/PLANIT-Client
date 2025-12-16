@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import type { ApiResponse } from "@/shared/api";
 import { apiClient } from "@/shared/api";
 
-import type { LoginRequest } from "./types";
+import type { LoginRequest, LoginResponse } from "./types";
 
 /**
  * 로그인
@@ -11,7 +11,7 @@ import type { LoginRequest } from "./types";
 export const useLogin = () => {
   return useMutation({
     mutationFn: async (data: LoginRequest) => {
-      const response = await apiClient.post<ApiResponse<null>>(
+      const response = await apiClient.post<ApiResponse<LoginResponse>>(
         "/auth/login",
         null,
         {

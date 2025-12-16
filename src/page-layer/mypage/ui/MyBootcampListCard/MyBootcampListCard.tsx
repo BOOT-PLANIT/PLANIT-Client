@@ -90,7 +90,7 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
                 </div>
                 <div className={styles.date}>
                   <CalendarIcon size={16} />
-                  {` ${b.startDate} - ${b.endDate} · ${b.classDates.length}`}일
+                  {` ${b.startedAt} - ${b.endedAt} · ${b.classDates.length}`}일
                 </div>
               </div>
             </div>

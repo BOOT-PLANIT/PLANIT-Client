@@ -1,4 +1,5 @@
 import type { Bootcamp } from "@/feature/bootcamp/api";
+import type { Enrollment } from "@/feature/enrollment/api";
 import type { AttendanceStatus as ApiAttendanceStatus } from "@/feature/session/api";
 import type { Session } from "@/feature/session/api";
 import type { DateData } from "@/shared/ui/Calendar";
@@ -32,8 +33,11 @@ export const mapApiStatusToCalendarStatus = (
 
 /**
  * 부트캠프 목록을 Combobox 옵션 형식으로 변환
+ * Bootcamp 또는 Enrollment 타입 모두 지원
  */
-export const transformBootcampsToOptions = (bootcamps: Bootcamp[]) => {
+export const transformBootcampsToOptions = (
+  bootcamps: (Bootcamp | Enrollment)[],
+) => {
   return bootcamps.map((bootcamp) => ({
     value: bootcamp.id.toString(),
     label: bootcamp.name,
