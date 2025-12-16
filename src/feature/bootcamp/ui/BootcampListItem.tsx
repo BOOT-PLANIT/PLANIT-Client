@@ -34,8 +34,8 @@ const BootcampListItem = ({
 
       <td className={styles.schedule}>
         <div className={styles.scheduleWrap}>
-          <div>{bootcamp.startDate} ~</div>
-          <div>{bootcamp.endDate}</div>
+          <div>{bootcamp.startedAt} ~</div>
+          <div>{bootcamp.endedAt}</div>
         </div>
       </td>
 

@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ApiResponse } from "@/shared/api";
 import { apiClient } from "@/shared/api";
 
-import type { User } from "./types";
+import type { FcmTokenRequest, User } from "./types";
 
 /**
  * 내 정보 조회
@@ -33,6 +33,21 @@ export const useDeleteMe = () => {
       queryClient.invalidateQueries({
         queryKey: ["users"],
       });
+    },
+  });
+};
+
+/**
+ * FCM 토큰 저장/갱신
+ */
+export const useUpdateFcmToken = () => {
+  return useMutation({
+    mutationFn: async (data: FcmTokenRequest) => {
+      const response = await apiClient.post<ApiResponse<null>>(
+        "/users/me/token",
+        data,
+      );
+      return response.data;
     },
   });
 };
