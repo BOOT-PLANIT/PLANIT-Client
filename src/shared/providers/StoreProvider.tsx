@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Provider } from "react-redux";
 
-import { makeStore } from "@/shared/store/store";
+import { makeStore, setStore } from "@/shared/store/store";
 
 interface StoreProviderProps {
   children: React.ReactNode;
@@ -11,6 +11,8 @@ interface StoreProviderProps {
 
 const StoreProvider = ({ children }: StoreProviderProps) => {
   const [store] = useState(() => makeStore());
+
+  setStore(store);
 
   return <Provider store={store}>{children}</Provider>;
 };
