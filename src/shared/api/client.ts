@@ -42,7 +42,6 @@ apiClient.interceptors.response.use(
       }
     }
 
-    // 기존처럼 서버 에러 payload 넘기기
     if (error.response?.data) return Promise.reject(error.response.data);
     return Promise.reject(error);
   },

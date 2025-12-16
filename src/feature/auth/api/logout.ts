@@ -11,7 +11,6 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: async () => {
-      console.log("mutationFn 시작");
       await signOut(auth);
 
       await fetch(
@@ -23,7 +22,6 @@ export const useLogout = () => {
       );
     },
     onSuccess: () => {
-      console.log("로그아웃 성공");
       dispatch(clearAuth());
       queryClient.clear();
       window.location.href = "/signin";
