@@ -1,5 +1,8 @@
 import type { PeriodAllowance, UnitStats } from "@/entities/attendance/model";
-import type { AttendanceStatus, DateData } from "@/shared/ui/Calendar";
+import type { CalendarAttendanceStatus } from "@/feature/attendance/api";
+import type { DateData } from "@/shared/ui/Calendar";
+
+type AttendanceStatus = CalendarAttendanceStatus;
 
 /**
  * 수당 정책 상수
