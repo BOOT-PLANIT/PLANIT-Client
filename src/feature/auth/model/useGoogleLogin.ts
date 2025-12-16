@@ -32,11 +32,13 @@ export const useGoogleLogin = () => {
       router.replace("/dashboard");
     },
     onError: (error: unknown) => {
-      let message = "로그인에 실패했어요.";
+      let message = "로그인에 실패했어요";
 
       if (error instanceof FirebaseError) {
         if (error.code === "auth/popup-closed-by-user") {
-          message = "로그인이 취소되었어요.";
+          message = "로그인이 취소되었어요";
+        } else if (error.code === "auth/popup-blocked") {
+          message = "팝업 차단을 해제해주세요";
         } else {
           // 예상치 못한 에러는 로깅
           console.error("로그인 오류:", error);
