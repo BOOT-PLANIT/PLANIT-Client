@@ -23,9 +23,10 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectBootcampId, setSelectBootcampId] = useState<number | null>(null);
   const router = useRouter();
+  const userType = "existing";
 
   const handleRegist = () => {
-    router.push("/bootcamps");
+    router.push(`/bootcamps?userType=${userType}`);
   };
 
   const handleDelete = () => {
