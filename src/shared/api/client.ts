@@ -32,8 +32,12 @@ apiClient.interceptors.response.use(
     const status = error?.response?.status;
 
     if (status === 401 && typeof window !== "undefined") {
-      const store = getStore();
-      store.dispatch(clearAuth());
+      try {
+        const store = getStore();
+        store.dispatch(clearAuth());
+      } catch {
+        // 스토어 초기화 전 401 발생 시 무시
+      }
       queryClient.clear();
 
       if (!redirecting) {
@@ -42,7 +46,6 @@ apiClient.interceptors.response.use(
       }
     }
 
-    if (error.response?.data) return Promise.reject(error.response.data);
-    return Promise.reject(error);
+    return Promise.reject(error.response?.data ?? error);
   },
 );

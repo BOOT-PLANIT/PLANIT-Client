@@ -37,6 +37,9 @@ export const useGoogleLogin = () => {
       if (error instanceof FirebaseError) {
         if (error.code === "auth/popup-closed-by-user") {
           message = "로그인이 취소되었어요.";
+        } else {
+          // 예상치 못한 에러는 로깅
+          console.error("로그인 오류:", error);
         }
       }
 
