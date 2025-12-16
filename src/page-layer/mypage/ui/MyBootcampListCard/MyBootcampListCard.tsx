@@ -1,8 +1,13 @@
 "use client";
+import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { Bootcamp } from "@/feature/bootcamp";
+import {
+  Enrollment,
+  useDeleteMyBootcamp,
+  useMyBootcamps,
+} from "@/feature/enrollment";
 import {
   AddIcon,
   CalendarIcon,
@@ -10,27 +15,50 @@ import {
   InstituteIcon,
   StudyIcon,
 } from "@/shared/assets/icons";
-import { Button, Card, Modal } from "@/shared/ui";
+import { useToast } from "@/shared/lib";
+import { Button, Card, Modal, Spinner } from "@/shared/ui";
 import { Badge } from "@/shared/ui/Badge";
 
 import styles from "./MyBootcampListCard.module.scss";
 
-interface MyBootcampListCardProps {
-  bootcamps: Bootcamp[];
-}
-
-const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
+const MyBootcampListCard = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectBootcampId, setSelectBootcampId] = useState<number | null>(null);
   const router = useRouter();
+  const toast = useToast();
+
+  const { data, isLoading } = useMyBootcamps();
+  const MyBootcamps: Enrollment[] = data?.data ?? [];
+  const { mutate: deleteMyBootcamp } = useDeleteMyBootcamp();
 
   const handleRegist = () => {
     router.push("/bootcamps");
   };
 
   const handleDelete = () => {
-    console.log("부트캠트아이디", selectBootcampId);
-    setModalOpen(false);
+    if (!selectBootcampId) {
+      toast.error("부트캠프를 불러오는데 실패했습니다.");
+      setModalOpen(false);
+    } else {
+      deleteMyBootcamp(selectBootcampId, {
+        onSuccess: () => {
+          toast.success("부트캠프 삭제를 완료하였습니다.");
+          setModalOpen(false);
+        },
+        onError: (error) => {
+          let message = "삭제 중 오류가 발생했습니다.";
+
+          if (error instanceof AxiosError) {
+            message =
+              error.response?.data?.message ??
+              error.response?.data?.error ??
+              message;
+          }
+          toast.error(message);
+          setModalOpen(false);
+        },
+      });
+    }
   };
 
   const handleOpenModal = (bootcampId: number) => {
@@ -42,12 +70,21 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
     setModalOpen(false);
   };
 
+  if (isLoading) {
+    return (
+      <Card>
+        <div className={styles.container}>
+          <Spinner size="lg" />
+        </div>
+      </Card>
+    );
+  }
   return (
     <Card title="나의 부트캠프">
       <div className={styles.container}>
         <div className={styles.listLayout}>
           {/* 아이템시작 */}
-          {!bootcamps.length && (
+          {!MyBootcamps.length && (
             <div className={styles.noneBootcamp}>
               <span className={styles.noneTitle}>
                 진행중인 부트캠프가 없습니다.
@@ -57,7 +94,7 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
               </span>
             </div>
           )}
-          {bootcamps.map((b) => (
+          {MyBootcamps.map((b) => (
             <div key={b.id} className={styles.bootcampItem}>
               <div className={styles.icon}>
                 <StudyIcon size={24} />
@@ -90,12 +127,11 @@ const MyBootcampListCard = ({ bootcamps }: MyBootcampListCardProps) => {
                 </div>
                 <div className={styles.date}>
                   <CalendarIcon size={16} />
-                  {` ${b.startedAt} - ${b.endedAt} · ${b.classDates.length}`}일
+                  {` ${b.startedAt} - ${b.endedAt}`}
                 </div>
               </div>
             </div>
           ))}
-
           {/* 아이템끝 */}
         </div>
         <div className={styles.bottomRow}>

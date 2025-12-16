@@ -38,7 +38,7 @@ const Onboarding = () => {
           toast.error(message);
         },
       });
-      router.replace("/dashboard");
+      router.replace("/mypage");
     } else {
       toast.error("부트캠프를 찾지못했습니다.");
     }
