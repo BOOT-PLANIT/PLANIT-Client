@@ -32,22 +32,24 @@ const SignIn = () => {
             </div>
           ))}
         </div>
-        <button
-          type="button"
-          className={styles.buttonContainer}
-          onClick={() => googleLogin()}
-          disabled={isPending}
-          aria-label="Google 계정으로 로그인"
-        >
-          <Image
-            src="/google.svg"
-            width={200}
-            height={50}
-            alt="google login"
-            className={styles.googleImg}
-            priority
-          />
-        </button>
+        <div className={styles.buttonSection}>
+          <button
+            type="button"
+            className={styles.buttonContainer}
+            onClick={() => googleLogin()}
+            disabled={isPending}
+            aria-label="Google 계정으로 로그인"
+          >
+            <Image
+              src="/google.svg"
+              width={200}
+              height={50}
+              alt="google login"
+              className={styles.googleImg}
+              priority
+            />
+          </button>
+        </div>
       </div>
     </div>
   );
