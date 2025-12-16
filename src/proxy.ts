@@ -4,7 +4,9 @@ import type { NextRequest } from "next/server";
 const PUBLIC_PATHS = new Set(["/signin"]);
 
 function isStaticFile(pathname: string) {
-  return /\.[a-zA-Z0-9]+$/.test(pathname);
+  const staticExtensions =
+    /\.(jpg|jpeg|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|json|xml|txt)$/i;
+  return staticExtensions.test(pathname);
 }
 
 function isPublicPath(pathname: string) {
