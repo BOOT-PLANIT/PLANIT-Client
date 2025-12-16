@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { Bootcamp, BootcampList } from "@/feature/bootcamp";
@@ -12,9 +13,15 @@ const Onboarding = () => {
   const [selectedBootcamp, setSelectedBootcamp] = useState<Bootcamp | null>(
     null,
   );
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const userType = searchParams.get("userType");
 
   const handleRegister = () => {
     console.log("부트캠프 등록", selectedBootcamp);
+  };
+  const handleCancel = () => {
+    router.back();
   };
 
   return (
@@ -38,6 +45,11 @@ const Onboarding = () => {
             />
           </div>
           <div className={styles.footer}>
+            {userType === "existing" && (
+              <Button onClick={handleCancel} variant="outline" width="100px">
+                취소
+              </Button>
+            )}
             <Button
               disabled={!selectedBootcamp}
               variant="primary"
