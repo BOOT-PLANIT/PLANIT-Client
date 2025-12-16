@@ -1,7 +1,7 @@
 "use client";
 import { AxiosError } from "axios";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { Bootcamp, BootcampList } from "@/feature/bootcamp";
@@ -19,6 +19,8 @@ const Onboarding = () => {
   const enrollBootcamp = useEnrollBootcamp();
   const toast = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const userType = searchParams.get("userType");
 
   const handleRegister = () => {
     if (selectedBootcamp) {
@@ -43,6 +45,9 @@ const Onboarding = () => {
       toast.error("부트캠프를 찾지못했습니다.");
     }
   };
+  const handleCancel = () => {
+    router.back();
+  };
 
   return (
     <div className={styles.container}>
@@ -65,6 +70,11 @@ const Onboarding = () => {
             />
           </div>
           <div className={styles.footer}>
+            {userType === "existing" && (
+              <Button onClick={handleCancel} variant="outline" width="100px">
+                취소
+              </Button>
+            )}
             <Button
               disabled={!selectedBootcamp}
               variant="primary"
