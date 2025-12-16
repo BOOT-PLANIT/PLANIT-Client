@@ -1,5 +1,6 @@
 .container {
-  min-height: 100vh;
+  width: 100dvw;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8,6 +9,8 @@
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
   background: var(--background);
   border-radius: var(--radius-16);
   padding: var(--spacing-48);
@@ -61,23 +64,16 @@
 }
 
 .buttonContainer {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
   margin-bottom: var(--spacing-24);
 }
 
-.googleButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-12);
-  background: var(--background);
-  border: 1px solid var(--border-tertiary);
-  color: var(--foreground);
-  font-weight: var(--font-weight-medium);
-
-  &:hover {
-    background: var(--background-secondary);
-    border-color: var(--border-normal);
-  }
+.googleImg {
+  display: block;
+  cursor: pointer;
 }
 
 .footer {
