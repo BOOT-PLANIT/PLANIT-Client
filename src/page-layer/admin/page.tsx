@@ -27,7 +27,6 @@ const AdminPage = () => {
     setOpenModal(type);
     if (bootcamp) {
       setBootcamp(bootcamp);
-      console.log("모달오픈 부캠아이디", bootcamp);
     }
   };
   const handleModalClose = () => {
