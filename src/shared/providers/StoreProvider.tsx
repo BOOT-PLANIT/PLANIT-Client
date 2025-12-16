@@ -10,9 +10,11 @@ interface StoreProviderProps {
 }
 
 const StoreProvider = ({ children }: StoreProviderProps) => {
-  const [store] = useState(() => makeStore());
-
-  setStore(store);
+  const [store] = useState(() => {
+    const newStore = makeStore();
+    setStore(newStore);
+    return newStore;
+  });
 
   return <Provider store={store}>{children}</Provider>;
 };
