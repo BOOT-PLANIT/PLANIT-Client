@@ -2,7 +2,14 @@
 import { useState } from "react";
 
 import { Bootcamp } from "@/feature/bootcamp";
-import { Button, Calendar, Modal } from "@/shared/ui";
+import {
+  Session,
+  useCreateSessions,
+  useDeleteSessions,
+  useSessionsByBootcamp,
+} from "@/feature/session";
+import { useToast } from "@/shared/lib";
+import { Button, Calendar, Modal, Spinner } from "@/shared/ui";
 import { DateData } from "@/shared/ui/Calendar";
 import { parseDateString } from "@/shared/utils";
 
@@ -21,12 +28,6 @@ const getDateKey = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-//api 매칭해야됨 임시
-interface SessionDateDto {
-  id: number;
-  classDate: string;
-}
-
 interface AddedLecture {
   classDate: string;
 }
@@ -37,6 +38,9 @@ interface RemovedLecture {
 }
 
 const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
+  const toast = useToast();
+  const createSessions = useCreateSessions();
+  const deleteSessions = useDeleteSessions();
   const [addedLectures, setAddedLectures] = useState<Map<string, AddedLecture>>(
     new Map(),
   );
@@ -50,11 +54,32 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
 
   const isDisabled = addedLectures.size > 0 || removedLectures.size > 0;
 
-  const textSession: SessionDateDto[] = bootcamp.classDates.map((date, i) => {
-    return { id: i + 1, classDate: date };
-  });
+  const { data, isLoading, isError } = useSessionsByBootcamp(bootcamp.id);
+  if (isLoading) {
+    return (
+      <Modal title="부트캠프 일정 수정" onClose={onClose}>
+        <div className={styles.layout}>
+          <Spinner size="lg" />
+        </div>
+      </Modal>
+    );
+  }
 
-  const buildSessionMap = (data: SessionDateDto[]) => {
+  if (isError || !data) {
+    return (
+      <Modal title="부트캠프 일정 수정" onClose={onClose}>
+        <div className={styles.layout}>
+          일정 정보를 불러오지 못했습니다.
+          <Button onClick={onClose}>닫기</Button>
+        </div>
+      </Modal>
+    );
+  }
+  //서버 원본세션객체
+  const totalSession: Session[] = data.data;
+
+  //세션id와 강의날짜 매핑
+  const buildSessionMap = (data: Session[]) => {
     const map = new Map<string, number>();
 
     data.forEach(({ classDate, id }) => {
@@ -62,8 +87,7 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
     });
     return map;
   };
-  const sessionMap = buildSessionMap(textSession);
-  /////
+  const sessionMap = buildSessionMap(totalSession);
 
   const handleSelectSession = (dates: Date[]) => {
     const stringSelectDate = dates.map((date) => getDateKey(date));
@@ -85,12 +109,21 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
   };
 
   const handleEditSession = () => {
-    console.log("추가할날짜:", addedList);
-    console.log("삭제할날짜:", removedIdList);
+    if (addedList.length <= 0 && removedIdList.length <= 0) {
+      return toast.error("선택하신 날짜가 없습니다.");
+    }
+    if (addedList.length > 0) {
+      createSessions.mutate({ bootcampId: bootcamp.id, sessions: addedList });
+    }
+    if (removedIdList.length > 0) {
+      deleteSessions.mutate({ sessionIds: removedIdList });
+    }
+    toast.success("일정 수정 완료하였습니다.");
+    onClose();
   };
 
   ///api 연동시 교체
-  const calendarSessionDate: DateData[] = textSession.map((date) => {
+  const calendarSessionDate: DateData[] = totalSession.map((date) => {
     return { date: parseDateString(date.classDate), isCurrentUnit: true };
   });
 

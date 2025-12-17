@@ -1,6 +1,13 @@
 "use client";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import {
+  BootcampRequest,
+  useCreateBootcamp,
+  useParseBootcampText,
+} from "@/feature/bootcamp";
+import { useToast } from "@/shared/lib";
 import { Button, Input, Modal } from "@/shared/ui";
 
 import styles from "./AddBootcampModal.module.scss";
@@ -9,27 +16,50 @@ interface AddBootcampModalProps {
   onClose: () => void;
 }
 
-interface BootcampFormValues {
-  organizer: string;
-  name: string;
-  isKdt: boolean;
-  classDates: string;
-}
-
 const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
+  const [parseText, setParseText] = useState("");
+  const toast = useToast();
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<BootcampFormValues>({
+  } = useForm<BootcampRequest>({
     defaultValues: {
       isKdt: false,
     },
   });
 
-  const onSubmit = (data: BootcampFormValues) => {
-    console.log("제출 데이터:", data);
-    onClose();
+  const parseMutation = useParseBootcampText();
+  const createBootcamp = useCreateBootcamp();
+
+  const handleParse = async () => {
+    if (!parseText.trim()) return;
+
+    try {
+      const result = await parseMutation.mutateAsync({
+        text: parseText,
+      });
+
+      reset({
+        organizer: result.organizer ?? "",
+        name: result.name ?? "",
+        isKdt: result.isKdt ?? false,
+        classDates: result.classDates ?? "",
+      });
+    } catch {
+      toast.error("복사한 내용을 인식하지 못했습니다.");
+    }
+  };
+
+  const onSubmit = (data: BootcampRequest) => {
+    createBootcamp.mutate(data, {
+      onSuccess: () => {
+        toast.success("부트캠프가 등록되었습니다.");
+        onClose();
+      },
+    });
   };
 
   return (
@@ -38,6 +68,32 @@ const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
         <div className={styles.container}>
           <div className={styles.description}>
             부트캠프의 세부정보를 입력하고 일정을 설정하세요.
+          </div>
+          <div className={styles.formLayout}>
+            <textarea
+              className={styles.textarea}
+              value={parseText}
+              onChange={(e) => setParseText(e.target.value)}
+              placeholder="고용24에서 복사한 부트캠프 정보를 넣어주세요."
+            />
+            <div className={styles.buttonLayout}>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => setParseText("")}
+                width="70px"
+              >
+                초기화
+              </Button>
+              <Button
+                type="button"
+                onClick={handleParse}
+                width="150px"
+                disabled={parseMutation.isPending}
+              >
+                {parseMutation.isPending ? "파싱 중..." : "부트캠프 일정 파싱"}
+              </Button>
+            </div>
           </div>
 
           <form className={styles.formLayout} onSubmit={handleSubmit(onSubmit)}>
@@ -75,7 +131,7 @@ const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
                 aria-describedby={
                   errors.classDates ? "classDates-error" : undefined
                 }
-                placeholder="고용24에서 복사한 부트캠프 일정을 넣어주세요."
+                placeholder="부트캠프 일정을 넣어주세요."
                 {...register("classDates", {
                   required: "부트캠프 일정은 필수입니다.",
                 })}

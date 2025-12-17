@@ -22,14 +22,14 @@ import type {
  * 부트캠프 전체 목록 조회 (요약)
  */
 export const useBootcampSummary = () => {
-  return useQuery<ApiResponse<BootcampSummaryResponse>>({
+  return useQuery<BootcampSummaryResponse>({
     queryKey: ["bootcamps", "summary"],
     queryFn: async () => {
       const response =
         await apiClient.get<ApiResponse<BootcampSummaryResponse>>(
           "/bootcamps/summary",
         );
-      return response.data;
+      return response.data.data;
     },
   });
 };
@@ -131,7 +131,7 @@ export const useParseBootcampText = () => {
         "/bootcamps/parse",
         data,
       );
-      return response.data;
+      return response.data.data;
     },
   });
 };

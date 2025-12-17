@@ -5,7 +5,7 @@ import { Bootcamp } from "@/shared/api";
  */
 export interface BootcampSummaryResponse {
   totalCount: number;
-  bootcamps: Bootcamp[];
+  activeCount: number;
 }
 
 /**
@@ -15,7 +15,7 @@ export interface BootcampRequest {
   name: string;
   organizer: string;
   isKdt: boolean;
-  classDates: string[];
+  classDates?: string[];
 }
 
 /**

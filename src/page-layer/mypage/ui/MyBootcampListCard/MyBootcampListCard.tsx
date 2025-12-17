@@ -28,7 +28,7 @@ const MyBootcampListCard = () => {
   const userType = "existing";
   const toast = useToast();
 
-  const { data, isLoading } = useMyBootcamps();
+  const { data, isLoading, isError } = useMyBootcamps();
   const MyBootcamps: Enrollment[] = data?.data ?? [];
   const { mutate: deleteMyBootcamp } = useDeleteMyBootcamp();
 
@@ -73,13 +73,29 @@ const MyBootcampListCard = () => {
 
   if (isLoading) {
     return (
-      <Card>
+      <Card title="나의 부트캠프">
         <div className={styles.container}>
           <Spinner size="lg" />
         </div>
       </Card>
     );
   }
+
+  if (isError) {
+    return (
+      <Card title="나의 부트캠프">
+        <div className={styles.container}>
+          <div className={styles.noneBootcamp}>
+            <span className={styles.noneTitle}>오류가 발생하였습니다.</span>
+            <span className={styles.noneDescription}>
+              잠시후 다시 시도해주세요!
+            </span>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card title="나의 부트캠프">
       <div className={styles.container}>

@@ -1,4 +1,5 @@
-import { Bootcamp } from "@/feature/bootcamp";
+import { Bootcamp, useDeleteBootcamp } from "@/feature/bootcamp";
+import { useToast } from "@/shared/lib";
 import { Button, Modal } from "@/shared/ui";
 
 import styles from "./DeleteBootcampModal.module.scss";
@@ -12,10 +13,17 @@ const DeleteBootcampModal = ({
   onClose,
   bootcamp,
 }: DeleteBootcampModalProps) => {
+  const toast = useToast();
+  const deleteBootcamp = useDeleteBootcamp();
+
   const handleBootcampRemove = () => {
     if (bootcamp) {
-      console.log("부트캠프 삭제 아이디: ", bootcamp.id);
-      onClose();
+      deleteBootcamp.mutate(bootcamp.id, {
+        onSuccess: () => {
+          toast.success("부트캠프 삭제를 완료하였습니다.");
+          onClose();
+        },
+      });
     }
   };
 
