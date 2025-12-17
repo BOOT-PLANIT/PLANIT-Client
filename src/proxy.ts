@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PUBLIC_PATHS = new Set(["/signin"]);
+const SIGNIN_PATH = "/signin";
 
 function isStaticFile(pathname: string) {
   const staticExtensions =
@@ -9,45 +9,28 @@ function isStaticFile(pathname: string) {
   return staticExtensions.test(pathname);
 }
 
-function isPublicPath(pathname: string) {
-  if (PUBLIC_PATHS.has(pathname)) return true;
-
-  if (
-    pathname.startsWith("/_next") ||
-    pathname === "/favicon.ico" ||
-    pathname === "/robots.txt" ||
-    pathname === "/sitemap.xml" ||
-    pathname === "/manifest.json"
-  )
-    return true;
-
-  return false;
-}
-
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const session = req.cookies.get("planit_session")?.value;
 
   // 정적 파일 통과
   if (isStaticFile(pathname)) return NextResponse.next();
 
-  // 로그인 상태면 /dashboard로 이동
-  if (pathname === "/signin" && session) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+  // 로그인 페이지 통과
+  if (pathname === SIGNIN_PATH) {
+    return NextResponse.next();
   }
-
-  // public은 통과
-  if (isPublicPath(pathname)) return NextResponse.next();
-
-  // 나머지 보호
-  if (!session) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/signin";
-    url.searchParams.set("next", pathname);
-    return NextResponse.redirect(url);
-  }
-
   return NextResponse.next();
 }
 
-export const config = { matcher: ["/:path*"] };
+export const config = {
+  matcher: [
+    /*
+     * 다음 경로를 제외한 모든 요청 경로에 매칭
+     * - _next/static (정적 파일)
+     * - _next/image (이미지 최적화 파일)
+     * - favicon.ico (파비콘 파일)
+     * - 정적 파일 확장자 (jpg, jpeg, png, gif, svg, ico, css, js, woff, woff2, ttf, eot, json, xml, txt)
+     */
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:jpg|jpeg|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|json|xml|txt)$).*)",
+  ],
+};
