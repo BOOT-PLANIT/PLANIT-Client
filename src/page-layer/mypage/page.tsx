@@ -1,5 +1,5 @@
 import { Bootcamp } from "@/feature/bootcamp";
-import { User } from "@/feature/user";
+import { MeResponse } from "@/feature/user";
 
 import styles from "./MyPage.module.scss";
 import { AccountActionsCard } from "./ui/AccountActionsCard";
@@ -8,7 +8,7 @@ import { AlarmSettingCard } from "./ui/AlarmSettingCard";
 import { MyBootcampListCard } from "./ui/MyBootcampListCard";
 import { UserInfoCard } from "./ui/UserInfoCard";
 
-const userProfile: User = {
+const userProfile: MeResponse = {
   id: 1,
   uid: "vWXeL",
   email: "adcdemail@gmail.com",
@@ -19,6 +19,7 @@ const userProfile: User = {
   emailVerified: true,
   createdAt: "2025-10-24 15:49:15",
   lastLoginAt: "2025-12-12 09:16:30",
+  recentBootcampId: 1,
 };
 
 const dummyBootcamps: Bootcamp[] = [
