@@ -23,6 +23,10 @@ const DeleteBootcampModal = ({
           toast.success("부트캠프 삭제를 완료하였습니다.");
           onClose();
         },
+        onError: () => {
+          toast.error("삭제중 오류발생");
+          onClose();
+        },
       });
     }
   };

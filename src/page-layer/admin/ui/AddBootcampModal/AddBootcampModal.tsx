@@ -16,6 +16,13 @@ interface AddBootcampModalProps {
   onClose: () => void;
 }
 
+interface BootcampFormValues {
+  organizer: string;
+  name: string;
+  isKdt: boolean;
+  classDatesText: string;
+}
+
 const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
   const [parseText, setParseText] = useState("");
   const toast = useToast();
@@ -25,7 +32,7 @@ const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<BootcampRequest>({
+  } = useForm<BootcampFormValues>({
     defaultValues: {
       isKdt: false,
     },
@@ -46,22 +53,36 @@ const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
         organizer: result.organizer ?? "",
         name: result.name ?? "",
         isKdt: result.isKdt ?? false,
-        classDates: result.classDates ?? "",
+        classDatesText: (result.classDates ?? []).join(", "),
       });
     } catch {
       toast.error("복사한 내용을 인식하지 못했습니다.");
     }
   };
 
-  const onSubmit = (data: BootcampRequest) => {
-    createBootcamp.mutate(data, {
+  const onSubmit = (formdata: BootcampFormValues) => {
+    const classDates = formdata.classDatesText
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    if (classDates.length === 0) {
+      return;
+    }
+
+    const payload: BootcampRequest = {
+      organizer: formdata.organizer,
+      name: formdata.name,
+      isKdt: formdata.isKdt,
+      classDates,
+    };
+    createBootcamp.mutate(payload, {
       onSuccess: () => {
         toast.success("부트캠프가 등록되었습니다.");
         onClose();
       },
     });
   };
-
   return (
     <Modal title="새로운 부트캠프 추가" onClose={onClose}>
       <div className={styles.layout}>
@@ -126,19 +147,19 @@ const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
             </label>
             <div>
               <textarea
-                className={`${styles.textarea} ${errors.classDates ? styles.textareaError : ""}`}
-                aria-invalid={errors.classDates ? true : undefined}
+                className={`${styles.textarea} ${errors.classDatesText ? styles.textareaError : ""}`}
+                aria-invalid={errors.classDatesText ? true : undefined}
                 aria-describedby={
-                  errors.classDates ? "classDates-error" : undefined
+                  errors.classDatesText ? "classDates-error" : undefined
                 }
-                placeholder="부트캠프 일정을 넣어주세요."
-                {...register("classDates", {
-                  required: "부트캠프 일정은 필수입니다.",
+                placeholder="부트캠프 일정을 넣어주세요.  ex. YYYY-MM-DD, YYYY-MM-DD, ..."
+                {...register("classDatesText", {
+                  required: "부트캠프 이름은 필수입니다.",
                 })}
               ></textarea>
-              {errors.classDates && (
+              {errors.classDatesText && (
                 <span className={styles.errorMessage}>
-                  {errors.classDates.message}
+                  {errors.classDatesText.message}
                 </span>
               )}
             </div>

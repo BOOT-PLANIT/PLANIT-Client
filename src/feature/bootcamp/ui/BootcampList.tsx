@@ -125,7 +125,13 @@ const BootcampList = ({
                   </td>
                 </tr>
               )}
-
+              {!isLoading && flatList.length <= 0 && (
+                <tr>
+                  <td className={styles.noneBootcamp} colSpan={manage ? 9 : 6}>
+                    부트캠프 정보가 없습니다.
+                  </td>
+                </tr>
+              )}
               {flatList.map((b) => (
                 <BootcampListItem
                   key={b.id}
