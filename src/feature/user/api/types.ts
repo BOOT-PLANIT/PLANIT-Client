@@ -1,7 +1,8 @@
 /**
- * 사용자 정보
+ * 내 정보 조회 응답
  */
-export interface User {
+
+export interface MeResponse {
   id: number;
   uid: string;
   email: string;
@@ -12,6 +13,7 @@ export interface User {
   emailVerified: boolean;
   createdAt: string;
   lastLoginAt: string;
+  recentBootcampId: number | null;
 }
 
 /**

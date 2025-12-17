@@ -4,8 +4,9 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 
+import { MeResponse } from "@/feature/user";
+import { apiClient, ApiResponse } from "@/shared/api";
 import { auth } from "@/shared/config/firebaseConfig";
-import { setAuth } from "@/shared/store/authSlice";
 import { showToast } from "@/shared/store/toastSlice";
 
 import { login } from "../api/login";
@@ -20,16 +21,15 @@ export const useGoogleLogin = () => {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
 
-      return login(idToken);
+      await login(idToken);
+
+      const meRes = await apiClient.get<ApiResponse<MeResponse>>("/users/me");
+      return meRes.data.data;
     },
-    onSuccess: (data) => {
-      dispatch(
-        setAuth({
-          userId: data.userId,
-          recentBootcampId: data.recentBootcampId,
-        }),
+    onSuccess: (me) => {
+      router.replace(
+        me.recentBootcampId == null ? "/bootcamps/new" : "/dashboard",
       );
-      router.replace("/dashboard");
     },
     onError: (error: unknown) => {
       let message = "로그인에 실패했어요";
