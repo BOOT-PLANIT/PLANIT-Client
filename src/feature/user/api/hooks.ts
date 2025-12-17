@@ -3,16 +3,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ApiResponse } from "@/shared/api";
 import { apiClient } from "@/shared/api";
 
-import type { FcmTokenRequest, User } from "./types";
+import type { FcmTokenRequest, MeResponse } from "./types";
 
 /**
  * 내 정보 조회
  */
 export const useMe = () => {
-  return useQuery<ApiResponse<User>>({
+  return useQuery<ApiResponse<MeResponse>>({
     queryKey: ["users", "me"],
     queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<User>>("/users/me");
+      const response =
+        await apiClient.get<ApiResponse<MeResponse>>("/users/me");
       return response.data;
     },
   });

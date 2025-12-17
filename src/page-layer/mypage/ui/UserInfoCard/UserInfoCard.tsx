@@ -1,4 +1,4 @@
-import type { User } from "@/feature/user";
+import type { MeResponse } from "@/feature/user";
 import { StudyIcon } from "@/shared/assets/icons";
 import ShieldIcon from "@/shared/assets/icons/ShieldIcon";
 import { Avatar, Card } from "@/shared/ui";
@@ -7,7 +7,7 @@ import { Badge } from "@/shared/ui/Badge";
 import styles from "./UserInfoCard.module.scss";
 
 interface UserInfoCardProps {
-  user: User;
+  user: MeResponse;
 }
 
 const UserInfoCard = ({ user }: UserInfoCardProps) => {
