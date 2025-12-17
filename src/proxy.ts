@@ -12,12 +12,19 @@ function isStaticFile(pathname: string) {
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // 정적 파일 통과
-  if (isStaticFile(pathname)) return NextResponse.next();
-
-  // 로그인 페이지 통과
-  if (pathname === SIGNIN_PATH) {
+  // 정적 파일과 로그인 페이지는 통과
+  if (isStaticFile(pathname) || pathname === SIGNIN_PATH) {
     return NextResponse.next();
+  }
+
+  // 쿠키에서 토큰 존재 여부 확인
+  const token = req.cookies.get("planit_session")?.value;
+
+  if (!token) {
+    // 토큰이 없으면 로그인 페이지로 리다이렉트
+    const url = req.nextUrl.clone();
+    url.pathname = SIGNIN_PATH;
+    return NextResponse.redirect(url);
   }
   return NextResponse.next();
 }
