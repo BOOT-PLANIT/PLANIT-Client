@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { FirebaseError } from "firebase/app";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 
@@ -18,20 +18,29 @@ export const useGoogleLogin = () => {
   return useMutation({
     mutationFn: async () => {
       const provider = new GoogleAuthProvider();
+
+      if (auth.currentUser) {
+        await signOut(auth);
+      }
+
       const result = await signInWithPopup(auth, provider);
+
       const idToken = await result.user.getIdToken();
 
       await login(idToken);
 
       const meRes = await apiClient.get<ApiResponse<MeResponse>>("/users/me");
+
       return meRes.data.data;
     },
+
     onSuccess: (me) => {
-      router.replace(
-        me.recentBootcampId == null ? "/bootcamps/new" : "/dashboard",
-      );
+      router.replace(me.recentBootcampId == null ? "/bootcamps" : "/dashboard");
     },
-    onError: (error: unknown) => {
+
+    onError: async (error: unknown) => {
+      await signOut(auth);
+
       let message = "로그인에 실패했어요";
 
       if (error instanceof FirebaseError) {
@@ -39,8 +48,9 @@ export const useGoogleLogin = () => {
           message = "로그인이 취소되었어요";
         } else if (error.code === "auth/popup-blocked") {
           message = "팝업 차단을 해제해주세요";
+        } else if (error.code === "auth/user-token-expired") {
+          message = "세션이 만료되어 다시 로그인해주세요";
         } else {
-          // 예상치 못한 에러는 로깅
           console.error("로그인 오류:", error);
         }
       }
