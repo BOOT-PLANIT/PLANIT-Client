@@ -1,10 +1,11 @@
+import { AxiosError } from "axios";
 import { redirect } from "next/navigation";
 
 import { getApiServer } from "@/shared/server/server";
 
 import styles from "./layout.module.scss";
 
-export default async function MainLayout({
+export default async function SubLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -13,8 +14,11 @@ export default async function MainLayout({
     const apiServer = await getApiServer();
     await apiServer.get("/users/me");
   } catch (error) {
-    console.log(error);
-    redirect("/signin");
+    if (error instanceof AxiosError && error.response?.status === 401) {
+      redirect("/signin");
+    }
+    console.error("[MainLayout] Auth check failed:", error);
+    throw error;
   }
   return (
     <div className={styles.layout}>
