@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useLogout } from "@/feature/auth";
+import { useDeleteMe } from "@/feature/user";
 import { LogoutIcon, UserRemoveIcon } from "@/shared/assets";
 import { useToast } from "@/shared/lib";
 import { Button, Card, Modal } from "@/shared/ui";
@@ -15,10 +16,18 @@ const AccountActionsCard = () => {
   const router = useRouter();
 
   const { mutate: logout, isPending } = useLogout();
+  const deleteMe = useDeleteMe();
 
   const handleUserRemove = () => {
-    toast.success("그동안 이용해 주셔서 감사합니다.");
-    router.replace("/signin");
+    deleteMe.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("그동안 이용해 주셔서 감사합니다.");
+        router.replace("/signin");
+      },
+      onError: () => {
+        toast.error("다시 시도해주세요");
+      },
+    });
   };
 
   const handleOpenModal = () => {

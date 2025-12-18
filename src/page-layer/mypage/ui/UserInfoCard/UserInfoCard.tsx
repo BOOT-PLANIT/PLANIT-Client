@@ -7,12 +7,19 @@ import { Badge } from "@/shared/ui/Badge";
 import styles from "./UserInfoCard.module.scss";
 
 interface UserInfoCardProps {
-  user: MeResponse;
+  user: MeResponse | undefined;
 }
-
 const UserInfoCard = ({ user }: UserInfoCardProps) => {
-  const createdDate = user.createdAt.split(" ")[0];
+  if (!user)
+    return (
+      <Card>
+        <div className={styles.erorr}>
+          내정보를 불러오지못하였습니다. 다시 시도해주세요
+        </div>
+      </Card>
+    );
 
+  const createdDate = user.createdAt.slice(0, 10) ?? "-";
   return (
     <Card>
       <div className={styles.topRow}>

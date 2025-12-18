@@ -1,4 +1,6 @@
-import { MeResponse } from "@/feature/user";
+"use client";
+import { useMe } from "@/feature/user";
+import { Card, Spinner } from "@/shared/ui";
 
 import styles from "./MyPage.module.scss";
 import { AccountActionsCard } from "./ui/AccountActionsCard";
@@ -7,25 +9,19 @@ import { AlarmSettingCard } from "./ui/AlarmSettingCard";
 import { MyBootcampListCard } from "./ui/MyBootcampListCard";
 import { UserInfoCard } from "./ui/UserInfoCard";
 
-const userProfile: MeResponse = {
-  id: 1,
-  uid: "vWXeL",
-  email: "adcdemail@gmail.com",
-  displayName: "정현문",
-  photoUrl: "https://lh3.googleusercontent.com/",
-  userLevel: "ADMIN",
-  provider: "google.com",
-  emailVerified: true,
-  createdAt: "2025-10-24 15:49:15",
-  lastLoginAt: "2025-12-12 09:16:30",
-  recentBootcampId: 1,
-};
-
 const MyPage = () => {
+  const { data: me, isLoading } = useMe();
+
   return (
     <div className={styles.container}>
       <div className={styles.myPageCard}>
-        <UserInfoCard user={userProfile} />
+        {isLoading ? (
+          <Card>
+            <Spinner size="md" />{" "}
+          </Card>
+        ) : (
+          <UserInfoCard user={me} />
+        )}
       </div>
 
       <div className={styles.myPageCard}>
@@ -34,7 +30,7 @@ const MyPage = () => {
       <div className={styles.myPageCard}>
         <AlarmSettingCard />
       </div>
-      {userProfile.userLevel === "ADMIN" && (
+      {me && me.userLevel === "ADMIN" && (
         <div className={styles.myPageCard}>
           <AdminPanelCard />
         </div>
