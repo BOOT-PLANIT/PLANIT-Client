@@ -51,6 +51,7 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
   const toast = useToast();
   const createSessions = useCreateSessions();
   const deleteSessions = useDeleteSessions();
+  const isMutating = createSessions.isPending || deleteSessions.isPending;
   const [addedLectures, setAddedLectures] = useState<Map<string, AddedLecture>>(
     new Map(),
   );
@@ -184,11 +185,11 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
               취소
             </Button>
             <Button
-              disabled={!isDisabled}
               onClick={handleEditSession}
+              disabled={!isDisabled || isMutating}
               width="120px"
             >
-              일정 수정
+              {isMutating ? "수정 중..." : "일정 수정"}
             </Button>
           </div>
         </div>

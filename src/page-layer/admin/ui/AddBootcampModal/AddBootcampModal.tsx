@@ -171,8 +171,12 @@ const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
               <Button onClick={onClose} variant="outline" width="70px">
                 취소
               </Button>
-              <Button type="submit" width="120px">
-                부트캠프 추가
+              <Button
+                type="submit"
+                width="120px"
+                disabled={createBootcamp.isPending}
+              >
+                {createBootcamp.isPending ? "등록 중..." : "부트캠프 추가"}
               </Button>
             </div>
           </form>

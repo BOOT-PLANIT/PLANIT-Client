@@ -25,15 +25,15 @@ const MyBootcampListCard = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectBootcampId, setSelectBootcampId] = useState<number | null>(null);
   const router = useRouter();
-  const userType = "existing";
   const toast = useToast();
 
   const { data, isLoading, isError } = useMyBootcamps();
   const myBootcamps: Enrollment[] = data?.data ?? [];
-  const { mutate: deleteMyBootcamp } = useDeleteMyBootcamp();
+  const { mutate: deleteMyBootcamp, isPending: isDeleting } =
+    useDeleteMyBootcamp();
 
   const handleRegist = () => {
-    router.push(`/bootcamps?userType=${userType}`);
+    router.push("/bootcamps?userType=existing");
   };
 
   const handleDelete = () => {
@@ -172,10 +172,16 @@ const MyBootcampListCard = () => {
               </span>
             </div>
             <div className={styles.modalButtonLayout}>
-              <Button variant="outline" onClick={handleCloseModal}>
+              <Button
+                variant="outline"
+                onClick={handleCloseModal}
+                disabled={isDeleting}
+              >
                 취소
               </Button>
-              <Button onClick={handleDelete}>삭제하기</Button>
+              <Button onClick={handleDelete}>
+                {isDeleting ? "삭제 중..." : "삭제하기"}
+              </Button>
             </div>
           </div>
         </Modal>
