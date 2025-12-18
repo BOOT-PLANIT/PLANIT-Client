@@ -1,14 +1,8 @@
-import { checkAuth } from "@/feature/auth/server";
 import { Header, NavItem } from "@/widgets/ui";
 
 import styles from "./layout.module.scss";
 
-export default async function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  await checkAuth();
+const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className={styles.layout}>
       <Header title="PLANIT">
@@ -19,4 +13,6 @@ export default async function MainLayout({
       <main className={styles.main}>{children}</main>
     </div>
   );
-}
+};
+
+export default MainLayout;
