@@ -42,7 +42,10 @@ const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
   const createBootcamp = useCreateBootcamp();
 
   const handleParse = async () => {
-    if (!parseText.trim()) return;
+    if (!parseText.trim()) {
+      toast.error("파싱할 텍스트를 입력해주세요.");
+      return;
+    }
 
     try {
       const result = await parseMutation.mutateAsync({

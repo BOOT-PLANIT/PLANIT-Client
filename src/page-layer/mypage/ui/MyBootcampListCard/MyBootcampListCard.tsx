@@ -27,7 +27,7 @@ const MyBootcampListCard = () => {
   const router = useRouter();
   const toast = useToast();
 
-  const { data, isLoading, isError } = useMyBootcamps();
+  const { data, isLoading, isError, refetch } = useMyBootcamps();
   const myBootcamps: Enrollment[] = data?.data ?? [];
   const { mutate: deleteMyBootcamp, isPending: isDeleting } =
     useDeleteMyBootcamp();
@@ -89,6 +89,9 @@ const MyBootcampListCard = () => {
             <span className={styles.noneTitle}>오류가 발생하였습니다.</span>
             <span className={styles.noneDescription}>
               잠시후 다시 시도해주세요!
+              <Button onClick={() => refetch()} className={styles.retryButton}>
+                다시 시도
+              </Button>
             </span>
           </div>
         </div>
@@ -166,20 +169,13 @@ const MyBootcampListCard = () => {
         <Modal onClose={handleCloseModal} title="부트캠프 삭제확인">
           <div className={styles.modalContainer}>
             <div>
-              <span>
-                정말로 삭제하시겠어요? <br />
-                삭제하면 출석 정보는 복구할 수 없어요.
-              </span>
+              <span>정말로 삭제하시겠어요?</span>
             </div>
             <div className={styles.modalButtonLayout}>
-              <Button
-                variant="outline"
-                onClick={handleCloseModal}
-                disabled={isDeleting}
-              >
+              <Button variant="outline" onClick={handleCloseModal}>
                 취소
               </Button>
-              <Button onClick={handleDelete}>
+              <Button onClick={handleDelete} disabled={isDeleting}>
                 {isDeleting ? "삭제 중..." : "삭제하기"}
               </Button>
             </div>

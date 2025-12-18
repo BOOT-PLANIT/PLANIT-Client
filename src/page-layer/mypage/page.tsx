@@ -4,7 +4,6 @@ import { useMe } from "@/feature/user";
 import styles from "./MyPage.module.scss";
 import { AccountActionsCard } from "./ui/AccountActionsCard";
 import { AdminPanelCard } from "./ui/AdminPanelCard";
-import { AlarmSettingCard } from "./ui/AlarmSettingCard";
 import { MyBootcampListCard } from "./ui/MyBootcampListCard";
 import { UserInfoCard } from "./ui/UserInfoCard";
 
@@ -19,9 +18,6 @@ const MyPage = () => {
 
       <div className={styles.myPageCard}>
         <MyBootcampListCard />
-      </div>
-      <div className={styles.myPageCard}>
-        <AlarmSettingCard />
       </div>
       {me && me.userLevel === "ADMIN" && (
         <div className={styles.myPageCard}>
