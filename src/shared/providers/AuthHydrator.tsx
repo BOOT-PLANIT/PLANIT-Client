@@ -4,14 +4,15 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
+import { useLogout } from "@/feature/auth/api";
 import type { MeResponse } from "@/feature/user";
 import { apiClient, type ApiResponse } from "@/shared/api";
-import { clearAuth, setAuth } from "@/shared/store/authSlice";
+import { setAuth } from "@/shared/store/authSlice";
 
 const AuthHydrator = () => {
   const dispatch = useDispatch();
   const pathname = usePathname();
-
+  const { mutate: logout } = useLogout();
   useEffect(() => {
     if (!pathname) return;
     if (pathname.startsWith("/signin")) return;
@@ -32,16 +33,14 @@ const AuthHydrator = () => {
           }),
         );
       } catch {
-        await apiClient.post("/auth/logout");
-        dispatch(clearAuth());
-        window.location.href = "/signin";
+        logout();
       }
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [dispatch, pathname]);
+  }, [dispatch, pathname, logout]);
 
   return null;
 };
