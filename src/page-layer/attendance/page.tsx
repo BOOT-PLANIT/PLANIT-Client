@@ -20,6 +20,7 @@ import {
 import { AttendanceSummaryCardSkeleton } from "@/entities/attendance/ui/AttendanceSummaryCard";
 import { BootcampInfo } from "@/entities/bootcamp/ui/BootcampInfo";
 import { useToast } from "@/shared/lib";
+import { useAppSelector } from "@/shared/store/hooks";
 import { Card } from "@/shared/ui";
 import { Toggle } from "@/shared/ui";
 import type { ToggleOption } from "@/shared/ui";
@@ -107,8 +108,7 @@ const UNIT_COLORS_CONFIG = {
 } as const;
 
 const Attendance = () => {
-  // TODO: 인증에서 userId 가져오기
-  const userId = 1;
+  const userId = useAppSelector((state) => state.auth.userId);
   const toast = useToast();
 
   const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
@@ -144,7 +144,7 @@ const Attendance = () => {
     errorSessions,
     updateAttendanceMutation,
     deleteAttendanceMutation,
-  } = useAttendanceData(selectedBootcampIndex, { userId });
+  } = useAttendanceData(selectedBootcampIndex);
 
   useAttendanceErrors({
     isErrorBootcamps,
@@ -246,6 +246,7 @@ const Attendance = () => {
   const handleSaveEdit = useCallback(
     async (dates: Date[], status: AttendanceStatus | undefined) => {
       if (selectedBootcampId == null) return;
+      if (userId == null) return;
 
       const classDates = formatDatesToStrings(dates);
 

@@ -12,11 +12,8 @@ import {
 } from "@/feature/attendance/api";
 import { useMyBootcamps } from "@/feature/enrollment/api";
 import { useSessionsWithAttendance } from "@/feature/session/api";
+import { useAppSelector } from "@/shared/store/hooks";
 import type { DateData } from "@/shared/ui/Calendar";
-
-interface UseAttendanceDataOptions {
-  userId: number;
-}
 
 interface UseAttendanceDataReturn {
   bootcampOptions: BootcampOption[];
@@ -36,9 +33,8 @@ interface UseAttendanceDataReturn {
 
 export const useAttendanceData = (
   selectedBootcampIndex: number,
-  options: UseAttendanceDataOptions,
 ): UseAttendanceDataReturn => {
-  const { userId } = options;
+  const userId = useAppSelector((state) => state.auth.userId);
 
   const {
     data: bootcampSummaryData,
