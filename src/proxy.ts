@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const SIGNIN_PATH = "/signin";
+const ROOT_PATH = "/";
+const DASHBOARD_PATH = "/dashboard";
+const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME;
 
 function isStaticFile(pathname: string) {
   const staticExtensions =
@@ -17,8 +20,11 @@ export function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
+  if (!SESSION_COOKIE_NAME) {
+    throw new Error("SESSION_COOKIE_NAME가 없습니다");
+  }
   // 쿠키에서 토큰 존재 여부 확인
-  const token = req.cookies.get("planit_session")?.value;
+  const token = req.cookies.get(SESSION_COOKIE_NAME)?.value;
 
   if (!token) {
     // 토큰이 없으면 로그인 페이지로 리다이렉트
@@ -28,9 +34,9 @@ export function proxy(req: NextRequest) {
   }
 
   // / 페이지 /dashboard로 리다이렉트
-  if (pathname === "/") {
+  if (pathname === ROOT_PATH) {
     const url = req.nextUrl.clone();
-    url.pathname = "/dashboard";
+    url.pathname = DASHBOARD_PATH;
     return NextResponse.redirect(url);
   }
 
