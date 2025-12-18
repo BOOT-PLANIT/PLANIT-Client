@@ -67,6 +67,7 @@ const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
       .filter(Boolean);
 
     if (classDates.length === 0) {
+      toast.error("부트캠프 일정을 입력해주세요.");
       return;
     }
 
@@ -80,6 +81,9 @@ const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
       onSuccess: () => {
         toast.success("부트캠프가 등록되었습니다.");
         onClose();
+      },
+      onError: () => {
+        toast.error("부트캠프 등록에 실패하였습니다.");
       },
     });
   };
@@ -154,7 +158,7 @@ const AddBootcampModal = ({ onClose }: AddBootcampModalProps) => {
                 }
                 placeholder="부트캠프 일정을 넣어주세요.  ex. YYYY-MM-DD, YYYY-MM-DD, ..."
                 {...register("classDatesText", {
-                  required: "부트캠프 이름은 필수입니다.",
+                  required: "부트캠프 일정은 필수입니다.",
                 })}
               ></textarea>
               {errors.classDatesText && (

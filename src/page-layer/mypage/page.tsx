@@ -1,6 +1,5 @@
 "use client";
 import { useMe } from "@/feature/user";
-import { Card, Spinner } from "@/shared/ui";
 
 import styles from "./MyPage.module.scss";
 import { AccountActionsCard } from "./ui/AccountActionsCard";
@@ -10,18 +9,12 @@ import { MyBootcampListCard } from "./ui/MyBootcampListCard";
 import { UserInfoCard } from "./ui/UserInfoCard";
 
 const MyPage = () => {
-  const { data: me, isLoading } = useMe();
+  const { data: me, isLoading, isError } = useMe();
 
   return (
     <div className={styles.container}>
       <div className={styles.myPageCard}>
-        {isLoading ? (
-          <Card>
-            <Spinner size="md" />{" "}
-          </Card>
-        ) : (
-          <UserInfoCard user={me} />
-        )}
+        <UserInfoCard user={me} isLoading={isLoading} isError={isError} />
       </div>
 
       <div className={styles.myPageCard}>

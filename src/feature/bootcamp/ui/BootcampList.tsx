@@ -37,11 +37,17 @@ const BootcampList = ({
     return () => clearTimeout(timer);
   }, [search]);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useSearchBootcampsInfinite({
-      keyword: debounced,
-      size: 20,
-    });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useSearchBootcampsInfinite({
+    keyword: debounced,
+    size: 20,
+  });
   //옵저버
   useEffect(() => {
     const target = anchorRef.current;
@@ -122,6 +128,13 @@ const BootcampList = ({
                 <tr>
                   <td className={styles.spinner} colSpan={manage ? 9 : 6}>
                     <Spinner />
+                  </td>
+                </tr>
+              )}
+              {isError && (
+                <tr>
+                  <td className={styles.noneBootcamp} colSpan={manage ? 9 : 6}>
+                    부트캠프 정보를 불러오는데 실패했습니다.
                   </td>
                 </tr>
               )}

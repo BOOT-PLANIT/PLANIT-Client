@@ -27,6 +27,7 @@ const Onboarding = () => {
       enrollBootcamp.mutate(selectedBootcamp.id, {
         onSuccess: () => {
           toast.success("부트캠프 신청이 완료되었습니다.");
+          router.replace("/mypage");
         },
         onError: (error) => {
           let message = "등록 중 오류가 발생했습니다.";
@@ -40,7 +41,6 @@ const Onboarding = () => {
           toast.error(message);
         },
       });
-      router.replace("/mypage");
     } else {
       toast.error("부트캠프를 찾지못했습니다.");
     }

@@ -25,7 +25,7 @@ const AccountActionsCard = () => {
         router.replace("/signin");
       },
       onError: () => {
-        toast.error("다시 시도해주세요");
+        toast.error("계정 탈퇴 중 오류가 발생했습니다.");
       },
     });
   };
@@ -71,7 +71,9 @@ const AccountActionsCard = () => {
               <Button variant="outline" onClick={handleCloseModal}>
                 취소
               </Button>
-              <Button onClick={handleUserRemove}>탈퇴하기</Button>
+              <Button onClick={handleUserRemove} disabled={deleteMe.isPending}>
+                {deleteMe.isPending ? "처리 중..." : "탈퇴하기"}
+              </Button>
             </div>
           </div>
         </Modal>

@@ -28,6 +28,16 @@ const getDateKey = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
+//세션id와 강의날짜 매핑
+const buildSessionMap = (data: Session[]) => {
+  const map = new Map<string, number>();
+
+  data.forEach(({ classDate, id }) => {
+    map.set(classDate, id);
+  });
+  return map;
+};
+
 interface AddedLecture {
   classDate: string;
 }
@@ -78,15 +88,6 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
   //서버 원본세션객체
   const totalSession: Session[] = data.data;
 
-  //세션id와 강의날짜 매핑
-  const buildSessionMap = (data: Session[]) => {
-    const map = new Map<string, number>();
-
-    data.forEach(({ classDate, id }) => {
-      map.set(classDate, id);
-    });
-    return map;
-  };
   const sessionMap = buildSessionMap(totalSession);
 
   const handleSelectSession = (dates: Date[]) => {
@@ -108,18 +109,32 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
     setRemovedLectures(isRemove);
   };
 
-  const handleEditSession = () => {
+  const handleEditSession = async () => {
     if (addedList.length <= 0 && removedIdList.length <= 0) {
       return toast.error("선택하신 날짜가 없습니다.");
     }
-    if (addedList.length > 0) {
-      createSessions.mutate({ bootcampId: bootcamp.id, sessions: addedList });
+
+    try {
+      const promises: Promise<unknown>[] = [];
+      if (addedList.length > 0) {
+        promises.push(
+          createSessions.mutateAsync({
+            bootcampId: bootcamp.id,
+            sessions: addedList,
+          }),
+        );
+      }
+      if (removedIdList.length > 0) {
+        promises.push(
+          deleteSessions.mutateAsync({ sessionIds: removedIdList }),
+        );
+      }
+      await Promise.all(promises);
+      toast.success("일정 수정 완료하였습니다.");
+      onClose();
+    } catch {
+      toast.error("일정 수정에 실패하였습니다.");
     }
-    if (removedIdList.length > 0) {
-      deleteSessions.mutate({ sessionIds: removedIdList });
-    }
-    toast.success("일정 수정 완료하였습니다.");
-    onClose();
   };
 
   const calendarSessionDate: DateData[] = totalSession.map((date) => {

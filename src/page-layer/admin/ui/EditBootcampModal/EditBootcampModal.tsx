@@ -35,6 +35,9 @@ const EditBootcampModal = ({ onClose, bootcamp }: EditBootcampModalProps) => {
     updateBootcamp.mutate(
       { id: bootcamp.id, data },
       {
+        onSuccess: () => {
+          toast.success("부트캠프 수정에 성공하였습니다.");
+        },
         onError: () => {
           toast.error("부트캠프 수정에 실패하였습니다.");
         },

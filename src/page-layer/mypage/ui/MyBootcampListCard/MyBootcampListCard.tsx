@@ -29,7 +29,7 @@ const MyBootcampListCard = () => {
   const toast = useToast();
 
   const { data, isLoading, isError } = useMyBootcamps();
-  const MyBootcamps: Enrollment[] = data?.data ?? [];
+  const myBootcamps: Enrollment[] = data?.data ?? [];
   const { mutate: deleteMyBootcamp } = useDeleteMyBootcamp();
 
   const handleRegist = () => {
@@ -101,7 +101,7 @@ const MyBootcampListCard = () => {
       <div className={styles.container}>
         <div className={styles.listLayout}>
           {/* 아이템시작 */}
-          {!MyBootcamps.length && (
+          {!myBootcamps.length && (
             <div className={styles.noneBootcamp}>
               <span className={styles.noneTitle}>
                 진행중인 부트캠프가 없습니다.
@@ -111,7 +111,7 @@ const MyBootcampListCard = () => {
               </span>
             </div>
           )}
-          {MyBootcamps.map((b) => (
+          {myBootcamps.map((b) => (
             <div key={b.id} className={styles.bootcampItem}>
               <div className={styles.icon}>
                 <StudyIcon size={24} />

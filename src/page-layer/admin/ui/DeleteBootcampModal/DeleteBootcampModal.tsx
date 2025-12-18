@@ -24,8 +24,7 @@ const DeleteBootcampModal = ({
           onClose();
         },
         onError: () => {
-          toast.error("삭제중 오류발생");
-          onClose();
+          toast.error("부트캠프 삭제 중 오류가 발생했습니다.");
         },
       });
     }
@@ -44,7 +43,12 @@ const DeleteBootcampModal = ({
           <Button variant="outline" onClick={onClose}>
             취소
           </Button>
-          <Button onClick={handleBootcampRemove}>삭제하기</Button>
+          <Button
+            onClick={handleBootcampRemove}
+            disabled={deleteBootcamp.isPending}
+          >
+            {deleteBootcamp.isPending ? "삭제 중..." : "삭제하기"}
+          </Button>
         </div>
       </div>
     </Modal>
