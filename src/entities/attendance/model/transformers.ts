@@ -39,8 +39,12 @@ export const mapApiStatusToCalendarStatus = (
 export const transformBootcampsToOptions = (
   bootcamps: (Bootcamp | Enrollment)[],
 ) => {
+  const isEnrollment = (
+    bootcamp: Bootcamp | Enrollment,
+  ): bootcamp is Enrollment => "bootcampId" in bootcamp;
+
   return bootcamps.map((bootcamp) => ({
-    value: bootcamp.id.toString(),
+    value: String(isEnrollment(bootcamp) ? bootcamp.bootcampId : bootcamp.id),
     label: bootcamp.name,
     isKdt: bootcamp.isKdt,
   }));
