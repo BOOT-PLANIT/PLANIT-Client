@@ -1,5 +1,9 @@
 import axios from "axios";
 
+import { queryClient } from "@/shared/query/queryClient";
+import { clearAuth } from "@/shared/store/authSlice";
+import { getStore } from "@/shared/store/store";
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:6000";
 
@@ -9,31 +13,39 @@ export const apiClient = axios.create({
     "Content-Type": "application/json",
   },
   timeout: 3000,
+  withCredentials: true,
 });
 
-// 요청 인터셉터: 인증 토큰 추가 (필요시)
-apiClient.interceptors.request.use(
-  (config) => {
-    // TODO: Firebase ID Token을 여기서 추가
-    // const token = getAuthToken();
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
+function buildSigninUrl() {
+  const next = window.location.pathname + window.location.search;
+
+  const url = new URL("/signin", window.location.origin);
+  url.searchParams.set("next", next);
+  return url.toString();
+}
+
+let redirecting = false;
 
 apiClient.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    if (error.response?.data) {
-      return Promise.reject(error.response.data);
+  (response) => response,
+  async (error) => {
+    const status = error?.response?.status;
+
+    if (status === 401 && typeof window !== "undefined") {
+      try {
+        const store = getStore();
+        store.dispatch(clearAuth());
+      } catch {
+        // 스토어 초기화 전 401 발생 시 무시
+      }
+      queryClient.clear();
+
+      if (!redirecting) {
+        redirecting = true;
+        window.location.assign(buildSigninUrl());
+      }
     }
-    return Promise.reject(error);
+
+    return Promise.reject(error.response?.data ?? error);
   },
 );

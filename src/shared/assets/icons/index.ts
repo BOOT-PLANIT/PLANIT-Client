@@ -24,3 +24,4 @@ export { default as InstituteIcon } from "./InstituteIcon";
 export { default as BellIcon } from "./BellIcon";
 export { default as UserRemoveIcon } from "./UserRemoveIcon";
 export { default as LogoutIcon } from "./LogoutIcon";
+export { default as CheckIcon } from "./CheckIcon";
