@@ -21,22 +21,28 @@ function isStaticFile(pathname: string) {
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // 정적 파일과 로그인 페이지는 통과
-  if (isStaticFile(pathname) || pathname === SIGNIN_PATH) {
+  // 정적 파일 통과
+  if (isStaticFile(pathname)) {
     return NextResponse.next();
   }
 
-  // 쿠키에서 토큰 존재 여부 확인
   const token = req.cookies.get(SESSION_COOKIE_NAME)?.value;
 
-  if (!token) {
-    // 토큰이 없으면 로그인 페이지로 리다이렉트
+  // 로그인한 사용자는 /signin 접근 불가
+  if (pathname === SIGNIN_PATH && token) {
+    const url = req.nextUrl.clone();
+    url.pathname = DASHBOARD_PATH;
+    return NextResponse.redirect(url);
+  }
+
+  // 비로그인 사용자는 /signin만 허용
+  if (!token && pathname !== SIGNIN_PATH) {
     const url = req.nextUrl.clone();
     url.pathname = SIGNIN_PATH;
     return NextResponse.redirect(url);
   }
 
-  // / 페이지 /dashboard로 리다이렉트
+  // root 페이지 /dashboard로 이동
   if (pathname === ROOT_PATH) {
     const url = req.nextUrl.clone();
     url.pathname = DASHBOARD_PATH;
