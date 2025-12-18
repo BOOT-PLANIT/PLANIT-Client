@@ -16,6 +16,7 @@ import { useAppSelector } from "@/shared/store/hooks";
 import type { DateData } from "@/shared/ui/Calendar";
 
 interface UseAttendanceDataReturn {
+  userId: number | null;
   bootcampOptions: BootcampOption[];
   selectedBootcampId: number | null;
   allCalendarDates: DateData[];
@@ -85,6 +86,7 @@ export const useAttendanceData = (
   const selectedBootcamp = bootcampOptions[selectedBootcampIndex];
 
   return {
+    userId,
     bootcampOptions,
     selectedBootcampId,
     allCalendarDates,

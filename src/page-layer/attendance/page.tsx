@@ -20,7 +20,6 @@ import {
 import { AttendanceSummaryCardSkeleton } from "@/entities/attendance/ui/AttendanceSummaryCard";
 import { BootcampInfo } from "@/entities/bootcamp/ui/BootcampInfo";
 import { useToast } from "@/shared/lib";
-import { useAppSelector } from "@/shared/store/hooks";
 import { Card } from "@/shared/ui";
 import { Toggle } from "@/shared/ui";
 import type { ToggleOption } from "@/shared/ui";
@@ -108,7 +107,6 @@ const UNIT_COLORS_CONFIG = {
 } as const;
 
 const Attendance = () => {
-  const userId = useAppSelector((state) => state.auth.userId);
   const toast = useToast();
 
   const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
@@ -131,6 +129,7 @@ const Attendance = () => {
   );
 
   const {
+    userId,
     bootcampOptions,
     selectedBootcampId,
     allCalendarDates,
