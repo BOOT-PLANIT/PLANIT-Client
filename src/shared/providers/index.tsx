@@ -1,5 +1,6 @@
 "use client";
 
+import AuthHydrator from "./AuthHydrator";
 import QueryProvider from "./QueryProvider";
 import StoreProvider from "./StoreProvider";
 
@@ -10,7 +11,10 @@ interface ProvidersProps {
 const Providers = ({ children }: ProvidersProps) => {
   return (
     <StoreProvider>
-      <QueryProvider>{children}</QueryProvider>
+      <QueryProvider>
+        <AuthHydrator />
+        {children}
+      </QueryProvider>
     </StoreProvider>
   );
 };
