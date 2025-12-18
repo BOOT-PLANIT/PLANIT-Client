@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { MeResponse } from "@/feature/user";
 import { apiClient, ApiResponse } from "@/shared/api";
 import { auth } from "@/shared/config/firebaseConfig";
+import { setAuth } from "@/shared/store/authSlice";
 import { showToast } from "@/shared/store/toastSlice";
 
 import { login } from "../api/login";
@@ -35,6 +36,12 @@ export const useGoogleLogin = () => {
     },
 
     onSuccess: (me) => {
+      dispatch(
+        setAuth({
+          userId: me.id,
+          recentBootcampId: me.recentBootcampId,
+        }),
+      );
       router.replace(me.recentBootcampId == null ? "/bootcamps" : "/dashboard");
     },
 
