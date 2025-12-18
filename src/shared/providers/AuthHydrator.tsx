@@ -32,7 +32,9 @@ const AuthHydrator = () => {
           }),
         );
       } catch {
+        await apiClient.post("/auth/logout");
         dispatch(clearAuth());
+        window.location.href = "/signin";
       }
     })();
 
