@@ -107,8 +107,6 @@ const UNIT_COLORS_CONFIG = {
 } as const;
 
 const Attendance = () => {
-  // TODO: 인증에서 userId 가져오기
-  const userId = 1;
   const toast = useToast();
 
   const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
@@ -131,6 +129,7 @@ const Attendance = () => {
   );
 
   const {
+    userId,
     bootcampOptions,
     selectedBootcampId,
     allCalendarDates,
@@ -144,7 +143,7 @@ const Attendance = () => {
     errorSessions,
     updateAttendanceMutation,
     deleteAttendanceMutation,
-  } = useAttendanceData(selectedBootcampIndex, { userId });
+  } = useAttendanceData(selectedBootcampIndex);
 
   useAttendanceErrors({
     isErrorBootcamps,
@@ -246,6 +245,7 @@ const Attendance = () => {
   const handleSaveEdit = useCallback(
     async (dates: Date[], status: AttendanceStatus | undefined) => {
       if (selectedBootcampId == null) return;
+      if (userId == null) return;
 
       const classDates = formatDatesToStrings(dates);
 
