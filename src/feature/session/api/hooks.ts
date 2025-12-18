@@ -5,6 +5,7 @@ import { apiClient } from "@/shared/api";
 
 import type {
   Session,
+  SessionAttendanceStatusItem,
   SessionCreateRequest,
   SessionDeleteRequest,
 } from "./types";
@@ -123,10 +124,41 @@ export const useSessionsWithAttendance = (
       "attendance",
     ],
     queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<Session[]>>(
-        `/sessions/bootcamp/${bootcampId}/user/${userId}/attendance`,
+      const [sessionsResponse, attendanceResponse] = await Promise.all([
+        apiClient.get<ApiResponse<Session[]>>(
+          `/sessions/bootcamp/${bootcampId}`,
+        ),
+        apiClient.get<ApiResponse<SessionAttendanceStatusItem[]>>(
+          `/sessions/bootcamp/${bootcampId}/user/${userId}/attendance`,
+        ),
+      ]);
+
+      const attendanceBySessionId = new Map(
+        (attendanceResponse.data.data ?? []).map((item) => [
+          item.sessionId,
+          item.attendanceStatus,
+        ]),
       );
-      return response.data;
+
+      const mergedSessions = (sessionsResponse.data.data ?? []).map(
+        (session) => {
+          const status = attendanceBySessionId.get(session.id);
+          return {
+            ...session,
+            attendance: status
+              ? {
+                  status,
+                  userId: userId as number,
+                }
+              : undefined,
+          };
+        },
+      );
+
+      return {
+        ...sessionsResponse.data,
+        data: mergedSessions,
+      };
     },
     enabled: !!bootcampId && !!userId,
   });
