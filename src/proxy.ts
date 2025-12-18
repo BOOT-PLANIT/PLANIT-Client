@@ -21,7 +21,7 @@ export function proxy(req: NextRequest) {
   }
 
   if (!SESSION_COOKIE_NAME) {
-    throw new Error("SESSION_COOKIE_NAME가 없습니다");
+    throw new Error("SESSION_COOKIE_NAME이 없습니다");
   }
   // 쿠키에서 토큰 존재 여부 확인
   const token = req.cookies.get(SESSION_COOKIE_NAME)?.value;
