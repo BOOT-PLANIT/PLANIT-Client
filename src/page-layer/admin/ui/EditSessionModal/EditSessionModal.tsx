@@ -122,7 +122,6 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
     onClose();
   };
 
-  ///api 연동시 교체
   const calendarSessionDate: DateData[] = totalSession.map((date) => {
     return { date: parseDateString(date.classDate), isCurrentUnit: true };
   });
@@ -143,21 +142,25 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
               allowSelectionWithoutData={true}
             />
             <div className={styles.sessionLayout}>
-              <div className={styles.addSession}>
+              <div className={styles.addSessionLayout}>
                 <span className={styles.sessionTitle}>추가될 강의일</span>
-                {addedList.map((lecture) => (
-                  <div className={styles.addDate} key={lecture.classDate}>
-                    {lecture.classDate}
-                  </div>
-                ))}
+                <div className={styles.addSession}>
+                  {addedList.map((lecture) => (
+                    <div className={styles.addDate} key={lecture.classDate}>
+                      {lecture.classDate}
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className={styles.removeSession}>
+              <div className={styles.removeSessionLayout}>
                 <span className={styles.sessionTitle}>삭제될 강의일</span>
-                {removedList.map((lecture) => (
-                  <div className={styles.deleteDate} key={lecture.id}>
-                    {lecture.classDate}
-                  </div>
-                ))}
+                <div className={styles.removeSession}>
+                  {removedList.map((lecture) => (
+                    <div className={styles.deleteDate} key={lecture.id}>
+                      {lecture.classDate}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
