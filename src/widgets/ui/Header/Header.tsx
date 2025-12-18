@@ -1,18 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+import { useAppSelector } from "@/shared/store/hooks";
 import { Avatar } from "@/shared/ui";
 
 import styles from "./Header.module.scss";
 
 interface HeaderProps {
   title: string;
-  userName: string;
   children?: React.ReactNode;
 }
 
-const Header = ({ title, userName, children }: HeaderProps) => {
+const Header = ({ title, children }: HeaderProps) => {
+  const displayName = useAppSelector((state) => state.auth.displayName);
+  const userName = displayName ?? "PLANIT";
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
