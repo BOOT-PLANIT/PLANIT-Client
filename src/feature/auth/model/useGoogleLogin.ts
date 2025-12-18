@@ -39,6 +39,7 @@ export const useGoogleLogin = () => {
       dispatch(
         setAuth({
           userId: me.id,
+          displayName: me.displayName,
           recentBootcampId: me.recentBootcampId,
         }),
       );
