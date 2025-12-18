@@ -26,6 +26,14 @@ export function proxy(req: NextRequest) {
     url.pathname = SIGNIN_PATH;
     return NextResponse.redirect(url);
   }
+
+  // / 페이지 /dashboard로 리다이렉트
+  if (pathname === "/") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/dashboard";
+    return NextResponse.redirect(url);
+  }
+
   return NextResponse.next();
 }
 
