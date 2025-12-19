@@ -53,7 +53,7 @@ const Dashboard = () => {
   const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
 
   const { data: meRes } = useMe();
-  const recentBootcampId = meRes?.data?.recentBootcampId ?? null;
+  const recentBootcampId = meRes?.recentBootcampId ?? null;
 
   const { data: bootcampRes } = useBootcamp(recentBootcampId ?? 0);
   const bootcamp = bootcampRes?.data;

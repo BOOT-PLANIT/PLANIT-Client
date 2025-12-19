@@ -1,11 +1,10 @@
 "use client";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 
 import {
   Bootcamp,
   BootcampListItem,
-  dummyFetchBootcamps,
+  useSearchBootcampsInfinite,
 } from "@/feature/bootcamp";
 import SearchIcon from "@/shared/assets/icons/SearchIcon";
 import { Input, Spinner } from "@/shared/ui";
@@ -38,15 +37,17 @@ const BootcampList = ({
     return () => clearTimeout(timer);
   }, [search]);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
-      queryKey: ["bootcamps", debounced],
-      queryFn: ({ pageParam = 1 }) =>
-        dummyFetchBootcamps({ query: debounced, pageParam }),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage) => lastPage.nextPage,
-    });
-
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useSearchBootcampsInfinite({
+    keyword: debounced,
+    size: 20,
+  });
   //옵저버
   useEffect(() => {
     const target = anchorRef.current;
@@ -94,7 +95,7 @@ const BootcampList = ({
     }
   };
 
-  const flatList = data?.pages.flatMap((page) => page.items) ?? [];
+  const flatList = data?.pages.flatMap((page) => page) ?? [];
 
   return (
     <>
@@ -130,7 +131,20 @@ const BootcampList = ({
                   </td>
                 </tr>
               )}
-
+              {isError && (
+                <tr>
+                  <td className={styles.noneBootcamp} colSpan={manage ? 9 : 6}>
+                    부트캠프 정보를 불러오는데 실패했습니다.
+                  </td>
+                </tr>
+              )}
+              {!isLoading && flatList.length <= 0 && (
+                <tr>
+                  <td className={styles.noneBootcamp} colSpan={manage ? 9 : 6}>
+                    부트캠프 정보가 없습니다.
+                  </td>
+                </tr>
+              )}
               {flatList.map((b) => (
                 <BootcampListItem
                   key={b.id}

@@ -1,18 +1,37 @@
 import type { MeResponse } from "@/feature/user";
 import { StudyIcon } from "@/shared/assets/icons";
 import ShieldIcon from "@/shared/assets/icons/ShieldIcon";
-import { Avatar, Card } from "@/shared/ui";
+import { Avatar, Card, Spinner } from "@/shared/ui";
 import { Badge } from "@/shared/ui/Badge";
 
 import styles from "./UserInfoCard.module.scss";
 
 interface UserInfoCardProps {
-  user: MeResponse;
+  user: MeResponse | undefined;
+  isLoading?: boolean;
+  isError?: boolean;
 }
+const UserInfoCard = ({ user, isLoading, isError }: UserInfoCardProps) => {
+  if (isLoading) {
+    return (
+      <Card>
+        <div className={styles.loading}>
+          <Spinner size="md" />
+        </div>
+      </Card>
+    );
+  }
+  if (isError || !user) {
+    return (
+      <Card>
+        <div className={styles.error} role="alert">
+          내 정보를 불러오지 못하였습니다. 다시 시도해주세요.
+        </div>
+      </Card>
+    );
+  }
 
-const UserInfoCard = ({ user }: UserInfoCardProps) => {
-  const createdDate = user.createdAt.split(" ")[0];
-
+  const createdDate = user.createdAt.slice(0, 10) ?? "-";
   return (
     <Card>
       <div className={styles.topRow}>

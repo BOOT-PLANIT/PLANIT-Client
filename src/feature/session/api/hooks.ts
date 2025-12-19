@@ -76,6 +76,9 @@ export const useCreateSessions = () => {
       queryClient.invalidateQueries({
         queryKey: ["sessions"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["bootcamps", "search"],
+      });
     },
   });
 };
@@ -96,6 +99,9 @@ export const useDeleteSessions = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["sessions"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["bootcamps", "search"],
       });
     },
   });

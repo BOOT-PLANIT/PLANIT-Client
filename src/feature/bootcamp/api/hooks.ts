@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import type { ApiResponse } from "@/shared/api";
 import { apiClient } from "@/shared/api";
@@ -17,14 +22,14 @@ import type {
  * 부트캠프 전체 목록 조회 (요약)
  */
 export const useBootcampSummary = () => {
-  return useQuery<ApiResponse<BootcampSummaryResponse>>({
+  return useQuery<BootcampSummaryResponse>({
     queryKey: ["bootcamps", "summary"],
     queryFn: async () => {
       const response =
         await apiClient.get<ApiResponse<BootcampSummaryResponse>>(
           "/bootcamps/summary",
         );
-      return response.data;
+      return response.data.data;
     },
   });
 };
@@ -55,9 +60,47 @@ export const useSearchBootcamps = (params: BootcampSearchParams) => {
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<Bootcamp[]>>(
         "/bootcamps/search",
-        { params },
+        {
+          params,
+        },
       );
       return response.data;
+    },
+  });
+};
+
+/**
+ * 부트캠프 무한 스크롤 검색
+ * keyword가 없으면 전체 목록을 반환합니다.
+ */
+export const useSearchBootcampsInfinite = (params: BootcampSearchParams) => {
+  const pageSize = params.size ?? 20;
+
+  return useInfiniteQuery<Bootcamp[]>({
+    queryKey: ["bootcamps", "search", params],
+
+    queryFn: async ({ pageParam = 1 }) => {
+      const response = await apiClient.get<ApiResponse<Bootcamp[]>>(
+        "/bootcamps/search",
+        {
+          params: {
+            ...params,
+            page: pageParam,
+            size: pageSize,
+          },
+        },
+      );
+
+      return response.data.data;
+    },
+
+    initialPageParam: 1,
+
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.length < pageSize) {
+        return undefined; // 마지막 페이지
+      }
+      return allPages.length + 1; // 다음 페이지 번호
     },
   });
 };
@@ -88,7 +131,7 @@ export const useParseBootcampText = () => {
         "/bootcamps/parse",
         data,
       );
-      return response.data;
+      return response.data.data;
     },
   });
 };
