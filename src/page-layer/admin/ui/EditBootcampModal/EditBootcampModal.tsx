@@ -1,7 +1,12 @@
 "use client";
 import { useForm } from "react-hook-form";
 
-import { Bootcamp } from "@/feature/bootcamp";
+import {
+  Bootcamp,
+  BootcampRequest,
+  useUpdateBootcamp,
+} from "@/feature/bootcamp";
+import { useToast } from "@/shared/lib";
 import { Button, Input, Modal } from "@/shared/ui";
 
 import styles from "./EditBootcampModal.module.scss";
@@ -11,26 +16,33 @@ interface EditBootcampModalProps {
   bootcamp: Bootcamp;
 }
 
-interface BootcampFormValues {
-  organizer: string;
-  name: string;
-  isKdt: boolean;
-}
-
 const EditBootcampModal = ({ onClose, bootcamp }: EditBootcampModalProps) => {
+  const updateBootcamp = useUpdateBootcamp();
+  const toast = useToast();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<BootcampFormValues>({
+  } = useForm<BootcampRequest>({
     defaultValues: {
       organizer: bootcamp.organizer,
       name: bootcamp.name,
       isKdt: bootcamp.isKdt,
+      classDates: [""],
     },
   });
-  const onSubmit = (data: BootcampFormValues) => {
-    console.log("제출 데이터:", data);
+  const onSubmit = (data: BootcampRequest) => {
+    updateBootcamp.mutate(
+      { id: bootcamp.id, data },
+      {
+        onSuccess: () => {
+          toast.success("부트캠프 수정에 성공하였습니다.");
+        },
+        onError: () => {
+          toast.error("부트캠프 수정에 실패하였습니다.");
+        },
+      },
+    );
     onClose();
   };
 

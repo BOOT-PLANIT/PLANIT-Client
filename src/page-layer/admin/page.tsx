@@ -1,14 +1,9 @@
 "use client";
 import { useState } from "react";
 
-import { Bootcamp, BootcampList } from "@/feature/bootcamp";
+import { Bootcamp, BootcampList, useBootcampSummary } from "@/feature/bootcamp";
 import { ModalType } from "@/feature/bootcamp/ui/BootcampList";
-import {
-  AddIcon,
-  CalendarIcon,
-  InstituteIcon,
-  StudyIcon,
-} from "@/shared/assets";
+import { AddIcon, CalendarIcon, StudyIcon } from "@/shared/assets";
 import { Button, Card } from "@/shared/ui";
 
 import styles from "./AdminPage.module.scss";
@@ -24,6 +19,8 @@ const AdminPage = () => {
     null,
   );
 
+  const { data: bootcampSummaryData = { activeCount: 0, totalCount: 0 } } =
+    useBootcampSummary();
   const handleModalOpen = (type: ModalType, bootcamp?: Bootcamp) => {
     setOpenModal(type);
     if (bootcamp) {
@@ -58,19 +55,13 @@ const AdminPage = () => {
           <StatCard
             icon={<StudyIcon size={20} />}
             label="전체 부트캠프 개수"
-            value={5}
+            value={bootcampSummaryData.totalCount}
             color="blue"
-          />
-          <StatCard
-            icon={<InstituteIcon size={20} />}
-            label="전체 훈련 기관 개수"
-            value={3}
-            color="green"
           />
           <StatCard
             icon={<CalendarIcon size={20} />}
             label="진행 중인 전체 부트캠프"
-            value={2}
+            value={bootcampSummaryData.activeCount}
             color="purple"
           />
         </div>

@@ -2,7 +2,14 @@
 import { useState } from "react";
 
 import { Bootcamp } from "@/feature/bootcamp";
-import { Button, Calendar, Modal } from "@/shared/ui";
+import {
+  Session,
+  useCreateSessions,
+  useDeleteSessions,
+  useSessionsByBootcamp,
+} from "@/feature/session";
+import { useToast } from "@/shared/lib";
+import { Button, Calendar, Modal, Spinner } from "@/shared/ui";
 import { DateData } from "@/shared/ui/Calendar";
 import { parseDateString } from "@/shared/utils";
 
@@ -21,11 +28,15 @@ const getDateKey = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-//api 매칭해야됨 임시
-interface SessionDateDto {
-  id: number;
-  classDate: string;
-}
+//세션id와 강의날짜 매핑
+const buildSessionMap = (data: Session[]) => {
+  const map = new Map<string, number>();
+
+  data.forEach(({ classDate, id }) => {
+    map.set(classDate, id);
+  });
+  return map;
+};
 
 interface AddedLecture {
   classDate: string;
@@ -37,6 +48,10 @@ interface RemovedLecture {
 }
 
 const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
+  const toast = useToast();
+  const createSessions = useCreateSessions();
+  const deleteSessions = useDeleteSessions();
+  const isMutating = createSessions.isPending || deleteSessions.isPending;
   const [addedLectures, setAddedLectures] = useState<Map<string, AddedLecture>>(
     new Map(),
   );
@@ -50,20 +65,31 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
 
   const isDisabled = addedLectures.size > 0 || removedLectures.size > 0;
 
-  const textSession: SessionDateDto[] = bootcamp.classDates.map((date, i) => {
-    return { id: i + 1, classDate: date };
-  });
+  const { data, isLoading, isError } = useSessionsByBootcamp(bootcamp.id);
+  if (isLoading) {
+    return (
+      <Modal title="부트캠프 일정 수정" onClose={onClose}>
+        <div className={styles.layout}>
+          <Spinner size="lg" />
+        </div>
+      </Modal>
+    );
+  }
 
-  const buildSessionMap = (data: SessionDateDto[]) => {
-    const map = new Map<string, number>();
+  if (isError || !data) {
+    return (
+      <Modal title="부트캠프 일정 수정" onClose={onClose}>
+        <div className={styles.layout}>
+          일정 정보를 불러오지 못했습니다.
+          <Button onClick={onClose}>닫기</Button>
+        </div>
+      </Modal>
+    );
+  }
+  //서버 원본세션객체
+  const totalSession: Session[] = data.data;
 
-    data.forEach(({ classDate, id }) => {
-      map.set(classDate, id);
-    });
-    return map;
-  };
-  const sessionMap = buildSessionMap(textSession);
-  /////
+  const sessionMap = buildSessionMap(totalSession);
 
   const handleSelectSession = (dates: Date[]) => {
     const stringSelectDate = dates.map((date) => getDateKey(date));
@@ -84,13 +110,35 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
     setRemovedLectures(isRemove);
   };
 
-  const handleEditSession = () => {
-    console.log("추가할날짜:", addedList);
-    console.log("삭제할날짜:", removedIdList);
+  const handleEditSession = async () => {
+    if (addedList.length <= 0 && removedIdList.length <= 0) {
+      return toast.error("선택하신 날짜가 없습니다.");
+    }
+
+    try {
+      const promises: Promise<unknown>[] = [];
+      if (addedList.length > 0) {
+        promises.push(
+          createSessions.mutateAsync({
+            bootcampId: bootcamp.id,
+            sessions: addedList,
+          }),
+        );
+      }
+      if (removedIdList.length > 0) {
+        promises.push(
+          deleteSessions.mutateAsync({ sessionIds: removedIdList }),
+        );
+      }
+      await Promise.all(promises);
+      toast.success("일정 수정 완료하였습니다.");
+      onClose();
+    } catch {
+      toast.error("일정 수정에 실패하였습니다.");
+    }
   };
 
-  ///api 연동시 교체
-  const calendarSessionDate: DateData[] = textSession.map((date) => {
+  const calendarSessionDate: DateData[] = totalSession.map((date) => {
     return { date: parseDateString(date.classDate), isCurrentUnit: true };
   });
 
@@ -110,21 +158,25 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
               allowSelectionWithoutData={true}
             />
             <div className={styles.sessionLayout}>
-              <div className={styles.addSession}>
+              <div className={styles.addSessionLayout}>
                 <span className={styles.sessionTitle}>추가될 강의일</span>
-                {addedList.map((lecture) => (
-                  <div className={styles.addDate} key={lecture.classDate}>
-                    {lecture.classDate}
-                  </div>
-                ))}
+                <div className={styles.addSession}>
+                  {addedList.map((lecture) => (
+                    <div className={styles.addDate} key={lecture.classDate}>
+                      {lecture.classDate}
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className={styles.removeSession}>
+              <div className={styles.removeSessionLayout}>
                 <span className={styles.sessionTitle}>삭제될 강의일</span>
-                {removedList.map((lecture) => (
-                  <div className={styles.deleteDate} key={lecture.id}>
-                    {lecture.classDate}
-                  </div>
-                ))}
+                <div className={styles.removeSession}>
+                  {removedList.map((lecture) => (
+                    <div className={styles.deleteDate} key={lecture.id}>
+                      {lecture.classDate}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -133,11 +185,11 @@ const EditSessionModal = ({ onClose, bootcamp }: EditSessionModalProps) => {
               취소
             </Button>
             <Button
-              disabled={!isDisabled}
               onClick={handleEditSession}
+              disabled={!isDisabled || isMutating}
               width="120px"
             >
-              일정 수정
+              {isMutating ? "수정 중..." : "일정 수정"}
             </Button>
           </div>
         </div>

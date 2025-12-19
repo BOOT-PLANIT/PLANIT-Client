@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useLogout } from "@/feature/auth";
+import { useDeleteMe } from "@/feature/user";
 import { LogoutIcon, UserRemoveIcon } from "@/shared/assets";
 import { useToast } from "@/shared/lib";
 import { Button, Card, Modal } from "@/shared/ui";
@@ -15,10 +16,18 @@ const AccountActionsCard = () => {
   const router = useRouter();
 
   const { mutate: logout, isPending } = useLogout();
+  const deleteMe = useDeleteMe();
 
   const handleUserRemove = () => {
-    toast.success("그동안 이용해 주셔서 감사합니다.");
-    router.replace("/signin");
+    deleteMe.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("그동안 이용해 주셔서 감사합니다.");
+        router.replace("/signin");
+      },
+      onError: () => {
+        toast.error("계정 탈퇴 중 오류가 발생했습니다.");
+      },
+    });
   };
 
   const handleOpenModal = () => {
@@ -62,7 +71,9 @@ const AccountActionsCard = () => {
               <Button variant="outline" onClick={handleCloseModal}>
                 취소
               </Button>
-              <Button onClick={handleUserRemove}>탈퇴하기</Button>
+              <Button onClick={handleUserRemove} disabled={deleteMe.isPending}>
+                {deleteMe.isPending ? "처리 중..." : "탈퇴하기"}
+              </Button>
             </div>
           </div>
         </Modal>
