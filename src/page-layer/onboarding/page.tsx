@@ -26,8 +26,14 @@ const Onboarding = () => {
     if (selectedBootcamp) {
       enrollBootcamp.mutate(selectedBootcamp.id, {
         onSuccess: () => {
-          toast.success("부트캠프 신청이 완료되었습니다.");
-          router.replace("/mypage");
+          toast.success("부트캠프 등록이 완료되었습니다.");
+
+          if (userType === "existing") {
+            router.replace("/mypage");
+          } else {
+            //신규유저는 바로 대시보드로로
+            router.replace("/dashboard");
+          }
         },
         onError: (error) => {
           let message = "등록 중 오류가 발생했습니다.";
