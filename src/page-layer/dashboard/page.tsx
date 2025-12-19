@@ -36,7 +36,19 @@ const balanceData = {
   leftBalanceValue: 3,
   totalBalanceValue: 15,
 };
-
+export interface MeResponse {
+  id: number;
+  uid: string;
+  email: string;
+  displayName: string;
+  photoUrl: string;
+  userLevel: "USER" | "ADMIN";
+  provider: string;
+  emailVerified: boolean;
+  createdAt: string;
+  lastLoginAt: string;
+  recentBootcampId: number | null;
+}
 const Dashboard = () => {
   const [selectedBootcampIndex, setSelectedBootcampIndex] = useState(0);
 

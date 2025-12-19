@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { checkAuth } from "@/feature/auth/server";
 import { Pretendard } from "@/shared/assets/font/font";
 import Providers from "@/shared/providers";
 import "./globals.css";
@@ -9,11 +10,12 @@ export const metadata: Metadata = {
   title: "PLANIT",
 };
 
-const RootLayout = ({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) => {
+}>) {
+  await checkAuth();
   return (
     <html lang="ko">
       <body className={Pretendard.className}>
@@ -24,6 +26,4 @@ const RootLayout = ({
       </body>
     </html>
   );
-};
-
-export default RootLayout;
+}
