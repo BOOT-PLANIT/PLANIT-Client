@@ -41,9 +41,6 @@ export interface PeriodAttendanceResponse {
 /**
  * 총 출결 조회 응답
  */
-/**
- * 총 출결 조회 응답
- */
 export interface TotalAttendanceResponse {
   userId: number;
   unitNo: number | null;
