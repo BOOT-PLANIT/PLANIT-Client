@@ -12,13 +12,9 @@ interface RemainingBalanceCardProps {
   values: BalanceData;
 }
 
-const handleClick = () => {
-  console.log("클릭");
-};
-
 const RemainingBalanceCard = ({ values }: RemainingBalanceCardProps) => {
   return (
-    <Card title="남은 연차" onClick={handleClick}>
+    <Card title="남은 연차">
       <div className={styles.container}>
         <div className={styles.textBox}>
           <h2 className={styles.balanceText}>
