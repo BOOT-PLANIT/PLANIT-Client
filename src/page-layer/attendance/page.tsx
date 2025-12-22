@@ -24,7 +24,7 @@ import { Card } from "@/shared/ui";
 import { Toggle } from "@/shared/ui";
 import type { ToggleOption } from "@/shared/ui";
 import { CalendarSkeleton, type AttendanceStatus } from "@/shared/ui/Calendar";
-import { getErrorMessage } from "@/shared/utils";
+import { formatDatesToStrings, getErrorMessage } from "@/shared/utils";
 
 import styles from "./Attendance.module.scss";
 import {
@@ -39,7 +39,6 @@ import { UnitIcon } from "./ui/UnitIcon";
 import UnitPeriodStatsCardSkeleton from "./ui/UnitPeriodStatsCard/UnitPeriodStatsCardSkeleton";
 import { mapCalendarStatusToApiStatus } from "./utils/apiTransform";
 import {
-  formatDatesToStrings,
   normalizeDate,
   normalizeEndDate,
   normalizeStartDate,

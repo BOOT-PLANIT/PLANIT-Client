@@ -12,16 +12,9 @@ import { attendanceOptions } from "@/page-layer/attendance/model";
 import type { AttendanceStatus } from "@/shared/api";
 import { Button, Card } from "@/shared/ui";
 import type { CalendarAttendanceStatus } from "@/shared/ui/Calendar";
+import { formatDateToString } from "@/shared/utils";
 
 import styles from "./TodaysAttendanceCard.module.scss";
-
-const getToday = () => {
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth() + 1).padStart(2, "0");
-  const dd = String(today.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
-};
 
 interface Props {
   bootcampId?: number;
@@ -30,7 +23,7 @@ interface Props {
 const TodaysAttendanceCard = ({ bootcampId }: Props) => {
   const { data: meRes } = useMe();
   const userId = meRes?.id ?? null;
-  const today = getToday();
+  const today = formatDateToString(new Date());
 
   const { data: dailyRes, isLoading } = useDailyAttendance(
     userId,
