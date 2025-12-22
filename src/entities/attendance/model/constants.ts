@@ -28,7 +28,7 @@ export const SUCCESS_MESSAGES = {
 export const ATTENDANCE_STATUS_LABELS = {
   present: "출석",
   late: "지각",
-  leftEarly: "조퇴",
+  leftEarly: "외출 · 조퇴",
   leave: "공가",
   annual: "월차",
   absent: "결석",

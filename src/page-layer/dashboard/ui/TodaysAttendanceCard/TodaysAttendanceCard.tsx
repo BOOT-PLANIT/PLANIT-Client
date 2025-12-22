@@ -14,6 +14,8 @@ import { Button, Card } from "@/shared/ui";
 import type { CalendarAttendanceStatus } from "@/shared/ui/Calendar";
 import { formatDateToString } from "@/shared/utils";
 
+import { attendanceGuideTextMap } from "../../model/constants";
+
 import styles from "./TodaysAttendanceCard.module.scss";
 
 interface Props {
@@ -64,8 +66,18 @@ const TodaysAttendanceCard = ({ bootcampId }: Props) => {
 
     const calendarStatus = mapApiStatusToCalendarStatus(serverStatus) ?? null;
 
+    if (!calendarStatus) {
+      return {
+        guideText: "오늘의 출결이 이미 등록되었습니다.",
+        disabled: true,
+        selectedStatus: null,
+      };
+    }
+
     return {
-      guideText: "오늘의 출결이 이미 등록되었습니다.",
+      guideText:
+        attendanceGuideTextMap[calendarStatus] ??
+        "오늘의 출결이 등록되었습니다.",
       disabled: true,
       selectedStatus: calendarStatus,
     };

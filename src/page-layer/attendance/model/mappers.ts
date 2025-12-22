@@ -21,7 +21,7 @@ export const attendanceOptions: {
   },
   {
     value: "leftEarly",
-    label: "조퇴",
+    label: "외출 · 조퇴",
     icon: ATTENDANCE_ICON_MAP.leftEarly,
   },
   {
