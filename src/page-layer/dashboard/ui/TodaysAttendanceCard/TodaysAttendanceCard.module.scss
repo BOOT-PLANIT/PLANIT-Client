@@ -5,7 +5,16 @@
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-4);
   width: 100%;
+
+  @media (width <= 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.selected {
+  border: 2px solid var(--foreground-primary);
 }

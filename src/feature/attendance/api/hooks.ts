@@ -29,8 +29,9 @@ export const useUpdateAttendance = () => {
       );
       return response.data;
     },
+
     onMutate: async (variables) => {
-      const queryKey = [
+      const sessionQueryKey = [
         "sessions",
         "bootcamp",
         variables.bootcampId,
@@ -39,51 +40,98 @@ export const useUpdateAttendance = () => {
         "attendance",
       ];
 
-      await queryClient.cancelQueries({ queryKey });
+      await queryClient.cancelQueries({ queryKey: sessionQueryKey });
 
-      const previousData =
-        queryClient.getQueryData<ApiResponse<Session[]>>(queryKey);
+      const previousSessions =
+        queryClient.getQueryData<ApiResponse<Session[]>>(sessionQueryKey);
 
-      if (previousData?.data) {
-        queryClient.setQueryData<ApiResponse<Session[]>>(queryKey, (old) => {
+      if (previousSessions?.data) {
+        queryClient.setQueryData<ApiResponse<Session[]>>(
+          sessionQueryKey,
+          (old) => {
+            if (!old?.data) return old;
+
+            return {
+              ...old,
+              data: old.data.map((session) => {
+                if (variables.classDates.includes(session.classDate)) {
+                  return {
+                    ...session,
+                    attendance: {
+                      status: variables.status,
+                      userId: variables.userId,
+                    },
+                  };
+                }
+                return session;
+              }),
+            };
+          },
+        );
+      }
+
+      const dailyAttendanceQueryKey = [
+        "attendance",
+        variables.userId,
+        variables.classDates[0],
+        variables.bootcampId,
+      ];
+
+      await queryClient.cancelQueries({ queryKey: dailyAttendanceQueryKey });
+
+      const previousDailyAttendance = queryClient.getQueryData<
+        ApiResponse<DailyAttendanceResponse>
+      >(dailyAttendanceQueryKey);
+
+      queryClient.setQueryData<ApiResponse<DailyAttendanceResponse>>(
+        dailyAttendanceQueryKey,
+        (old) => {
           if (!old?.data) return old;
 
           return {
             ...old,
-            data: old.data.map((session) => {
-              if (variables.classDates.includes(session.classDate)) {
-                return {
-                  ...session,
-                  attendance: {
-                    status: variables.status,
-                    userId: variables.userId,
-                  },
-                };
-              }
-              return session;
-            }),
+            data: {
+              ...old.data,
+              status: variables.status,
+            },
           };
-        });
+        },
+      );
+
+      return {
+        previousSessions,
+        previousDailyAttendance,
+      };
+    },
+
+    onError: (_error, variables, context) => {
+      if (context?.previousSessions) {
+        queryClient.setQueryData(
+          [
+            "sessions",
+            "bootcamp",
+            variables.bootcampId,
+            "user",
+            variables.userId,
+            "attendance",
+          ],
+          context.previousSessions,
+        );
       }
 
-      return { previousData };
-    },
-    onError: (error, variables, context) => {
-      if (context?.previousData) {
-        const queryKey = [
-          "sessions",
-          "bootcamp",
-          variables.bootcampId,
-          "user",
-          variables.userId,
-          "attendance",
-        ];
-        queryClient.setQueryData<ApiResponse<Session[]>>(
-          queryKey,
-          context.previousData,
+      if (context?.previousDailyAttendance) {
+        queryClient.setQueryData(
+          [
+            "attendance",
+            variables.userId,
+            variables.classDates[0],
+            variables.bootcampId,
+          ],
+          context.previousDailyAttendance,
         );
       }
     },
+
     onSettled: (_, __, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["attendance", "total", variables.userId],

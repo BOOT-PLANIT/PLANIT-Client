@@ -2,6 +2,8 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-12);
+  width: 100%;
+  min-width: 0;
   padding: var(--spacing-12) var(--spacing-16);
   border: 1px solid var(--border-normal);
   border-radius: var(--radius-8);

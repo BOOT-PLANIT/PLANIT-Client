@@ -10,7 +10,6 @@ import styles from "./SignIn.module.scss";
 
 const SignIn = () => {
   const { mutate: googleLogin, isPending } = useGoogleLogin();
-
   return (
     <div className={styles.container}>
       <div className={styles.card}>

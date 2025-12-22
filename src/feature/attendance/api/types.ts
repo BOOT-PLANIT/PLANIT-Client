@@ -43,26 +43,32 @@ export interface PeriodAttendanceResponse {
  */
 export interface TotalAttendanceResponse {
   userId: number;
-  bootcampId: number;
-  totalPresent: number;
-  totalAbsent: number;
-  totalLate: number;
-  totalLeftEarly: number;
-  totalAnnual: number;
-  totalLeave: number;
-  totalNoSession: number;
-  totalNoAttendance: number;
-  attendanceRate: number;
+  unitNo: number | null;
+  presentCount: number;
+  absentCount: number;
+  lateCount: number;
+  leftEarlyCount: number;
+  annualCount: number;
+  leaveCount: number;
+  totalPresentCount: number;
+  totalAbsentCount: number;
+  totalSubsidy: number;
+  totalSessions: number;
 }
 
 /**
  * 일단위 출결 조회 응답
  */
 export interface DailyAttendanceResponse {
-  userId: number;
-  bootcampId: number;
-  date: string;
+  attendanceId: number;
   status: AttendanceStatus;
+  bootcampId: number;
+  bootcampName: string;
+  sessionId: number;
+  classDate: string;
+  unitNo: number;
+  startDate: string;
+  endDate: string;
 }
 
 /**
@@ -74,11 +80,9 @@ export type PeriodAttendanceListResponse = PeriodAttendanceResponse[];
  * 월차 잔여/누적 사용량 조회 응답
  */
 export interface AttendanceBalanceResponse {
-  userId: number;
-  bootcampId: number;
-  usedLeave: number;
-  receivedLeave: number;
-  remainingLeave: number;
+  usedAnnual: number;
+  totalAnnual: number;
+  remainingAnnual: number;
 }
 
 /**

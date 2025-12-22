@@ -91,3 +91,21 @@ export const extractUnitPeriods = (sessions: Session[]) => {
     (a, b) => a.startDate.getTime() - b.startDate.getTime(),
   );
 };
+
+/**
+ * Calendar 출결 상태를 API 출결 상태로 변환
+ */
+export const mapCalendarStatusToApiStatus = (
+  calendarStatus: CalendarAttendanceStatus,
+): ApiAttendanceStatus => {
+  const statusMap: Record<CalendarAttendanceStatus, ApiAttendanceStatus> = {
+    present: "present",
+    absent: "absent",
+    late: "late",
+    leftEarly: "left_early",
+    annual: "annual",
+    leave: "leave",
+  };
+
+  return statusMap[calendarStatus];
+};
