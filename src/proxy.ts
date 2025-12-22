@@ -21,25 +21,22 @@ function isStaticFile(pathname: string) {
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (isStaticFile(pathname)) return NextResponse.next();
+  // 정적 파일 통과
+  if (isStaticFile(pathname)) {
+    return NextResponse.next();
+  }
 
   const token = req.cookies.get(SESSION_COOKIE_NAME)?.value;
 
-  // [중요] 현재 경로를 헤더에 담기 위한 설정
-  const requestHeaders = new Headers(req.headers);
-  requestHeaders.set("x-pathname", pathname);
-
-  // /signin 페이지는 통과 (이때도 위에서 설정한 헤더는 포함되어야 함)
-  if (pathname === SIGNIN_PATH) {
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders, // 헤더 전달
-      },
-    });
+  // 로그인한 사용자는 /signin 접근 불가
+  if (pathname === SIGNIN_PATH && token) {
+    const url = req.nextUrl.clone();
+    url.pathname = DASHBOARD_PATH;
+    return NextResponse.redirect(url);
   }
 
-  // 토큰이 아예 없으면 로그인으로 이동
-  if (!token) {
+  // 비로그인 사용자는 /signin만 허용
+  if (!token && pathname !== SIGNIN_PATH) {
     const url = req.nextUrl.clone();
     url.pathname = SIGNIN_PATH;
     return NextResponse.redirect(url);
@@ -52,12 +49,7 @@ export function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // 일반적인 경우에도 헤더를 전달하며 통과
-  return NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
+  return NextResponse.next();
 }
 
 export const config = {
