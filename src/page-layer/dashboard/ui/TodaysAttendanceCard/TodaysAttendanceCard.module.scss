@@ -14,3 +14,7 @@
     grid-template-columns: 1fr;
   }
 }
+
+.selected {
+  border: 2px solid var(--foreground-primary);
+}
